@@ -9,6 +9,32 @@ namespace mgc {
 	// SDL renderer instance
 	extern SDL_Renderer* renderer;
 
+	class Mouse {
+	public:
+		int x;
+		int y;
+		int xrel;
+		int yrel;
+
+		bool down;
+		bool clicked;
+	};
+
+	class Keyboard {
+	public:
+		bool up;
+		bool down;
+		bool left;
+		bool right;
+
+		bool typed;
+
+		string text;
+		Sint32 cur;
+	};
+
+	extern bool running;
+
 	void init_sdl();
 	void init_lua();
 

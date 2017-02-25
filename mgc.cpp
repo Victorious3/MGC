@@ -7,6 +7,9 @@ namespace mgc {
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
+	Mouse mouse;
+	Keyboard key;
+
 	bool running = true;
 
 	void run() {
@@ -17,7 +20,55 @@ namespace mgc {
 	}
 
 	void sdl_event() {
+		SDL_Event event;
 
+		mouse.clicked = false;
+		key.typed = false;
+		bool mdown = mouse.down;
+		bool ktyped = key.typed;
+
+		while (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_QUIT:
+				running = false;
+				break;
+			case SDL_MOUSEMOTION:
+				mouse.x = event.motion.x;
+				mouse.y = event.motion.y;
+				mouse.xrel = event.motion.xrel;
+				mouse.yrel = event.motion.yrel;
+			case SDL_MOUSEBUTTONDOWN:
+				mouse.down = true;
+				break;
+			case SDL_MOUSEBUTTONUP:
+				mouse.down = false;
+				break;
+			case SDL_KEYDOWN:
+			case SDL_KEYUP: {
+					key.typed = event.key.state;
+					key.cur = event.key.keysym.sym;
+
+					switch (event.key.keysym.sym) {
+					case SDLK_UP: key.up = key.typed; break;
+					case SDLK_DOWN: key.down = key.typed; break;
+					case SDLK_LEFT: key.left = key.typed; break;
+					case SDLK_RIGHT: key.right = key.typed; break;
+					}
+				}
+			case SDL_TEXTINPUT: {
+					key.text = event.text.text;
+				}
+			}
+		}
+
+		if (!mdown && mouse.down)
+			mouse.clicked = true;
+		if (!ktyped && key.typed)
+			key.typed = true;
+		// Update game here
+
+		if (key.typed)
+			cout << "Key typed: " << key.cur << ", " << key.text << endl;
 	}
 
 	void init_sdl() {
@@ -59,7 +110,6 @@ namespace mgc {
 	}
 
 	void destroy_sdl() {
-		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Shutting down!");
 		if (window) SDL_DestroyWindow(window);
 		if (renderer) SDL_DestroyRenderer(renderer);
 		SDL_Quit();

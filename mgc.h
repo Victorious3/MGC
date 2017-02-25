@@ -22,18 +22,18 @@ namespace mgc {
 	};
 
 	struct Keyboard {
-		bool up;
-		bool down;
-		bool left;
-		bool right;
+		bool key_up;
+		bool key_down;
+		bool key_left;
+		bool key_right;
 
 		bool typed;
+		bool down;
+		bool changed;
 
 		string text;
 		Sint32 cur;
 	};
-
-	extern bool running;
 
 	void init_sdl();
 	void init_lua();

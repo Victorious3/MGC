@@ -4,13 +4,14 @@
 
 namespace mgc {
 
-	SDL_Window* window;
-	SDL_Renderer* renderer;
+	SDL_Window* window = nullptr;
+	SDL_Renderer* renderer = nullptr;
 
 	Mouse mouse;
 	Keyboard key;
 
 	bool running = true;
+	bool fullscreen = false;
 
 	void run() {
 		while (running) {
@@ -20,15 +21,16 @@ namespace mgc {
 	}
 
 	void sdl_event() {
-		
-		mouse.clicked = false;
-		mouse.wheel = mouse.xrel = mouse.yrel = 0;
-		key.typed = false;
-		bool mdown = mouse.down;
-		bool ktyped = key.typed;
-
 		SDL_Event event;
+
+		mouse.clicked = key.typed = mouse.moved = false;
+		mouse.wheel = mouse.xrel = mouse.yrel = 0;
+
 		while (SDL_PollEvent(&event)) {
+
+			bool mdown = mouse.down;
+			bool kdown = key.down;
+
 			switch (event.type) {
 			case SDL_QUIT:
 				running = false;
@@ -38,42 +40,42 @@ namespace mgc {
 				mouse.y = event.motion.y;
 				mouse.xrel = event.motion.xrel;
 				mouse.yrel = event.motion.yrel;
-			case SDL_MOUSEBUTTONDOWN:
-				mouse.down = true;
+				mouse.moved = mouse.xrel || mouse.yrel;
 				break;
+			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				mouse.down = false;
+				mouse.down = event.button.state;
+				mouse.clicked = !mdown && mouse.down;
 				break;
 			case SDL_MOUSEWHEEL:
 				mouse.wheel = event.wheel.y;
+				break;
 			case SDL_KEYDOWN:
-			case SDL_KEYUP: {
-					key.typed = event.key.state;
-					key.cur = event.key.keysym.sym;
+			case SDL_KEYUP: 
+				key.down = event.key.state;
+				key.cur = event.key.keysym.sym;
+				key.changed = kdown != key.down;
 
-					switch (event.key.keysym.sym) {
-					case SDLK_UP: key.up = key.typed; break;
-					case SDLK_DOWN: key.down = key.typed; break;
-					case SDLK_LEFT: key.left = key.typed; break;
-					case SDLK_RIGHT: key.right = key.typed; break;
-					}
+				switch (event.key.keysym.sym) {
+				case SDLK_UP: key.key_up = key.typed; break;
+				case SDLK_DOWN: key.key_down = key.typed; break;
+				case SDLK_LEFT: key.key_left = key.typed; break;
+				case SDLK_RIGHT: key.key_right = key.typed; break;
 				}
-			case SDL_TEXTINPUT: {
-					key.text = event.text.text;
-				}
+				break;
+			case SDL_TEXTINPUT:
+				key.typed = true;
+				key.text = event.text.text;
+				break;
 			}
 		}
-
-		if (!mdown && mouse.down)
-			mouse.clicked = true;
-		if (!ktyped && key.typed)
-			key.typed = true;
-		mouse.moved = mouse.xrel || mouse.yrel;
 
 		// Update game here
 
 		if (key.typed)
-			cout << "Key typed: " << key.cur << ", " << key.text << endl;
+			cout << "Keystroke: " << key.cur << ", " << key.text << endl;
+		if (mouse.clicked)
+			cout << "Mouse clicked: " << mouse.x << ", " << mouse.y << endl;
 		if (mouse.wheel)
 			cout << "Mouse wheel moved: " << mouse.wheel << endl;
 		if (mouse.moved)

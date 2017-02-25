@@ -7,12 +7,30 @@ namespace mgc {
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
-	int init() {
+	bool running = true;
+
+	void run() {
+		while (running) {
+			// Handle sdl events
+			sdl_event();
+		}
+	}
+
+	void sdl_event() {
+
+	}
+
+	void init_sdl() {
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "SDL_Init Error: %s \n", SDL_GetError());
-			return 1;
+			throw runtime_error("SDL_Init Error: "s + SDL_GetError());
 		}
 		SDL_Log("SDL initialized successfully");
+
+		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 		window = SDL_CreateWindow(
 			constants::APP_NAME.c_str(), // title
@@ -24,16 +42,13 @@ namespace mgc {
 		);
 
 		if (!window) {
-			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "SDL_CreateWindow Error: %s \n", SDL_GetError());
-			destroy();
-			return 1;
+			throw runtime_error("SDL_CreateWindow Error: "s + SDL_GetError());
 		}
 
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 		if (!renderer) {
-			SDL_LogError(SDL_LOG_CATEGORY_RENDER, "SDL_CreateRenderer Error: %s \n", SDL_GetError());
-			destroy();
+			throw runtime_error("SDL_CreateRenderer Error: "s + SDL_GetError());
 		}
 
 		// Test
@@ -41,18 +56,20 @@ namespace mgc {
 		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
 		SDL_RenderDrawLine(renderer, 0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 		SDL_RenderPresent(renderer);
-
-		// Wait
-		int tmp;
-		cin >> tmp;
-
-		destroy();
 	}
 
-	void destroy() {
+	void destroy_sdl() {
 		SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Shutting down!");
-		SDL_DestroyWindow(window);
-		SDL_DestroyRenderer(renderer);
+		if (window) SDL_DestroyWindow(window);
+		if (renderer) SDL_DestroyRenderer(renderer);
 		SDL_Quit();
+	}
+
+	void init_lua() {
+
+	}
+	
+	void destroy_lua() {
+
 	}
 }

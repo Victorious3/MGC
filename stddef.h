@@ -6,7 +6,11 @@
 #include <iostream>
 
 // Libraries
+extern "C" {
 #include <SDL.h>
+}
+#include <lua.hpp>
+#include <sol.hpp>
 
 using namespace std;
 

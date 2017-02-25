@@ -9,6 +9,13 @@ namespace mgc {
 	// SDL renderer instance
 	extern SDL_Renderer* renderer;
 
-	int init();
-	void destroy();
+	void init_sdl();
+	void init_lua();
+
+	void sdl_event();
+
+	void run();
+
+	void destroy_sdl();
+	void destroy_lua();
 }

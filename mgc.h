@@ -15,9 +15,11 @@ namespace mgc {
 		int y;
 		int xrel;
 		int yrel;
+		int wheel;
 
 		bool down;
 		bool clicked;
+		bool moved;
 	};
 
 	class Keyboard {

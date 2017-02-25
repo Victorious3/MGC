@@ -23,6 +23,7 @@ namespace mgc {
 		SDL_Event event;
 
 		mouse.clicked = false;
+		mouse.wheel = mouse.xrel = mouse.yrel = 0;
 		key.typed = false;
 		bool mdown = mouse.down;
 		bool ktyped = key.typed;
@@ -43,6 +44,8 @@ namespace mgc {
 			case SDL_MOUSEBUTTONUP:
 				mouse.down = false;
 				break;
+			case SDL_MOUSEWHEEL:
+				mouse.wheel = event.wheel.y;
 			case SDL_KEYDOWN:
 			case SDL_KEYUP: {
 					key.typed = event.key.state;
@@ -65,10 +68,16 @@ namespace mgc {
 			mouse.clicked = true;
 		if (!ktyped && key.typed)
 			key.typed = true;
+		mouse.moved = mouse.xrel || mouse.yrel;
+
 		// Update game here
 
 		if (key.typed)
 			cout << "Key typed: " << key.cur << ", " << key.text << endl;
+		if (mouse.wheel)
+			cout << "Mouse wheel moved: " << mouse.wheel << endl;
+		if (mouse.moved)
+			cout << "Mouse moved: " << mouse.x << ", " << mouse.y << endl;
 	}
 
 	void init_sdl() {

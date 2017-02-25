@@ -3,3 +3,7 @@ Release
 *.vcxproj*
 /*.dll
 /*.dll
+*.sln
+*.sdf
+*.opensdf
+*.vs/

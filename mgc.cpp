@@ -50,9 +50,9 @@ namespace mgc {
 			case SDL_MOUSEMOTION:
 				//mouse.x = event.motion.x;
 				//mouse.y = event.motion.y;
-				mouse.xrel = event.motion.xrel;
-				mouse.yrel = event.motion.yrel;
-				mouse.moved = mouse.xrel || mouse.yrel;
+				//mouse.xrel = event.motion.xrel;
+				//mouse.yrel = event.motion.yrel;
+				//mouse.moved = mouse.xrel || mouse.yrel;
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
@@ -101,7 +101,7 @@ namespace mgc {
 		if (mouse.wheel)
 			cout << "Mouse wheel moved: " << mouse.wheel << endl;
 		if (mouse.moved)
-			cout << "Mouse moved: " << mouse.x << ", " << mouse.y << endl;
+			//cout << "Mouse moved: " << mouse.x << ", " << mouse.y << endl;
 	}
 
 	static void update_resolution() {
@@ -123,6 +123,7 @@ namespace mgc {
 	void render() {
 		graphics.frame_counter++;
 
+		// Update the mouse position
 		SDL_GetMouseState(&mouse.x, &mouse.y);
 
 		if (SDL_GetTicks() - graphics.last_count_taken > 1000) {

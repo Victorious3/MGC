@@ -98,27 +98,31 @@ namespace mgc {
 	}
 	
 	void toggle_fullscreen() {
-		if (!SDL_SetWindowFullscreen(window, fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP)) {
+		/*if (!SDL_SetWindowFullscreen(window, fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP)) {
 			fullscreen = !fullscreen;
 		} else {
 			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Failed to change display mode");
-		}
+		}*/
 	}
 
 	void render() {
+		static Uint8 xOff;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
-		glColor4i(255, 0, 0, 0);
-		glBegin(GL_LINE);
+		glColor4ub(255, 0, 0, 0);
+		glBegin(GL_QUADS);
 			glVertex2i(0, 0);
-			glVertex2i(constants::SCR_WIDTH, constants::SCR_HEIGHT);
+			glVertex2i(xOff, 0);
+			glVertex2i(xOff, constants::SCR_HEIGHT);
+			glVertex2i(0, constants::SCR_HEIGHT);
 		glEnd();
 		SDL_GL_SwapWindow(window);
+		xOff++;
 	}
 
 	static void setup_projection() {
 		glShadeModel(GL_FLAT);
-		glClearColor(255, 0, 0, 0);
+		glClearColor(0, 0, 0, 0);
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 		gluOrtho2D(0, constants::SCR_WIDTH, 0, constants::SCR_HEIGHT);
 		glMatrixMode(GL_PROJECTION);

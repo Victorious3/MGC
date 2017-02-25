@@ -37,11 +37,11 @@ namespace mgc {
 	};
 
 	struct Graphics {
-		TTF_Font *debugFont;
-		float actualFramerate;
-		Uint32 msPerFrame;
-		Uint32 frameCounter;
-		Uint32 lastCountTime;
+		TTF_Font *font_debug;
+		float framerate_actual;
+		Uint32 frame_delay_ms;
+		Uint32 frame_counter;
+		Uint32 last_count_taken;
 	};
 
 	struct Timing {

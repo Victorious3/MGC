@@ -119,12 +119,12 @@ namespace mgc {
 	}
 
 	void render() {
-		graphics.frameCounter++;
+		graphics.frame_counter++;
 
-		if (SDL_GetTicks() - graphics.lastCountTime > 1000) {
-			graphics.lastCountTime = SDL_GetTicks();
-			graphics.actualFramerate = (graphics.actualFramerate + graphics.frameCounter) / 2.0f;
-			graphics.frameCounter = 0;
+		if (SDL_GetTicks() - graphics.last_count_taken > 1000) {
+			graphics.last_count_taken = SDL_GetTicks();
+			graphics.framerate_actual = (graphics.framerate_actual + graphics.frame_counter) / 2.0f;
+			graphics.frame_counter = 0;
 		}
 
 		Uint32 startTime = SDL_GetTicks();
@@ -143,7 +143,7 @@ namespace mgc {
 		glTranslatef(-mouse.x + 5, -((GLfloat)constants::SCR_HEIGHT) + mouse.y + 5, 0);
 		
 		SDL_Color color = { 255, 255, 255 };
-		SDL_Surface *textSurface = TTF_RenderUTF8_Blended(graphics.debugFont, ("FPS: "s + std::to_string(graphics.actualFramerate)).c_str(), color);
+		SDL_Surface *textSurface = TTF_RenderUTF8_Blended(graphics.font_debug, ("FPS: "s + std::to_string(graphics.framerate_actual)).c_str(), color);
 
 		if (textSurface) {
 
@@ -190,8 +190,8 @@ namespace mgc {
 		SDL_GL_SwapWindow(window);
 		
 
-		if (SDL_GetTicks() - startTime < graphics.msPerFrame) {
-			SDL_Delay(graphics.msPerFrame - (SDL_GetTicks() - startTime));
+		if (SDL_GetTicks() - startTime < graphics.frame_delay_ms) {
+			SDL_Delay(graphics.frame_delay_ms - (SDL_GetTicks() - startTime));
 		}
 	}
 
@@ -218,12 +218,12 @@ namespace mgc {
 	}
 
 	void setup_graphics() {
-		graphics.actualFramerate = constants::FRAMERATE;
-		graphics.msPerFrame = (Uint32)(1000.0f / constants::FRAMERATE);
+		graphics.framerate_actual = constants::FRAMERATE;
+		graphics.frame_delay_ms = (Uint32)(1000.0f / constants::FRAMERATE);
 
 		string fontPath = "Resources/fonts/OpenSans/OpenSans-Regular.ttf";
-		graphics.debugFont = TTF_OpenFont(fontPath.c_str(), 16);
-		if (!graphics.debugFont) {
+		graphics.font_debug = TTF_OpenFont(fontPath.c_str(), 16);
+		if (!graphics.font_debug) {
 			throw runtime_error("Graphics_Init Error: Could not load font \"" + fontPath + "\". "s + TTF_GetError());
 		}
 	}
@@ -280,9 +280,9 @@ namespace mgc {
 	}
 
 	void destroy_graphics() {
-		if (graphics.debugFont)
-			TTF_CloseFont(graphics.debugFont);
-		graphics.debugFont = NULL;
+		if (graphics.font_debug)
+			TTF_CloseFont(graphics.font_debug);
+		graphics.font_debug = NULL;
 	}
 
 	void destroy_sdl() {

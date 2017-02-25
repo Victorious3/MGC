@@ -35,6 +35,14 @@ namespace mgc {
 		Sint32 cur;
 	};
 
+	struct Graphics {
+		TTF_Font *debugFont;
+		float actualFramerate;
+		Uint32 msPerFrame;
+		Uint32 frameCounter;
+		Uint32 lastCountTime;
+	};
+
 	void init_sdl();
 	void init_lua();
 

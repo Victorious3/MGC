@@ -14,8 +14,6 @@ namespace mgc {
 	bool running = true;
 	bool fullscreen = false;
 
-	Uint32 lastTime = 0;
-
 	void run() {
 		while (running) {
 			// Handle sdl events
@@ -181,8 +179,6 @@ namespace mgc {
 		if (SDL_GetTicks() - startTime < graphics.msPerFrame) {
 			SDL_Delay(graphics.msPerFrame - (SDL_GetTicks() - startTime));
 		}
-
-		lastTime = startTime;
 	}
 
 	static void setup_projection() {

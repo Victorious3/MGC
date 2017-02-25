@@ -44,6 +44,12 @@ namespace mgc {
 		Uint32 lastCountTime;
 	};
 
+	struct Timing {
+		Uint32 tick_counter;
+		Uint32 tick_last;
+		Uint32 tick_delay_ms;
+	};
+
 	void init_sdl();
 	void init_lua();
 

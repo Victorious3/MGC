@@ -10,6 +10,7 @@ namespace mgc {
 	Mouse mouse;
 	Keyboard key;
 	Graphics graphics;
+	Timing timing;
 
 	bool running = true;
 	bool fullscreen = false;
@@ -17,8 +18,14 @@ namespace mgc {
 
 	void run() {
 		while (running) {
-			// Handle sdl events
 			sdl_event();
+
+			while (SDL_TICKS_PASSED(SDL_GetTicks(), timing.tick_last + timing.tick_delay_ms)) {
+				update();
+				timing.tick_last += timing.tick_delay_ms;
+			}
+
+			// Handle sdl events
 			render();
 		}
 	}
@@ -105,6 +112,10 @@ namespace mgc {
 		} else {
 			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Failed to change display mode");
 		}
+	}
+
+	void update() {
+
 	}
 
 	void render() {
@@ -217,6 +228,12 @@ namespace mgc {
 		}
 	}
 
+	void setup_timing() {
+		timing.tick_delay_ms = (1000 / constants::TICKRATE);
+		timing.tick_counter = 0;
+		timing.tick_last = SDL_GetTicks();
+	}
+
 	void init_sdl() {
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
 			throw runtime_error("SDL_Init Error: "s + SDL_GetError());
@@ -258,6 +275,8 @@ namespace mgc {
 		setup_ttf();
 
 		setup_graphics();
+
+		setup_timing();
 	}
 
 	void destroy_graphics() {

@@ -40,4 +40,5 @@ namespace constants {
 	const Uint SCR_HEIGHT = 360;
 
 	const Uint FRAMERATE = 60;
+	const Uint TICKRATE = 30;
 }

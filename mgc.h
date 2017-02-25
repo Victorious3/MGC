@@ -8,6 +8,7 @@ namespace mgc {
 	extern SDL_Window* window;
 	// GL context
 	extern SDL_GLContext context;
+	extern float scale;
 
 	struct Mouse {
 		int x;

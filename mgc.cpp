@@ -12,6 +12,7 @@ namespace mgc {
 
 	bool running = true;
 	bool fullscreen = false;
+	float scale = 1;
 
 	void run() {
 		while (running) {
@@ -98,11 +99,11 @@ namespace mgc {
 	}
 	
 	void toggle_fullscreen() {
-		/*if (!SDL_SetWindowFullscreen(window, fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP)) {
+		if (!SDL_SetWindowFullscreen(window, fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP)) {
 			fullscreen = !fullscreen;
 		} else {
 			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Failed to change display mode");
-		}*/
+		}
 	}
 
 	void render() {
@@ -110,12 +111,14 @@ namespace mgc {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
 		glColor4ub(255, 0, 0, 0);
+		glTranslatef(mouse.x - 5, ((GLfloat)constants::SCR_HEIGHT) - mouse.y - 5, 0);
 		glBegin(GL_QUADS);
 			glVertex2i(0, 0);
-			glVertex2i(xOff, 0);
-			glVertex2i(xOff, constants::SCR_HEIGHT);
-			glVertex2i(0, constants::SCR_HEIGHT);
+			glVertex2i(10, 0);
+			glVertex2i(10, 10);
+			glVertex2i(0, 10);
 		glEnd();
+		glTranslatef(-mouse.x + 5, -((GLfloat)constants::SCR_HEIGHT) + mouse.y + 5, 0);
 		SDL_GL_SwapWindow(window);
 		xOff++;
 	}
@@ -123,9 +126,11 @@ namespace mgc {
 	static void setup_projection() {
 		glShadeModel(GL_FLAT);
 		glClearColor(0, 0, 0, 0);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 		gluOrtho2D(0, constants::SCR_WIDTH, 0, constants::SCR_HEIGHT);
-		glMatrixMode(GL_PROJECTION);
+		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
 		GLenum error = glGetError();
@@ -149,6 +154,8 @@ namespace mgc {
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+		SDL_GL_SetSwapInterval(1);
+
 		window = SDL_CreateWindow(
 			constants::APP_NAME.c_str(), // title
 			SDL_WINDOWPOS_CENTERED,	// xpos
@@ -167,7 +174,7 @@ namespace mgc {
 			throw runtime_error("SDL_GL_CreateContext Error: "s + SDL_GetError());
 		}
 
-		//SDL_ShowCursor(false);
+		SDL_ShowCursor(false);
 		setup_projection();
 	}
 

@@ -190,9 +190,9 @@ namespace mgc {
 		SDL_GL_SwapWindow(window);
 		
 
-		if (SDL_GetTicks() - startTime < graphics.frame_delay_ms) {
+		/*if (SDL_GetTicks() - startTime < graphics.frame_delay_ms) {
 			SDL_Delay(graphics.frame_delay_ms - (SDL_GetTicks() - startTime));
-		}
+		}*/
 	}
 
 	static void setup_projection() {

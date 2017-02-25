@@ -177,7 +177,6 @@ namespace mgc {
 		}
 
 		SDL_GL_SwapWindow(window);
-		xOff++;
 
 		if (SDL_GetTicks() - startTime < graphics.msPerFrame) {
 			SDL_Delay(graphics.msPerFrame - (SDL_GetTicks() - startTime));

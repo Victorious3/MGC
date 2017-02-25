@@ -8,7 +8,10 @@
 // Libraries
 extern "C" {
 #include <SDL.h>
+#define GLEW_STATIC
+#include <GL/glew.h>
 }
+
 #include <lua.hpp>
 #include <sol.hpp>
 

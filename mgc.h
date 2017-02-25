@@ -6,8 +6,8 @@ namespace mgc {
 
 	// SDL window instance
 	extern SDL_Window* window;
-	// SDL renderer instance
-	extern SDL_Renderer* renderer;
+	// GL context
+	extern SDL_GLContext context;
 
 	struct Mouse {
 		int x;
@@ -29,7 +29,7 @@ namespace mgc {
 
 		bool typed;
 		bool down;
-		bool changed;
+		bool state;
 
 		string text;
 		Sint32 cur;
@@ -39,7 +39,8 @@ namespace mgc {
 	void init_lua();
 
 	void sdl_event();
-
+	void toggle_fullscreen();
+	void render();
 	void run();
 
 	void destroy_sdl();

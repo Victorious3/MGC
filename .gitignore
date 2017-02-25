@@ -1,4 +1,4 @@
 Debug
 *.vcxproj*
-/SDL2.dll
-/lua53.dll
+/*.dll
+/*.dll

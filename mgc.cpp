@@ -130,7 +130,7 @@ namespace mgc {
 			glVertex2i(0, 10);
 		glEnd();
 		glTranslatef(-mouse.x + 5, -((GLfloat)constants::SCR_HEIGHT) + mouse.y + 5, 0);
-
+		
 		SDL_Color color = { 255, 255, 255 };
 		SDL_Surface *textSurface = TTF_RenderUTF8_Blended(graphics.debugFont, ("FPS: "s + std::to_string(graphics.actualFramerate)).c_str(), color);
 
@@ -177,6 +177,7 @@ namespace mgc {
 		}
 
 		SDL_GL_SwapWindow(window);
+		
 
 		if (SDL_GetTicks() - startTime < graphics.msPerFrame) {
 			SDL_Delay(graphics.msPerFrame - (SDL_GetTicks() - startTime));
@@ -209,7 +210,7 @@ namespace mgc {
 		graphics.actualFramerate = constants::FRAMERATE;
 		graphics.msPerFrame = (Uint32)(1000.0f / constants::FRAMERATE);
 
-		auto fontPath = std::string(SDL_GetBasePath()).append("OpenSans-Regular.ttf");
+		string fontPath = "Resources/fonts/OpenSans/OpenSans-Regular.ttf";
 		graphics.debugFont = TTF_OpenFont(fontPath.c_str(), 16);
 		if (!graphics.debugFont) {
 			throw runtime_error("Graphics_Init Error: Could not load font \"" + fontPath + "\". "s + TTF_GetError());

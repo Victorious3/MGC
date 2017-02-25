@@ -39,5 +39,5 @@ namespace constants {
 	const Uint SCR_WIDTH = 640;
 	const Uint SCR_HEIGHT = 360;
 
-	const Uint FRAMERATE = 30;
+	const Uint FRAMERATE = 60;
 }

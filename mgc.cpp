@@ -48,8 +48,8 @@ namespace mgc {
 				running = false;
 				break;
 			case SDL_MOUSEMOTION:
-				mouse.x = event.motion.x;
-				mouse.y = event.motion.y;
+				//mouse.x = event.motion.x;
+				//mouse.y = event.motion.y;
 				mouse.xrel = event.motion.xrel;
 				mouse.yrel = event.motion.yrel;
 				mouse.moved = mouse.xrel || mouse.yrel;
@@ -122,6 +122,8 @@ namespace mgc {
 
 	void render() {
 		graphics.frame_counter++;
+
+		SDL_GetMouseState(&mouse.x, &mouse.y);
 
 		if (SDL_GetTicks() - graphics.last_count_taken > 1000) {
 			graphics.last_count_taken = SDL_GetTicks();

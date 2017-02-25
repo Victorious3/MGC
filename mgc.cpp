@@ -20,14 +20,14 @@ namespace mgc {
 	}
 
 	void sdl_event() {
-		SDL_Event event;
-
+		
 		mouse.clicked = false;
 		mouse.wheel = mouse.xrel = mouse.yrel = 0;
 		key.typed = false;
 		bool mdown = mouse.down;
 		bool ktyped = key.typed;
 
+		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:

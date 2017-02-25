@@ -9,8 +9,7 @@ namespace mgc {
 	// SDL renderer instance
 	extern SDL_Renderer* renderer;
 
-	class Mouse {
-	public:
+	struct Mouse {
 		int x;
 		int y;
 		int xrel;
@@ -22,8 +21,7 @@ namespace mgc {
 		bool moved;
 	};
 
-	class Keyboard {
-	public:
+	struct Keyboard {
 		bool up;
 		bool down;
 		bool left;

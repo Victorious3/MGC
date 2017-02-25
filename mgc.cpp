@@ -20,6 +20,7 @@ namespace mgc {
 
 	void run() {
 		while (running) {
+			// Handle sdl events
 			sdl_event();
 
 			while (SDL_TICKS_PASSED(SDL_GetTicks(), timing.tick_last + timing.tick_delay_ms)) {
@@ -27,7 +28,6 @@ namespace mgc {
 				timing.tick_last += timing.tick_delay_ms;
 			}
 
-			// Handle sdl events
 			render();
 		}
 	}

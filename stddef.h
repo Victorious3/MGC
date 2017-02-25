@@ -8,6 +8,7 @@
 // Libraries
 extern "C" {
 #include <SDL.h>
+#include <SDL_ttf.h>
 #define GLEW_STATIC
 #include <GL/glew.h>
 }

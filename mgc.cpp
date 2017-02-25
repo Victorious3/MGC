@@ -9,6 +9,7 @@ namespace mgc {
 
 	Mouse mouse;
 	Keyboard key;
+	Graphics graphics;
 
 	bool running = true;
 	bool fullscreen = false;
@@ -107,6 +108,16 @@ namespace mgc {
 	}
 
 	void render() {
+		graphics.frameCounter++;
+
+		if (SDL_GetTicks() - graphics.lastCountTime > 1000) {
+			graphics.lastCountTime = SDL_GetTicks();
+			graphics.actualFramerate = (graphics.actualFramerate + graphics.frameCounter) / 2.0f;
+			graphics.frameCounter = 0;
+		}
+
+		Uint32 startTime = SDL_GetTicks();
+
 		static Uint8 xOff;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
@@ -119,8 +130,58 @@ namespace mgc {
 			glVertex2i(0, 10);
 		glEnd();
 		glTranslatef(-mouse.x + 5, -((GLfloat)constants::SCR_HEIGHT) + mouse.y + 5, 0);
+
+		SDL_Color color = { 255, 255, 255 };
+		SDL_Surface *textSurface = TTF_RenderUTF8_Blended(graphics.debugFont, std::string("FPS: ").append(std::to_string(graphics.actualFramerate)).c_str(), color);
+
+		if (textSurface) {
+
+			GLuint texture = 0;
+			glGenTextures(1, &texture);
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textSurface->w, textSurface->h, 0,
+				GL_RGBA, GL_UNSIGNED_BYTE, textSurface->pixels);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, texture);
+			
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			glColor3ub(255, 255, 255);
+
+			glBegin(GL_QUADS);
+			{
+				glTexCoord2f(0, 1);
+				glVertex2i(0, constants::SCR_HEIGHT - textSurface->h);
+				glTexCoord2f(0, 0);
+				glVertex2i(0, constants::SCR_HEIGHT);
+				glTexCoord2f(1, 0);
+				glVertex2i(0 + textSurface->w, constants::SCR_HEIGHT);
+				glTexCoord2f(1, 1);
+				glVertex2i(0 + textSurface->w, constants::SCR_HEIGHT - textSurface->h);
+			}
+			glEnd();
+
+			glDisable(GL_BLEND);
+
+			glDisable(GL_TEXTURE_2D);
+			
+
+			glDeleteTextures(1, &texture);
+			SDL_FreeSurface(textSurface);
+		}
+
 		SDL_GL_SwapWindow(window);
 		xOff++;
+
+		if (SDL_GetTicks() - startTime < graphics.msPerFrame) {
+			SDL_Delay(graphics.msPerFrame - (SDL_GetTicks() - startTime));
+		}
 	}
 
 	static void setup_projection() {
@@ -136,6 +197,23 @@ namespace mgc {
 		GLenum error = glGetError();
 		if (error) {
 			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "GL error when setting up projection: %s", glewGetErrorString(error));
+		}
+	}
+
+	void setup_ttf() {
+		if (TTF_Init() == -1) {
+			throw runtime_error("TTF_Init Error: could not initialize TTF. Error: "s + TTF_GetError());
+		}
+	}
+
+	void setup_graphics() {
+		graphics.actualFramerate = constants::FRAMERATE;
+		graphics.msPerFrame = (Uint32)(1000.0f / constants::FRAMERATE);
+
+		auto fontPath = std::string(SDL_GetBasePath()).append("arial.ttf");
+		graphics.debugFont = TTF_OpenFont(fontPath.c_str(), 16);
+		if (!graphics.debugFont) {
+			throw runtime_error("Graphics_Init Error: Could not load font \"" + fontPath + "\". "s + TTF_GetError());
 		}
 	}
 
@@ -176,9 +254,21 @@ namespace mgc {
 
 		SDL_ShowCursor(false);
 		setup_projection();
+
+		setup_ttf();
+
+		setup_graphics();
+	}
+
+	void destroy_graphics() {
+		if (graphics.debugFont)
+			TTF_CloseFont(graphics.debugFont);
+		graphics.debugFont = NULL;
 	}
 
 	void destroy_sdl() {
+		destroy_graphics();
+
 		if (window) SDL_DestroyWindow(window);
 		if (context) SDL_GL_DeleteContext(context);
 		SDL_Quit();

@@ -2,7 +2,9 @@
 // Precompiled header, put all your
 // heavy library dependencies here
 
+// stdlib
 #include <string>
+#include <vector>
 #include <iostream>
 
 // Libraries
@@ -16,7 +18,17 @@ extern "C" {
 #include <lua.hpp>
 #include <sol.hpp>
 
-using namespace std;
+using std::string;
+using namespace std::literals::string_literals;
+
+using std::vector;
+
+using std::exception;
+using std::runtime_error;
+
+using std::cout;
+using std::cin;
+using std::endl;
 
 typedef unsigned int Uint;
 

@@ -132,7 +132,7 @@ namespace mgc {
 		glTranslatef(-mouse.x + 5, -((GLfloat)constants::SCR_HEIGHT) + mouse.y + 5, 0);
 
 		SDL_Color color = { 255, 255, 255 };
-		SDL_Surface *textSurface = TTF_RenderUTF8_Blended(graphics.debugFont, std::string("FPS: ").append(std::to_string(graphics.actualFramerate)).c_str(), color);
+		SDL_Surface *textSurface = TTF_RenderUTF8_Blended(graphics.debugFont, ("FPS: "s + std::to_string(graphics.actualFramerate)).c_str(), color);
 
 		if (textSurface) {
 

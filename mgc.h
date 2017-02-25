@@ -56,6 +56,7 @@ namespace mgc {
 	void sdl_event();
 	void toggle_fullscreen();
 	void render();
+	void update();
 	void run();
 
 	void destroy_sdl();

@@ -209,7 +209,7 @@ namespace mgc {
 		graphics.actualFramerate = constants::FRAMERATE;
 		graphics.msPerFrame = (Uint32)(1000.0f / constants::FRAMERATE);
 
-		auto fontPath = std::string(SDL_GetBasePath()).append("arial.ttf");
+		auto fontPath = std::string(SDL_GetBasePath()).append("OpenSans-Regular.ttf");
 		graphics.debugFont = TTF_OpenFont(fontPath.c_str(), 16);
 		if (!graphics.debugFont) {
 			throw runtime_error("Graphics_Init Error: Could not load font \"" + fontPath + "\". "s + TTF_GetError());

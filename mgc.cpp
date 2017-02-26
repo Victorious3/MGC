@@ -2,12 +2,11 @@
 
 #include "mgc.h"
 
-#include "gl_utils.h"
-
 namespace mgc {
 
 	SDL_Window* window = nullptr;
 	SDL_GLContext context = nullptr;
+	Canvas canvas;
 
 	Mouse mouse;
 	Keyboard key;
@@ -16,7 +15,10 @@ namespace mgc {
 
 	bool running = true;
 	bool fullscreen = false;
+
 	float scale = 1;
+	Uint xoff = 0;
+	Uint yoff = 0;
 
 	void run() {
 		while (running) {
@@ -100,8 +102,8 @@ namespace mgc {
 			cout << "Mouse clicked: " << mouse.x << ", " << mouse.y << endl;
 		if (mouse.wheel)
 			cout << "Mouse wheel moved: " << mouse.wheel << endl;
-		if (mouse.moved)
-			//cout << "Mouse moved: " << mouse.x << ", " << mouse.y << endl;
+		//if (mouse.moved)
+		//	cout << "Mouse moved: " << mouse.x << ", " << mouse.y << endl;
 	}
 
 	static void update_resolution() {
@@ -149,7 +151,8 @@ namespace mgc {
 		
 		SDL_Color color = { 255, 255, 255 };
 		auto fps_string = string("FPS: "s + std::to_string(graphics.framerate_actual));
-		gl_utils::draw_text(0, 0, graphics.font_debug, color, fps_string);
+
+		canvas.draw_text(0, 0, graphics.font_debug, color, fps_string);
 
 		SDL_GL_SwapWindow(window);
 		

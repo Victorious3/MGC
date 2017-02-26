@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stddef.h"
+#include "canvas.h"
 
 namespace mgc {
 
@@ -8,7 +9,11 @@ namespace mgc {
 	extern SDL_Window* window;
 	// GL context
 	extern SDL_GLContext context;
+	extern Canvas canvas;
+	
 	extern float scale;
+	extern Uint xoff;
+	extern Uint yoff;
 
 	struct Mouse {
 		int x;

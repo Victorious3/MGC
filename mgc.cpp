@@ -140,17 +140,21 @@ namespace mgc {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
 		glColor4ub(255, 0, 0, 0);
-		glTranslatef(mouse.x - 5, ((GLfloat)constants::SCR_HEIGHT) - mouse.y - 5, 0);
+		glTranslatef(mouse.x - 5, mouse.y - 5, 0);
+		
 		glBegin(GL_QUADS);
+		{
 			glVertex2i(0, 0);
 			glVertex2i(10, 0);
 			glVertex2i(10, 10);
 			glVertex2i(0, 10);
+		}
 		glEnd();
-		glTranslatef(-mouse.x + 5, -((GLfloat)constants::SCR_HEIGHT) + mouse.y + 5, 0);
+
+		glTranslatef(-mouse.x + 5, -mouse.y + 5, 0);
 		
-		SDL_Color color = { 255, 255, 255 };
-		auto fps_string = string("FPS: "s + std::to_string(graphics.framerate_actual));
+		SDL_Color color = {255, 255, 255, 255};
+		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
 
 		canvas.draw_text(0, 0, graphics.font_debug, color, fps_string);
 
@@ -168,7 +172,7 @@ namespace mgc {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
-		gluOrtho2D(0, constants::SCR_WIDTH, 0, constants::SCR_HEIGHT);
+		gluOrtho2D(0, constants::SCR_WIDTH, constants::SCR_HEIGHT, 0);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 

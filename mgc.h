@@ -43,6 +43,7 @@ namespace mgc {
 
 	struct Graphics {
 		TTF_Font *font_debug;
+
 		float framerate_actual;
 		Uint32 frame_delay_ms;
 		Uint32 frame_counter;

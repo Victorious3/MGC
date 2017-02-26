@@ -20,11 +20,11 @@ namespace mgc {
 	Uint xoff = 0;
 	Uint yoff = 0;
 
+	Uint screen_fbo = 0;
+	Uint screen_texture = 0;
+
 	void run() {
 		while (running) {
-			// Handle sdl events
-			sdl_event();
-
 			while (SDL_TICKS_PASSED(SDL_GetTicks(), timing.tick_last + timing.tick_delay_ms)) {
 				update();
 				timing.tick_last += timing.tick_delay_ms;
@@ -50,11 +50,9 @@ namespace mgc {
 				running = false;
 				break;
 			case SDL_MOUSEMOTION:
-				//mouse.x = event.motion.x;
-				//mouse.y = event.motion.y;
-				//mouse.xrel = event.motion.xrel;
-				//mouse.yrel = event.motion.yrel;
-				//mouse.moved = mouse.xrel || mouse.yrel;
+				mouse.xrel = event.motion.xrel;
+				mouse.yrel = event.motion.yrel;
+				mouse.moved = true;
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
@@ -107,19 +105,23 @@ namespace mgc {
 	}
 
 	static void update_resolution() {
-
+		int w, h;
+		SDL_GetWindowSize(window, &w, &h);
+		scale = std::fminf((float)w / (float)constants::SCR_WIDTH, (float)h / (float)constants::SCR_HEIGHT);
 	}
 	
 	void toggle_fullscreen() {
 		if (!SDL_SetWindowFullscreen(window, fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP)) {
 			fullscreen = !fullscreen;
+			update_resolution();
 		} else {
 			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Failed to change display mode");
 		}
 	}
 
 	void update() {
-
+		// Handle sdl events
+		sdl_event();
 	}
 
 	void render() {
@@ -127,46 +129,119 @@ namespace mgc {
 
 		// Update the mouse position
 		SDL_GetMouseState(&mouse.x, &mouse.y);
+		mouse.x /= scale;
+		mouse.y /= scale;
 
 		if (SDL_GetTicks() - graphics.last_count_taken > 1000) {
 			graphics.last_count_taken = SDL_GetTicks();
 			graphics.framerate_actual = (graphics.framerate_actual + graphics.frame_counter) / 2.0f;
 			graphics.frame_counter = 0;
 		}
-
 		Uint32 startTime = SDL_GetTicks();
 
-		static Uint8 xOff;
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	    // Bind framebuffer for rendering
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, screen_fbo);
+		
+		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
+
+		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
-		glColor4ub(255, 0, 0, 0);
-		glTranslatef(mouse.x - 5, mouse.y - 5, 0);
+		glColor3ub(255, 255, 255);
+		glTranslatef(mouse.x, mouse.y, 0);
 		
 		glBegin(GL_QUADS);
 		{
-			glVertex2i(0, 0);
-			glVertex2i(10, 0);
-			glVertex2i(10, 10);
-			glVertex2i(0, 10);
+			glVertex2i(1, -1);
+			glVertex2i(4, -1);
+			glVertex2i(4, 1);
+			glVertex2i(1, 1);
+
+			glVertex2i(-4, -1);
+			glVertex2i(-1, -1);
+			glVertex2i(-1, 1);
+			glVertex2i(-4, 1);
+
+			glVertex2i(-1, 1);
+			glVertex2i(-1, 4);
+			glVertex2i(1, 4);
+			glVertex2i(1, 1);
+
+			glVertex2i(-1, -4);
+			glVertex2i(-1, -1);
+			glVertex2i(1, -1);
+			glVertex2i(1, -4);
 		}
 		glEnd();
-
-		glTranslatef(-mouse.x + 5, -mouse.y + 5, 0);
+		glTranslatef(-mouse.x, -mouse.y, 0);
+		
+		glBegin(GL_LINES); 
+		{
+			glVertex2i(0, 0);
+			glVertex2i(mouse.x, mouse.y);
+		}
+		glEnd();
 		
 		SDL_Color color = {255, 255, 255, 255};
 		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
 
 		canvas.draw_text(0, 0, graphics.font_debug, color, fps_string);
+		
+		// Draw to screen
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		
+		int w, h;
+		SDL_GetWindowSize(window, &w, &h);
+		glViewport(0, 0, w, h);
 
+		glColor4ub(255, 255, 255, 255);
+		glEnable(GL_TEXTURE_2D);
+
+		glBindTexture(GL_TEXTURE_2D, screen_texture);
+		glBegin(GL_QUADS);
+		{
+			glTexCoord2f(0, 1);
+			glVertex2i(0, 0);
+			glTexCoord2f(1, 1);
+			glVertex2i(constants::SCR_WIDTH, 0);
+			glTexCoord2f(1, 0);
+			glVertex2i(constants::SCR_WIDTH, constants::SCR_HEIGHT);
+			glTexCoord2f(0, 0);
+			glVertex2i(0, constants::SCR_HEIGHT);
+		}
+		glEnd();
+
+		glDisable(GL_TEXTURE_2D);
 		SDL_GL_SwapWindow(window);
 		
+		if (int i = glGetError()) {
+			cout << "GL ERROR " << i << ": " <<  glewGetErrorString(i) << endl;
+		}
 
 		/*if (SDL_GetTicks() - startTime < graphics.frame_delay_ms) {
 			SDL_Delay(graphics.frame_delay_ms - (SDL_GetTicks() - startTime));
 		}*/
 	}
 
-	static void setup_projection() {
+	static void setup_gl() {
+		// Initializing glew
+		glewInit();
+		// Setup framebuffer for scaling
+		glGenFramebuffers(1, &screen_fbo);
+		glGenTextures(1, &screen_texture);
+
+		glBindTexture(GL_TEXTURE_2D, screen_texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, constants::SCR_WIDTH, constants::SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, screen_fbo);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screen_texture, 0);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Framebuffer creation faled");
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 		glShadeModel(GL_FLAT);
 		glClearColor(0, 0, 0, 0);
 		glMatrixMode(GL_PROJECTION);
@@ -175,6 +250,8 @@ namespace mgc {
 		gluOrtho2D(0, constants::SCR_WIDTH, constants::SCR_HEIGHT, 0);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+
+		glDisable(GL_CULL_FACE);
 
 		GLenum error = glGetError();
 		if (error) {
@@ -211,8 +288,8 @@ namespace mgc {
 		}
 		SDL_Log("SDL initialized successfully");
 
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
 		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
@@ -241,19 +318,17 @@ namespace mgc {
 		}
 
 		SDL_ShowCursor(false);
-		setup_projection();
+		setup_gl();
 
 		setup_ttf();
-
 		setup_graphics();
-
 		setup_timing();
 	}
 
 	void destroy_graphics() {
 		if (graphics.font_debug)
 			TTF_CloseFont(graphics.font_debug);
-		graphics.font_debug = NULL;
+		graphics.font_debug = nullptr;
 	}
 
 	void destroy_sdl() {

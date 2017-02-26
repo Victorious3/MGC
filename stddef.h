@@ -27,6 +27,7 @@ using std::exception;
 using std::runtime_error;
 
 using std::cout;
+using std::cerr;
 using std::cin;
 using std::endl;
 

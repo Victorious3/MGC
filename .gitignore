@@ -7,3 +7,5 @@ Release
 *.sdf
 *.opensdf
 *.vs/
+cmake-build-debug/
+.idea/

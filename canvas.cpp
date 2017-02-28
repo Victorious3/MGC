@@ -1,9 +1,7 @@
 #include "stddef.h"
 
 #include "canvas.h"
-
 #include "sprite.h"
-
 #include "mgc.h"
 
 SDL_Surface* mgc::Canvas::draw_text_surface(TTF_Font* font, string text) const {

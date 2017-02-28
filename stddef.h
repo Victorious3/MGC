@@ -1,4 +1,10 @@
 #pragma once
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#define WIN32
+#include <windows.h>
+#endif
+
 // Precompiled header, put all your
 // heavy library dependencies here
 
@@ -6,6 +12,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <functional>
+#include <exception>
 
 // Libraries
 extern "C" {
@@ -23,6 +31,7 @@ using std::string;
 using namespace std::literals::string_literals;
 
 using std::vector;
+using std::function;
 
 using std::exception;
 using std::runtime_error;
@@ -44,3 +53,13 @@ namespace constants {
 	const Uint FRAMERATE = 60;
 	const Uint TICKRATE = 30;
 }
+
+// Windows only
+
+#ifdef WIN32
+// Convert a wide Unicode string to an UTF8 string
+string utf8_encode(const std::wstring& wstr);
+
+// Convert an UTF8 string to a wide Unicode String
+std::wstring utf8_decode(const string& str);
+#endif

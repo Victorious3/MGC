@@ -8,20 +8,23 @@ set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 # includes cmake/FindSDL2.cmake
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-set(SDL2_PATH "lib" CACHE PATH "The location to search for SDL2")
-set(SDL2_TTF_PATH "lib" CACHE PATH "The location to search for SDL2_TTF")
-
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
 link_libraries(${SDL2_LIBRARY})
 #MESSAGE( WARNING "SDL2_INCLUDE_DIR:         " ${SDL2_INCLUDE_DIR} )
 #MESSAGE( WARNING "SDL2_LIBRARY:         " ${SDL2_LIBRARY} )
 
-find_package(SDL2TTF REQUIRED)
-include_directories(${SDL2TTF_INCLUDE_DIR})
-link_libraries(${SDL2TTF_LIBRARY})
-#MESSAGE( WARNING "SDL2TTF_INCLUDE_DIR:         " ${SDL2TTF_INCLUDE_DIR} )
-#MESSAGE( WARNING "SDL2TTF_LIBRARY:         " ${SDL2TTF_LIBRARY} )
+find_package(SDL2_ttf REQUIRED)
+include_directories(${SDL2_TTF_INCLUDE_DIR})
+link_libraries(${SDL2_TTF_LIBRARIES})
+#MESSAGE( WARNING "SDL2_TTF_INCLUDE_DIR:         " ${SDL2_TTF_INCLUDE_DIR} )
+#MESSAGE( WARNING "SDL2_TTF_LIBRARIES:         " ${SDL2_TTF_LIBRARIES} )
+
+find_package(SDL2_image REQUIRED)
+include_directories(${SDL2_IMAGE_INCLUDE_DIR})
+link_libraries(${SDL2_IMAGE_LIBRARIES})
+#MESSAGE( WARNING "SDL2_IMAGE_INCLUDE_DIR:         " ${SDL2_IMAGE_INCLUDE_DIR} )
+#MESSAGE( WARNING "SDL2_IMAGE_LIBRARIES:         " ${SDL2_IMAGE_LIBRARIES} )
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})

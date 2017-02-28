@@ -11,6 +11,7 @@
 extern "C" {
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_image.h>
 #define GLEW_STATIC
 #include <GL/glew.h>
 }

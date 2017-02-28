@@ -265,6 +265,13 @@ namespace mgc {
 		}
 	}
 
+	void setup_image() {
+		int imgFlags = IMG_INIT_PNG;
+		if (!(IMG_Init(imgFlags) & imgFlags)) {
+			throw runtime_error("Image_Init Error: could not initialize SDL_IMAGE. Error: "s + IMG_GetError() + "\n");
+		}
+	}
+
 	void setup_graphics() {
 		graphics.framerate_actual = constants::FRAMERATE;
 		graphics.frame_delay_ms = (Uint32)(1000.0f / constants::FRAMERATE);
@@ -321,6 +328,7 @@ namespace mgc {
 		setup_gl();
 
 		setup_ttf();
+		setup_image();
 		setup_graphics();
 		setup_timing();
 	}
@@ -329,6 +337,8 @@ namespace mgc {
 		if (graphics.font_debug)
 			TTF_CloseFont(graphics.font_debug);
 		graphics.font_debug = nullptr;
+
+		IMG_Quit();
 	}
 
 	void destroy_sdl() {

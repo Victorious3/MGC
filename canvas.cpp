@@ -2,11 +2,11 @@
 
 #include "canvas.h"
 
-SDL_Surface* mgc::Canvas::draw_text_surface(TTF_Font* font, string text) {
+SDL_Surface* mgc::Canvas::draw_text_surface(TTF_Font* font, string text) const {
 	return TTF_RenderUTF8_Blended(font, text.c_str(), SDL_Color {255, 255, 255, 255});
 }
 
-void mgc::Canvas::draw_surface(int x, int y, SDL_Surface* surface, SDL_Color color) {
+void mgc::Canvas::draw_surface(int x, int y, SDL_Surface* surface, SDL_Color color) const {
 	if (!surface) return;
 
 	GLuint texture = 0;
@@ -45,7 +45,7 @@ void mgc::Canvas::draw_surface(int x, int y, SDL_Surface* surface, SDL_Color col
 	glDeleteTextures(1, &texture);
 }
 
-void mgc::Canvas::draw_text(int x, int y, TTF_Font* font, SDL_Color color, string text) {
+void mgc::Canvas::draw_text(int x, int y, TTF_Font* font, SDL_Color color, string text) const {
 	SDL_Surface* text_surface = draw_text_surface(font, text);
 	draw_surface(x, y, text_surface, color);
 	SDL_FreeSurface(text_surface);

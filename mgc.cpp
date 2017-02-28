@@ -23,6 +23,8 @@ namespace mgc {
 	Uint screen_fbo = 0;
 	Uint screen_texture = 0;
 
+	Sprite test_sprite;
+
 	void run() {
 		while (running) {
 			while (SDL_TICKS_PASSED(SDL_GetTicks(), timing.tick_last + timing.tick_delay_ms)) {
@@ -148,6 +150,9 @@ namespace mgc {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
 		glColor3ub(255, 255, 255);
+
+		test_sprite.draw(&canvas, 10, 10);
+
 		glTranslatef(mouse.x, mouse.y, 0);
 		
 		glBegin(GL_QUADS);
@@ -279,7 +284,7 @@ namespace mgc {
 		string font_path = "Resources/fonts/OpenSans/OpenSans-Regular.ttf";
 		graphics.font_debug = TTF_OpenFont(font_path.c_str(), 16);
 		if (!graphics.font_debug) {
-			throw runtime_error("Graphics_Init Error: Could not load font \"" + font_path + "\". "s + TTF_GetError());
+			throw runtime_error("Graphics_Init Error: Could not load font \""s + font_path + "\". "s + TTF_GetError());
 		}
 	}
 
@@ -287,6 +292,10 @@ namespace mgc {
 		timing.tick_delay_ms = (1000 / constants::TICKRATE);
 		timing.tick_counter = 0;
 		timing.tick_last = SDL_GetTicks();
+	}
+
+	void setup_resources() {
+		test_sprite = Sprite("Resources/sprites/test.png");
 	}
 
 	void init_sdl() {
@@ -331,6 +340,8 @@ namespace mgc {
 		setup_image();
 		setup_graphics();
 		setup_timing();
+
+		setup_resources();
 	}
 
 	void destroy_graphics() {

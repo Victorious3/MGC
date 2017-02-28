@@ -2,6 +2,7 @@
 
 #include "stddef.h"
 #include "canvas.h"
+#include "sprite.h"
 
 namespace mgc {
 

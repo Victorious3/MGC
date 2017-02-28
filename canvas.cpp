@@ -53,7 +53,7 @@ void mgc::Canvas::draw_texture(int x, int y, int w, int h, GLuint texture, SDL_C
 void mgc::Canvas::draw_surface(int x, int y, SDL_Surface* surface, SDL_Color color) const {
 	if (!surface) return;
 
-	auto texture = create_texture(surface);
+	GLuint texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
@@ -68,7 +68,7 @@ void mgc::Canvas::draw_surface(int x, int y, SDL_Surface* surface, SDL_Color col
 }
 
 void mgc::Canvas::draw_text(int x, int y, TTF_Font* font, SDL_Color color, string text) const {
-	auto text_surface = draw_text_surface(font, text);
+	auto* text_surface = draw_text_surface(font, text);
 	draw_surface(x, y, text_surface, color);
 	SDL_FreeSurface(text_surface);
 }

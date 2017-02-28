@@ -2,6 +2,8 @@
 
 #include "stddef.h"
 
+#include "graphics.h"
+
 namespace mgc {
 	class Canvas;
 
@@ -12,11 +14,15 @@ namespace mgc {
 		~Sprite();
 
 		void load_image(string path);
-		void draw(const Canvas* canvas, int x, int y) const;
+		void draw(Canvas* canvas, int x, int y);
 		SDL_Surface* get_surface() const;
+		Texture get_texture(const Canvas* canvas);
 		
 	private:
 		string image_path;
 		SDL_Surface* image;
+		Texture texture;
+
+		void create_texture(const Canvas* canvas);
 	};
 }

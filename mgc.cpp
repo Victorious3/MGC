@@ -217,6 +217,7 @@ namespace mgc {
 		glEnd();
 
 		glDisable(GL_TEXTURE_2D);
+
 		SDL_GL_SwapWindow(window);
 		
 		if (int i = glGetError()) {

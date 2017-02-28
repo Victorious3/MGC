@@ -23,7 +23,7 @@ namespace mgc {
 	Uint screen_fbo = 0;
 	Uint screen_texture = 0;
 
-	Sprite test_sprite;
+	Sprite* test_sprite;
 
 	void run() {
 		while (running) {
@@ -151,7 +151,7 @@ namespace mgc {
 		glClearColor(0, 0, 0, 0);
 		glColor3ub(255, 255, 255);
 
-		test_sprite.draw(&canvas, 10, 10);
+		test_sprite->draw(&canvas, 10, 10);
 
 		glTranslatef(mouse.x, mouse.y, 0);
 		
@@ -296,7 +296,7 @@ namespace mgc {
 	}
 
 	void setup_resources() {
-		test_sprite = Sprite("Resources/sprites/test.png");
+		test_sprite = new Sprite("Resources/sprites/test.png");
 	}
 
 	void init_sdl() {
@@ -349,6 +349,8 @@ namespace mgc {
 		if (graphics.font_debug)
 			TTF_CloseFont(graphics.font_debug);
 		graphics.font_debug = nullptr;
+
+		delete test_sprite;
 
 		IMG_Quit();
 	}

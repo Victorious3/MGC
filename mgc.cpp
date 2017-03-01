@@ -23,8 +23,6 @@ namespace mgc {
 	Uint screen_fbo = 0;
 	Uint screen_texture = 0;
 
-	Sprite* test_sprite;
-
 	void run() {
 		while (running) {
 			while (SDL_TICKS_PASSED(SDL_GetTicks(), timing.tick_last + timing.tick_delay_ms)) {
@@ -151,7 +149,8 @@ namespace mgc {
 		glClearColor(0, 0, 0, 0);
 		glColor3ub(255, 255, 255);
 
-		test_sprite->draw(&canvas, 10, 10);
+		static Texture test("Resources/sprites/test.png");
+		test.draw(canvas, 10, 10);
 
 		glTranslatef(mouse.x, mouse.y, 0);
 		
@@ -187,10 +186,9 @@ namespace mgc {
 		}
 		glEnd();
 		
-		SDL_Color color = {255, 255, 255, 255};
 		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
 
-		canvas.draw_text(0, 0, graphics.font_debug, color, fps_string);
+		canvas.draw_text(0, 0, *graphics.font_debug, colors::WHITE, fps_string);
 		
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -295,10 +293,6 @@ namespace mgc {
 		timing.tick_last = SDL_GetTicks();
 	}
 
-	void setup_resources() {
-		test_sprite = new Sprite("Resources/sprites/test.png");
-	}
-
 	void init_sdl() {
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
 			throw runtime_error("SDL_Init Error: "s + SDL_GetError());
@@ -341,16 +335,13 @@ namespace mgc {
 		setup_image();
 		setup_graphics();
 		setup_timing();
-
-		setup_resources();
 	}
 
 	void destroy_graphics() {
 		if (graphics.font_debug)
 			TTF_CloseFont(graphics.font_debug);
 		graphics.font_debug = nullptr;
-
-		delete test_sprite;
+		texture_manager.destroy_all();
 
 		IMG_Quit();
 	}

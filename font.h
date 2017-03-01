@@ -1,6 +1,6 @@
 #pragma once
 #include "stddef.h"
-#include "sprite.h"
+#include "texture.h"
 
 namespace mgc {
 	class Font final {
@@ -9,7 +9,7 @@ namespace mgc {
 		
 	private:
 		// Sprite
-		const Sprite sprite;
+		Texture texture;
 
 		Uint64 map_width;
 		Uint64 map_height;

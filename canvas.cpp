@@ -4,17 +4,17 @@
 #include "sprite.h"
 #include "mgc.h"
 
-SDL_Surface* mgc::Canvas::draw_text_surface(TTF_Font* font, string text) const {
-	return TTF_RenderUTF8_Blended(font, text.c_str(), SDL_Color {255, 255, 255, 255});
+SDL_Surface* mgc::Canvas::draw_text_surface(TTF_Font& font, string text) const {
+	return TTF_RenderUTF8_Blended(&font, text.c_str(), SDL_Color {255, 255, 255, 255});
 }
 
-GLuint mgc::Canvas::create_texture(SDL_Surface* surface) const {
+GLuint mgc::Canvas::create_texture(SDL_Surface& surface) const {
 	GLuint texture;
 
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface.w, surface.h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, surface.pixels);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -48,26 +48,25 @@ void mgc::Canvas::draw_texture(int x, int y, int w, int h, GLuint texture, SDL_C
 	glDisable(GL_TEXTURE_2D);
 }
 
-void mgc::Canvas::draw_surface(int x, int y, SDL_Surface* surface, SDL_Color color) const {
-	if (!surface) return;
+void mgc::Canvas::draw_surface(int x, int y, SDL_Surface& surface, SDL_Color color) const {
 
 	GLuint texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface.w, surface.h, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, surface.pixels);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	draw_texture(x, y, surface->w, surface->h, texture, color);
+	draw_texture(x, y, surface.w, surface.h, texture, color);
 
 	glDeleteTextures(1, &texture);
 }
 
-void mgc::Canvas::draw_text(int x, int y, TTF_Font* font, SDL_Color color, string text) const {
+void mgc::Canvas::draw_text(int x, int y, TTF_Font& font, SDL_Color color, string text) const {
 	auto* text_surface = draw_text_surface(font, text);
-	draw_surface(x, y, text_surface, color);
+	draw_surface(x, y, *text_surface, color);
 	SDL_FreeSurface(text_surface);
 }
 

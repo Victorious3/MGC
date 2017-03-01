@@ -131,8 +131,8 @@ namespace mgc {
 
 		// Update the mouse position
 		SDL_GetMouseState(&mouse.x, &mouse.y);
-		mouse.x /= scale;
-		mouse.y /= scale;
+		mouse.x = (int)(std::floor(mouse.x / scale));
+		mouse.y = (int)(std::floor(mouse.y / scale));
 
 		if (SDL_GetTicks() - graphics.last_count_taken > 1000) {
 			graphics.last_count_taken = SDL_GetTicks();

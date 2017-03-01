@@ -7,7 +7,7 @@
 namespace mgc {
 	class Canvas;
 
-	class Sprite {
+	class Sprite final {
 	public:
 		Sprite();
 		Sprite(string path);

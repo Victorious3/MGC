@@ -6,10 +6,14 @@
 
 #include "graphics.h"
 
-mgc::Sprite::Sprite() : texture{0, 0, 0} {
+mgc::Sprite::Sprite() 
+	: texture{0, 0, 0} 
+{
 }
 
-mgc::Sprite::Sprite(string path) : texture{ 0, 0, 0 } {
+mgc::Sprite::Sprite(string path) 
+	: texture{ 0, 0, 0 } 
+{
 	load_image(path);
 }
 

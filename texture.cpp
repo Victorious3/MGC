@@ -27,19 +27,26 @@ namespace mgc {
 	
 	void TextureManager::load(Texture& texture) {
 		if (texture.gl_texture != 0) return;
+		//cout << "Generating texture from path \"" << texture.path << "\"" << endl;
 		glGenTextures(1, &texture.gl_texture);
 
-		SDL_Surface* surface = IMG_Load(texture.path.c_str());
-		texture.w = surface->w;
-		texture.h = surface->h;
+		if (SDL_Surface* raw = IMG_Load(texture.path.c_str())) {
+			if (SDL_Surface* surface = SDL_ConvertSurfaceFormat(raw, SDL_PIXELFORMAT_RGBA32, 0)) {
+				//cout << "FORMAT: " << SDL_GetPixelFormatName(surface->format->format) << endl;
 
-		glBindTexture(GL_TEXTURE_2D, texture.gl_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
-			GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+				texture.w = surface->w;
+				texture.h = surface->h;
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		SDL_FreeSurface(surface);
+				glBindTexture(GL_TEXTURE_2D, texture.gl_texture);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0,
+					GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				SDL_FreeSurface(surface);
+			}
+			SDL_FreeSurface(raw);
+		}
 	}
 
 	void TextureManager::destroy(Texture& texture) {
@@ -51,8 +58,8 @@ namespace mgc {
 		, path(path) 
 	{}
 
-	void Texture::draw(const Canvas& canvas, int x, int y) {
-		if (!is_loaded()) load();
-		canvas.draw_texture(x, y, w, h, gl_texture, colors::WHITE);
+	void Texture::draw(Canvas& canvas, int x, int y) {
+		load();
+		canvas.draw_gl_texture(gl_texture, x, y, w, h);
 	}
 }

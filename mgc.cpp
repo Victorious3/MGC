@@ -1,6 +1,7 @@
 #include "stddef.h"
 
 #include "mgc.h"
+#include "font.h"
 
 namespace mgc {
 
@@ -188,7 +189,8 @@ namespace mgc {
 		
 		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
 
-		canvas.draw_text(0, 0, *graphics.font_debug, colors::WHITE, fps_string);
+		static Font montserrat("Resources/fonts/Montserrat");
+		montserrat.draw_string(canvas, fps_string, 0, 0);
 		
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -279,12 +281,6 @@ namespace mgc {
 	void setup_graphics() {
 		graphics.framerate_actual = constants::FRAMERATE;
 		graphics.frame_delay_ms = (Uint32)(1000.0f / constants::FRAMERATE);
-
-		string font_path = "Resources/fonts/OpenSans/OpenSans-Regular.ttf";
-		graphics.font_debug = TTF_OpenFont(font_path.c_str(), 16);
-		if (!graphics.font_debug) {
-			throw runtime_error("Graphics_Init Error: Could not load font \""s + font_path + "\". "s + TTF_GetError());
-		}
 	}
 
 	void setup_timing() {
@@ -338,9 +334,6 @@ namespace mgc {
 	}
 
 	void destroy_graphics() {
-		if (graphics.font_debug)
-			TTF_CloseFont(graphics.font_debug);
-		graphics.font_debug = nullptr;
 		texture_manager.destroy_all();
 
 		IMG_Quit();

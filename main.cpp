@@ -1,6 +1,7 @@
 #include "stddef.h"
 
 #include "mgc.h"
+#include "font.h"
 
 int main(int argc, char* argv[])
 {

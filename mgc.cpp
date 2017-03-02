@@ -152,7 +152,7 @@ namespace mgc {
 		static Texture test("Resources/sprites/test.png");
 		test.draw(canvas, 10, 10);
 
-		glTranslatef(mouse.x, mouse.y, 0);
+		glTranslatef((GLfloat)mouse.x, (GLfloat)mouse.y, 0);
 		
 		glBegin(GL_QUADS);
 		{
@@ -177,7 +177,7 @@ namespace mgc {
 			glVertex2i(1, -4);
 		}
 		glEnd();
-		glTranslatef(-mouse.x, -mouse.y, 0);
+		glTranslatef((GLfloat)-mouse.x, (GLfloat)-mouse.y, 0);
 		
 		glBegin(GL_LINES); 
 		{

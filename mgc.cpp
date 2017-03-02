@@ -2,6 +2,8 @@
 
 #include "mgc.h"
 
+#include "keyboard.h"
+
 namespace mgc {
 
 	SDL_Window* window = nullptr;
@@ -9,7 +11,7 @@ namespace mgc {
 	Canvas canvas;
 
 	Mouse mouse;
-	Keyboard key;
+	Keyboard keyboard;
 	Graphics graphics;
 	Timing timing;
 
@@ -22,6 +24,8 @@ namespace mgc {
 
 	Uint screen_fbo = 0;
 	Uint screen_texture = 0;
+
+	Keyboard::Input_Action& key_fullscreen = keyboard.get_action(Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
 
 	void run() {
 		while (running) {
@@ -37,13 +41,12 @@ namespace mgc {
 	void sdl_event() {
 		SDL_Event event;
 
-		mouse.clicked = key.typed = key.down = mouse.moved = false;
+		mouse.clicked = mouse.moved = false;
 		mouse.wheel = mouse.xrel = mouse.yrel = 0;
 
 		while (SDL_PollEvent(&event)) {
 
 			bool mdown = mouse.down;
-			bool kstate = key.state;
 
 			switch (event.type) {
 			case SDL_QUIT:
@@ -63,7 +66,10 @@ namespace mgc {
 				mouse.wheel = event.wheel.y;
 				break;
 			case SDL_KEYDOWN:
-			case SDL_KEYUP: 
+			case SDL_KEYUP:
+				{
+				keyboard.process_sdl_event(event);
+				/*
 				key.state = event.key.state;
 				key.cur = event.key.keysym.sym;
 				key.down = key.state && !kstate;
@@ -72,30 +78,28 @@ namespace mgc {
 				case SDLK_UP: key.key_up = key.typed; break;
 				case SDLK_DOWN: key.key_down = key.typed; break;
 				case SDLK_LEFT: key.key_left = key.typed; break;
-				case SDLK_RIGHT: key.key_right = key.typed; break;
+				case SDLK_RIGHT: key.key_right = key.typed; break;*/
 				}
 				break;
 			case SDL_TEXTINPUT:
-				if (key.typed) {
+				/*if (key.typed) {
 					key.text += event.text.text; // Handle multiple keys being pressed at once for text input
 				} else {
 					key.text = event.text.text;
 				}
-				key.typed = true;
+				key.typed = true;*/
 				break;
 			}
 		}
 
 		// Update game here
 
-		if (key.down) {
-			if (key.cur == SDLK_F11) {
-				toggle_fullscreen();
-			}
+		if (key_fullscreen.pressed()) {
+			toggle_fullscreen();
 		}
 
-		if (key.typed)
-			cout << "Keystroke: " << key.cur << ", " << key.text << endl;
+		//if (key.typed)
+		//	cout << "Keystroke: " << key.cur << ", " << key.text << endl;
 		if (mouse.clicked)
 			cout << "Mouse clicked: " << mouse.x << ", " << mouse.y << endl;
 		if (mouse.wheel)
@@ -121,6 +125,7 @@ namespace mgc {
 
 	void update() {
 		// Handle sdl events
+		keyboard.update();
 		sdl_event();
 	}
 
@@ -293,6 +298,10 @@ namespace mgc {
 		timing.tick_last = SDL_GetTicks();
 	}
 
+	void setup_input() {
+		//key_fullscreen = keyboard.get_action(mgc::Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
+	}
+
 	void init_sdl() {
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
 			throw runtime_error("SDL_Init Error: "s + SDL_GetError());
@@ -335,6 +344,8 @@ namespace mgc {
 		setup_image();
 		setup_graphics();
 		setup_timing();
+
+		setup_input();
 	}
 
 	void destroy_graphics() {

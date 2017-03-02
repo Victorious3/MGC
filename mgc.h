@@ -28,20 +28,6 @@ namespace mgc {
 		bool moved;
 	};
 
-	struct Keyboard {
-		bool key_up;
-		bool key_down;
-		bool key_left;
-		bool key_right;
-
-		bool typed;
-		bool down;
-		bool state;
-
-		string text;
-		Sint32 cur;
-	};
-
 	struct Graphics {
 		TTF_Font *font_debug;
 

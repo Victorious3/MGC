@@ -5,6 +5,8 @@
 #include <map>
 using std::map;
 
+#include "ini_file.h"
+
 namespace mgc {
 
 	class Keyboard
@@ -15,7 +17,7 @@ namespace mgc {
 			bool _down;
 			bool _pressed;
 		public:
-			vector<SDL_Scancode> scancodes;
+			vector<Uint8> scancodes;
 
 			bool down() {
 				return _down;
@@ -37,6 +39,8 @@ namespace mgc {
 
 		Keyboard();
 		~Keyboard();
+
+		void read_config(Ini_File& ini);
 
 		void update();
 

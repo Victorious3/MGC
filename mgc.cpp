@@ -3,6 +3,7 @@
 #include "mgc.h"
 
 #include "keyboard.h"
+#include "ini_file.h"
 
 namespace mgc {
 
@@ -14,6 +15,7 @@ namespace mgc {
 	Keyboard keyboard;
 	Graphics graphics;
 	Timing timing;
+	Ini_File ini;
 
 	bool running = true;
 	bool fullscreen = false;
@@ -232,6 +234,10 @@ namespace mgc {
 		}*/
 	}
 
+	void setup_config() {
+		ini.load_file("mgc.ini");
+	}
+
 	static void setup_gl() {
 		// Initializing glew
 		glewInit();
@@ -299,6 +305,7 @@ namespace mgc {
 	}
 
 	void setup_input() {
+		keyboard.read_config(ini);
 		//key_fullscreen = keyboard.get_action(mgc::Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
 	}
 
@@ -339,6 +346,8 @@ namespace mgc {
 
 		SDL_ShowCursor(false);
 		setup_gl();
+
+		setup_config();
 
 		setup_ttf();
 		setup_image();

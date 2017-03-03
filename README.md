@@ -1,8 +1,41 @@
 # MGC
 
-To contribute place your .dll files at the project scope.
+## Conribute
+### Style guidelines
+* File structure
+    * Remember to #include "stddef.h" in all your files as first line, its the precompiled header, its best to do this after `#pragma once`
+    * Use `#pragma once` instead of include guards, every half decent compiler should support it
+    * Add very frequent includes to `stddef.h` with the appropriate `using` statements
+    * Yes: `using std::vector;` No: ~~`using namespace std;`~~
+    * You should include external libraries (angle brackets) before internal ones (quotes)
+    * Every compilation unit should have an associated header by the same name
+    * use the namespace `mgc` for classes directly dependent on the game and your own one for those that dont (This is somewhat vague and might have to be decided on a case by case basis)
+    
+* Memory and smart pointers
+    * Try to use references. EXCEPT for reassigning, there its better to use a pointer:
+    ```C++
+    void add_one(int& i) { i += 1 } // DONT
+    void add_one(int* i) { *i += 1 } // DO
+    
+    int i = 0;
+    add_one(i); // DONT
+    add_one(&i); // DO
+    ```
+    * Generally you should try to use sdl types and stack allocation first before touching the heap
+    * Make sure that memory is owned by exactly one source
+    * If you return a pointer **NEVER** expect the caller to delete it
+    * Do not use smart pointers just because you are too lazy to call delete once (And dont come me with exception safety, all important cleanup is done by the game after a crash, everything else is done by any half decent OS)
+    * Use them if the lifetime of an object cant possibly determined (although you should make sure to test all other options first), in those rare cases `shared_ptr` with its reference count has a valid use
 
-Remember to #include "stddef.h" in all your files as first line, its the precompiled header.
+* Naming conventions
+    * functions, identifiers and source files are `snake_case`
+    * Types are `CamelCase`
+    * Constants (outside of a function) are `ALL_CAPS`
+
+* Style
+    * Const correctness is encouraged (if a function can be const it should probably be const)
+    * `constexpr` > inline function > template magic > preprocessor macros (last resort)
+    * The only real use case for macros is the use of the stringify operator    
 
 ### msys2/mingw64 guide for using clion/cmake on windows
 1. get the msys2 installer from http://www.msys2.org/
@@ -15,6 +48,8 @@ Remember to #include "stddef.h" in all your files as first line, its the precomp
 4. Done
 
 ### Visual Studio Setup (Visual Studio Community 2015)
+Step by step:
+
 1. git clone the repository.
 2. File -> New -> Repository
 3. Click "Add" above the textbox in the now opened Team Explorer window.

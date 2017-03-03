@@ -22,8 +22,8 @@ namespace ini {
 		bool rename_section(IniSection* section, string new_name);
 
 		vector<string> get_section_names() const;
-		IniSection* get_section(string section_name);
-		const IniSection* get_section(string section_name) const;
+		IniSection* const get_section(string section_name);
+		const IniSection* const get_section(string section_name) const;
 
 		string get_key_value(string section_name, string key_name) const;
 		bool set_key_value(string section_name, string key_name, string key_value);

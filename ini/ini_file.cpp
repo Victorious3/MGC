@@ -150,7 +150,7 @@ namespace ini {
 		return rename_section(section->name, new_name);
 	}
 
-	const IniSection* IniFile::get_section(string section_name) const {
+	const IniSection* const IniFile::get_section(string section_name) const {
 		for (auto& iter : sections) {
 			if (iter.get_name() == section_name) {
 				return &iter;
@@ -160,7 +160,7 @@ namespace ini {
 		return nullptr;
 	}
 
-	IniSection* IniFile::get_section(string section_name) {
+	IniSection* const IniFile::get_section(string section_name) {
 		return const_cast<IniSection*> (
 				static_cast<const IniFile*>(this)->get_section(section_name)
 			);

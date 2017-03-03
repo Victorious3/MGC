@@ -5,7 +5,7 @@
 #include <map>
 using std::map;
 
-#include "ini_file.h"
+#include "ini/ini_file.h"
 
 namespace mgc {
 
@@ -40,7 +40,7 @@ namespace mgc {
 		Keyboard();
 		~Keyboard();
 
-		void read_config(Ini_File& ini);
+		void read_config(ini::Ini_File& ini);
 
 		void update();
 

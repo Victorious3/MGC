@@ -1,11 +1,11 @@
 #pragma once
 
-#include "stddef.h"
+#include "../stddef.h"
 
 #include <map>
 using std::map;
 
-namespace mgc {
+namespace ini {
 	class Ini_Section;
 
 	class Ini_File {
@@ -26,13 +26,14 @@ namespace mgc {
 		bool rename_section(string old_name, string new_name);
 		bool rename_section(Ini_Section* section, string new_name);
 
-		vector<string> get_section_names();
+		vector<string> get_section_names() const;
 		Ini_Section* get_section(string section_name);
+		const Ini_Section* get_section(string section_name) const;
 
-		string get_key_value(string section_name, string key_name);
+		string get_key_value(string section_name, string key_name) const;
 		bool set_key_value(string section_name, string key_name, string key_value);
 
-		string get_path();
+		string get_path() const;
 
 	private:
 		string path;

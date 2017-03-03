@@ -4,7 +4,7 @@
 #include "font.h"
 
 #include "keyboard.h"
-#include "ini_file.h"
+#include "ini/ini_file.h"
 
 namespace mgc {
 
@@ -16,7 +16,7 @@ namespace mgc {
 	Keyboard keyboard;
 	Graphics graphics;
 	Timing timing;
-	Ini_File ini;
+	::ini::Ini_File ini("mgc.ini");
 
 	bool running = true;
 	bool fullscreen = false;
@@ -147,10 +147,10 @@ namespace mgc {
 		}
 		Uint32 startTime = SDL_GetTicks();
 
-	    // Bind framebuffer for rendering
-		
+		// Bind framebuffer for rendering
+
 		glBindFramebuffer(GL_FRAMEBUFFER, screen_fbo);
-		
+
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -161,7 +161,7 @@ namespace mgc {
 		test.draw(canvas, 10, 10);
 
 		glTranslatef((GLfloat)mouse.x, (GLfloat)mouse.y, 0);
-		
+
 		glBegin(GL_QUADS);
 		{
 			glVertex2i(1, -1);
@@ -186,22 +186,22 @@ namespace mgc {
 		}
 		glEnd();
 		glTranslatef((GLfloat)-mouse.x, (GLfloat)-mouse.y, 0);
-		
-		glBegin(GL_LINES); 
+
+		glBegin(GL_LINES);
 		{
 			glVertex2i(0, 0);
 			glVertex2i(mouse.x, mouse.y);
 		}
 		glEnd();
-		
+
 		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
 
 		static Font montserrat("Resources/fonts/Montserrat");
 		montserrat.draw_string(canvas, fps_string, 0, 0);
-		
+
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		
+
 		int w, h;
 		SDL_GetWindowSize(window, &w, &h);
 		glViewport(0, 0, w, h);
@@ -226,18 +226,14 @@ namespace mgc {
 		glDisable(GL_TEXTURE_2D);
 
 		SDL_GL_SwapWindow(window);
-		
+
 		if (int i = glGetError()) {
-			cout << "GL ERROR " << i << ": " <<  glewGetErrorString(i) << endl;
+			cout << "GL ERROR " << i << ": " << glewGetErrorString(i) << endl;
 		}
 
 		/*if (SDL_GetTicks() - startTime < graphics.frame_delay_ms) {
 			SDL_Delay(graphics.frame_delay_ms - (SDL_GetTicks() - startTime));
 		}*/
-	}
-
-	void setup_config() {
-		ini.load_file("mgc.ini");
 	}
 
 	static void setup_gl() {
@@ -342,8 +338,6 @@ namespace mgc {
 
 		SDL_ShowCursor(false);
 		setup_gl();
-
-		setup_config();
 
 		setup_ttf();
 		setup_image();

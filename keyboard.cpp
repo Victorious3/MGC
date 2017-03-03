@@ -6,7 +6,7 @@ mgc::Keyboard::Keyboard() {
 mgc::Keyboard::~Keyboard() {
 }
 
-void mgc::Keyboard::read_config(Ini_File& ini) {
+void mgc::Keyboard::read_config(ini::Ini_File& ini) {
 	actionmap[TOGGLE_FULLSCREEN].scancodes.clear();
 
 	actionmap[TOGGLE_FULLSCREEN].scancodes.push_back((Uint8) stoi(ini.get_key_value("key bindings", "toggle_fullscreen")));

@@ -1,10 +1,8 @@
 #pragma once
 
-#include "stddef.h"
+#include "../stddef.h"
 
-//#include "ini_section.h"
-
-namespace mgc {
+namespace ini {
 	class Ini_Section;
 
 	class Ini_Key {

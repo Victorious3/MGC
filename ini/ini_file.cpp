@@ -1,6 +1,6 @@
 #include "ini_file.h"
 
-#include "string_funcs.h"
+#include "../string_funcs.h"
 
 #include "ini_section.h"
 
@@ -10,17 +10,17 @@
 #include <algorithm>
 using std::ifstream;
 
-mgc::Ini_File::Ini_File() {
+ini::Ini_File::Ini_File() {
 }
 
-mgc::Ini_File::Ini_File(string path) {
+ini::Ini_File::Ini_File(string path) {
 	load_file(path);
 }
 
-mgc::Ini_File::~Ini_File() {
+ini::Ini_File::~Ini_File() {
 }
 
-bool mgc::Ini_File::load_file(string path) {
+bool ini::Ini_File::load_file(string path) {
 	this->path = path;
 
 	ifstream file;
@@ -120,12 +120,12 @@ bool mgc::Ini_File::load_file(string path) {
 	return true;
 }
 
-mgc::Ini_Section* mgc::Ini_File::add_section(string section_name) {
+ini::Ini_Section* ini::Ini_File::add_section(string section_name) {
 	sections.push_back(Ini_Section(this, section_name));
 	return &sections.back();
 }
 
-bool mgc::Ini_File::rename_section(string old_name, string new_name) {
+bool ini::Ini_File::rename_section(string old_name, string new_name) {
 	if (get_section(new_name) != nullptr) {
 		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Ini-Error. Trying to rename section %s to already existing section %s in file %s", old_name, new_name, path);
 		return false;
@@ -142,7 +142,7 @@ bool mgc::Ini_File::rename_section(string old_name, string new_name) {
 	return false;
 }
 
-bool mgc::Ini_File::rename_section(Ini_Section* section, string new_name) {
+bool ini::Ini_File::rename_section(Ini_Section* section, string new_name) {
 	if (section->parent != this) {
 		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Ini-Error. Trying to rename section %s in file %s to %s, using file %s", section->name, new_name, section->parent->get_path(), path);
 			return false;
@@ -150,7 +150,7 @@ bool mgc::Ini_File::rename_section(Ini_Section* section, string new_name) {
 	return rename_section(section->name, new_name);
 }
 
-mgc::Ini_Section* mgc::Ini_File::get_section(string section_name) {
+ini::Ini_Section* ini::Ini_File::get_section(string section_name) {
 	for (auto& iter : sections) {
 		if (iter.get_name() == section_name) {
 			return &iter;
@@ -160,7 +160,17 @@ mgc::Ini_Section* mgc::Ini_File::get_section(string section_name) {
 	return nullptr;
 }
 
-bool mgc::Ini_File::remove_section(string section_name) {
+const ini::Ini_Section* ini::Ini_File::get_section(string section_name) const {
+	for (auto& iter : sections) {
+		if (iter.get_name() == section_name) {
+			return &iter;
+		}
+	}
+
+	return nullptr;
+}
+
+bool ini::Ini_File::remove_section(string section_name) {
 	for (auto& iter : sections) {
 		if (iter.get_name() == section_name) {
 			return remove_section(&iter);
@@ -171,7 +181,7 @@ bool mgc::Ini_File::remove_section(string section_name) {
 	return false;
 }
 
-bool mgc::Ini_File::remove_section(Ini_Section* section) {
+bool ini::Ini_File::remove_section(Ini_Section* section) {
 	if (section->parent != this) {
 		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Ini-Error. Trying to remove section %s in file %s, using file %s", section->name, section->parent->get_path(), path);
 		return false;
@@ -181,11 +191,11 @@ bool mgc::Ini_File::remove_section(Ini_Section* section) {
 	return true;
 }
 
-string mgc::Ini_File::get_path() {
+string ini::Ini_File::get_path() const {
 	return path;
 }
 
-vector<string> mgc::Ini_File::get_section_names() {
+vector<string> ini::Ini_File::get_section_names() const {
 	vector<string> section_names{};
 
 	for (auto& iter : sections) {
@@ -195,8 +205,8 @@ vector<string> mgc::Ini_File::get_section_names() {
 	return section_names;
 }
 
-string mgc::Ini_File::get_key_value(string section_name, string key_name) {
-	Ini_Section* section = get_section(section_name);
+string ini::Ini_File::get_key_value(string section_name, string key_name) const {
+	const Ini_Section* section = get_section(section_name);
 
 	if (section == nullptr) {
 		SDL_LogError(SDL_LOG_CATEGORY_SYSTEM, "Ini-Error. Trying to get key %s from non-existant section %s in file %s", key_name, section_name, path);
@@ -206,7 +216,7 @@ string mgc::Ini_File::get_key_value(string section_name, string key_name) {
 	return section->get_key_value(key_name);
 }
 
-bool mgc::Ini_File::set_key_value(string section_name, string key_name, string key_value) {
+bool ini::Ini_File::set_key_value(string section_name, string key_name, string key_value) {
 	Ini_Section* section = get_section(section_name);
 
 	if (section == nullptr) {

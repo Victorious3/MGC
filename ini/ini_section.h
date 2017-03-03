@@ -1,8 +1,8 @@
 #pragma once
 
-#include "stddef.h"
+#include "../stddef.h"
 
-namespace mgc {
+namespace ini {
 	class Ini_File;
 	class Ini_Key;
 
@@ -29,7 +29,8 @@ namespace mgc {
 		bool rename_key(string old_name, string new_name);
 
 		Ini_Key* get_key(string key_name);
-		string get_key_value(string key_name);
+		const Ini_Key* get_key(string key_name) const;
+		string get_key_value(string key_name) const;
 		bool set_key_value(string key_name, string key_value);
 
 		string get_name() const;

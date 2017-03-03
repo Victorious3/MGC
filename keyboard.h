@@ -5,7 +5,7 @@
 #include <map>
 using std::map;
 
-#include "ini/ini.h"
+#include "ini.h"
 
 namespace mgc {
 

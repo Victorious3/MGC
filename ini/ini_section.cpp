@@ -1,4 +1,5 @@
-#include "ini.h"
+#include "stddef.h"
+#include "ini_section.h"
 
 namespace ini {
 	bool IniSection::rename(string new_name) {
@@ -58,7 +59,7 @@ namespace ini {
 	}
 
 	const IniKey* IniSection::get_key(string key_name) const {
-		for (auto& const iter : keys) {
+		for (auto& iter : keys) {
 			if (iter.get_name() == key_name) {
 				return &iter;
 			}

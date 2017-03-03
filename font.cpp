@@ -26,7 +26,7 @@ namespace mgc {
 		read_Uint64(&cell_height, data);
 		
 		data.read(&start_char, 1);
-		data.read((char*) char_sizes, 256);
+		data.read(reinterpret_cast<char*>(char_sizes), 256);
  	}
 
 	Uint Font::char_width(char c) {

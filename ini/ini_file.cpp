@@ -1,9 +1,12 @@
-#include "ini.h"
+#include "stddef.h"
 
-#include "../string_funcs.h"
-
-#include <fstream>
 #include <algorithm>
+
+#include "../filesystem.h"
+#include "ini_file.h"
+#include "ini_section.h"
+#include "ini_key.h"
+
 using std::ifstream;
 
 namespace ini {

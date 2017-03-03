@@ -9,3 +9,4 @@ Release
 *.vs/
 cmake-build-debug/
 .idea/
+ipch/

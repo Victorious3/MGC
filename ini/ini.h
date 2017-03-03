@@ -65,8 +65,8 @@ namespace ini {
 		bool rename_key(IniKey* key, string new_name);
 		bool rename_key(string old_name, string new_name);
 
-		IniKey* get_key(string key_name);
 		const IniKey* get_key(string key_name) const;
+		IniKey* get_key(string key_name);
 		string get_key_value(string key_name) const;
 		bool set_key_value(string key_name, string key_value);
 

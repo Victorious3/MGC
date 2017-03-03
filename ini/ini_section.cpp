@@ -57,18 +57,8 @@ namespace ini {
 		return false;
 	}
 
-	IniKey* IniSection::get_key(string key_name) {
-		for (auto& iter : keys) {
-			if (iter.get_name() == key_name) {
-				return &iter;
-			}
-		}
-
-		return nullptr;
-	}
-
 	const IniKey* IniSection::get_key(string key_name) const {
-		for (auto& iter : keys) {
+		for (auto& const iter : keys) {
 			if (iter.get_name() == key_name) {
 				return &iter;
 			}
@@ -77,7 +67,13 @@ namespace ini {
 		return nullptr;
 	}
 
-	string IniSection::get_key_value(string key_name) const {
+	IniKey* IniSection::get_key(string key_name) {
+		return const_cast<IniKey*>(
+				static_cast<const IniSection*>(this)->get_key(key_name)
+			);
+	}
+
+	string IniSection::get_key_value(string key_name) const {	
 		const IniKey* const key = get_key(key_name);
 
 		if (key == nullptr) {

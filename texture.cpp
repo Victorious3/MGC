@@ -58,7 +58,7 @@ namespace mgc {
 		, path(path) 
 	{}
 
-	void Texture::draw(Canvas& canvas, int x, int y) {
+	void Texture::draw(const Canvas& canvas, int x, int y) {
 		load();
 		canvas.draw_gl_texture(gl_texture, x, y, w, h);
 	}

@@ -8,9 +8,9 @@ namespace mgc {
 	public:
 		Font(string file);
 
-		Uint char_width(char c);
-		Uint draw_char(Canvas& canvas, char c, int x, int y, Color color = colors::WHITE);
-		Uint draw_string(Canvas& canvas, string s, int x, int y, Color color = colors::WHITE);
+		Uint char_width(char c) const;
+		Uint draw_char(const Canvas& canvas, char c, int x, int y, Color color = colors::WHITE);
+		Uint draw_string(const Canvas& canvas, string s, int x, int y, Color color = colors::WHITE);
 		
 	private:
 		// Sprite
@@ -25,6 +25,6 @@ namespace mgc {
 
 		Uint8 char_sizes[256];
 
-		Uint draw_char_internal(Canvas& canvas, char c, int x, int y, Color color);
+		Uint draw_char_internal(const Canvas& canvas, char c, int x, int y, Color color) const;
 	};
 }

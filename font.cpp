@@ -29,11 +29,11 @@ namespace mgc {
 		data.read(reinterpret_cast<char*>(char_sizes), 256);
  	}
 
-	Uint Font::char_width(char c) {
+	Uint Font::char_width(char c) const {
 		return char_sizes[c];
 	}
 
-	Uint Font::draw_char_internal(Canvas& canvas, char c, int x, int y, Color color) {
+	Uint Font::draw_char_internal(const Canvas& canvas, char c, int x, int y, Color color) const {
 		Uint w = char_width(c);
 
 		Uint32 t = cell_width * (c - start_char);
@@ -55,7 +55,7 @@ namespace mgc {
 		return w;
 	}
 
-	Uint Font::draw_char(Canvas& canvas, char c, int x, int y, Color color) {
+	Uint Font::draw_char(const Canvas& canvas, char c, int x, int y, Color color) {
 		Uint w;
 
 		texture.load();
@@ -69,7 +69,7 @@ namespace mgc {
 		return w;
 	}
 
-	Uint Font::draw_string(Canvas& canvas, string s, int x, int y, Color color) {
+	Uint Font::draw_string(const Canvas& canvas, string s, int x, int y, Color color) {
 		Uint w = 0;
 		texture.load();
 		canvas.enable_gl_texture();

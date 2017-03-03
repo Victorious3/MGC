@@ -30,7 +30,7 @@
 * Naming conventions
     * functions, identifiers and source files are `snake_case`
     * Types are `CamelCase`
-    * Conatants (outside of a function) are `ALL_CAPS`
+    * Constants (outside of a function) are `ALL_CAPS`
 
 * Style
     * Const correctness is encouraged (if a function can be const it should probably be const)

@@ -1,8 +1,4 @@
-#include "ini_section.h"
-
-#include "ini_file.h"
-
-#include "ini_key.h"
+#include "ini.h"
 
 namespace ini {
 	bool IniSection::rename(string new_name) {

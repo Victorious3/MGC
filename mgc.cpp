@@ -4,7 +4,7 @@
 #include "font.h"
 
 #include "keyboard.h"
-#include "ini/ini_file.h"
+#include "ini/ini.h"
 
 namespace mgc {
 

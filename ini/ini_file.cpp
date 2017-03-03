@@ -1,10 +1,6 @@
-#include "ini_file.h"
+#include "ini.h"
 
 #include "../string_funcs.h"
-
-#include "ini_section.h"
-
-#include "ini_key.h"
 
 #include <fstream>
 #include <algorithm>

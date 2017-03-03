@@ -1,6 +1,4 @@
-#include "ini_key.h"
-
-#include "ini_section.h"
+#include "ini.h"
 
 namespace ini {
 	string IniKey::get_value() const {

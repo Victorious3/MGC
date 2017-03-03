@@ -29,11 +29,11 @@ namespace mgc {
 	public:
 		Texture(string path, TextureManager& mgr = texture_manager);
 
-		inline void load() { mgr.load(*this); }
+		inline void load() { if (!is_loaded()) mgr.load(*this); }
 		inline void destroy() { mgr.destroy(*this); }
 		inline bool is_loaded() { return gl_texture != 0; }
 
-		virtual void draw(const Canvas& canvas, int x, int y);
+		virtual void draw(Canvas& canvas, int x, int y);
 		
 	public:
 		// Width and height aren't populated until the texture is loaded

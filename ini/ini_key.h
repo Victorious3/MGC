@@ -3,16 +3,16 @@
 #include "../stddef.h"
 
 namespace ini {
-	class Ini_Section;
+	class IniSection;
 
-	class Ini_Key {
-		friend Ini_Section;
+	class IniKey {
+		friend IniSection;
 
 	private:
-		Ini_Key(Ini_Section* parent, string key_name) : parent(parent), name(key_name) {}
-		Ini_Key(Ini_Section* parent, string key_name, string key_value) : parent(parent), name(key_name), value(key_value) {}
+		IniKey(IniSection* parent, string key_name) : parent(parent), name(key_name) {}
+		IniKey(IniSection* parent, string key_name, string key_value) : parent(parent), name(key_name), value(key_value) {}
 
-		Ini_Section* parent;
+		IniSection* parent;
 
 		string value;
 		string name;
@@ -26,8 +26,8 @@ namespace ini {
 
 		string get_name() const;
 
-		Ini_Section* get_parent() const;
+		IniSection* get_parent() const;
 	};
 
-	bool operator==(const Ini_Key& k1, const Ini_Key& k2);
+	bool operator==(const IniKey& k1, const IniKey& k2);
 }

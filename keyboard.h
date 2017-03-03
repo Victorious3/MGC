@@ -40,7 +40,9 @@ namespace mgc {
 		Keyboard();
 		~Keyboard();
 
-		void read_config(ini::Ini_File& ini);
+		Keyboard(ini::IniFile& ini);
+
+		void read_config(ini::IniFile& ini);
 
 		void update();
 

@@ -3,42 +3,42 @@
 #include "../stddef.h"
 
 namespace ini {
-	class Ini_File;
-	class Ini_Key;
+	class IniFile;
+	class IniKey;
 
-	class Ini_Section {
-		friend Ini_File;
+	class IniSection {
+		friend IniFile;
 
 	private:
-		Ini_Section(Ini_File* parent, string section_name) : parent(parent), name(section_name) {};
+		IniSection(IniFile* parent, string section_name) : parent(parent), name(section_name) {};
 
-		Ini_File* parent;
+		IniFile* parent;
 		string name;
 
-		list<Ini_Key> keys;
+		list<IniKey> keys;
 
 	public:
 		bool rename(string new_name);
 
-		Ini_Key* add_key(string key_name);
+		IniKey* add_key(string key_name);
 
-		bool remove_key(Ini_Key* key);
+		bool remove_key(IniKey* key);
 		bool remove_key(string key_name);
 
-		bool rename_key(Ini_Key* key, string new_name);
+		bool rename_key(IniKey* key, string new_name);
 		bool rename_key(string old_name, string new_name);
 
-		Ini_Key* get_key(string key_name);
-		const Ini_Key* get_key(string key_name) const;
+		IniKey* get_key(string key_name);
+		const IniKey* get_key(string key_name) const;
 		string get_key_value(string key_name) const;
 		bool set_key_value(string key_name, string key_value);
 
 		string get_name() const;
 
-		Ini_File* get_parent() const;
+		IniFile* get_parent() const;
 
 		
 	};
 
-	bool operator==(const Ini_Section& s1, const Ini_Section& s2);
+	bool operator==(const IniSection& s1, const IniSection& s2);
 }

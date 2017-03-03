@@ -13,10 +13,10 @@ namespace mgc {
 	Canvas canvas;
 
 	Mouse mouse;
-	Keyboard keyboard;
 	Graphics graphics;
 	Timing timing;
-	::ini::Ini_File ini("mgc.ini");
+	::ini::IniFile ini("mgc.ini");
+	Keyboard keyboard(ini);
 
 	bool running = true;
 	bool fullscreen = false;
@@ -297,7 +297,7 @@ namespace mgc {
 	}
 
 	void setup_input() {
-		keyboard.read_config(ini);
+		//keyboard.read_config(ini);
 		//key_fullscreen = keyboard.get_action(mgc::Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
 	}
 

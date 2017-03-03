@@ -6,29 +6,29 @@
 using std::map;
 
 namespace ini {
-	class Ini_Section;
+	class IniSection;
 
-	class Ini_File {
+	class IniFile {
 	public:
-		Ini_File();
-		~Ini_File();
+		IniFile();
+		~IniFile();
 
-		Ini_File(string path);
+		IniFile(string path);
 
 		bool load_file(string path);
 		bool save_file();
 		bool save_file(string path);
 
-		Ini_Section* add_section(string section_name);
+		IniSection* add_section(string section_name);
 		bool remove_section(string section_name);
-		bool remove_section(Ini_Section* section);
+		bool remove_section(IniSection* section);
 
 		bool rename_section(string old_name, string new_name);
-		bool rename_section(Ini_Section* section, string new_name);
+		bool rename_section(IniSection* section, string new_name);
 
 		vector<string> get_section_names() const;
-		Ini_Section* get_section(string section_name);
-		const Ini_Section* get_section(string section_name) const;
+		IniSection* get_section(string section_name);
+		const IniSection* get_section(string section_name) const;
 
 		string get_key_value(string section_name, string key_name) const;
 		bool set_key_value(string section_name, string key_name, string key_value);
@@ -38,6 +38,6 @@ namespace ini {
 	private:
 		string path;
 
-		list<Ini_Section> sections;
+		list<IniSection> sections;
 	};
 }

@@ -15,7 +15,7 @@ namespace mgc {
 	Mouse mouse;
 	Graphics graphics;
 	Timing timing;
-	::ini::IniFile ini("mgc.ini");
+	ini::IniFile ini("mgc.ini");
 	Keyboard keyboard(ini);
 
 	bool running = true;

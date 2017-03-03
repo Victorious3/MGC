@@ -6,7 +6,7 @@
     * Remember to #include "stddef.h" in all your files as first line, its the precompiled header, its best to do this after `#pragma once`
     * Use `#pragma once` instead of include guards, every half decent compiler should support it
     * Add very frequent includes to `stddef.h` with the appropriate `using` statements
-    * Yes: `using std::vector;` No: ~~`using namespace std`~~
+    * Yes: `using std::vector;` No: ~~`using namespace std;`~~
     * You should include external libraries (angle brackets) before internal ones (quotes)
     * Every compilation unit should have an associated header by the same name
     * use the namespace `mgc` for classes directly dependent on the game and your own one for those that dont (This is somewhat vague and might have to be decided on a case by case basis)
@@ -24,7 +24,7 @@
     * Generally you should try to use sdl types and stack allocation first before touching the heap
     * Make sure that memory is owned by exactly one source
     * If you return a pointer **NEVER** expect the caller to delete it
-    * Do not use smart pointers just because you are too lazy to call delete once (And dont come me with exception safety, all important cleanup is done by the game after a crash, everything else is done by any half decend OS)
+    * Do not use smart pointers just because you are too lazy to call delete once (And dont come me with exception safety, all important cleanup is done by the game after a crash, everything else is done by any half decent OS)
     * Use them if the lifetime of an object cant possibly determined (although you should make sure to test all other options first), in those rare cases `shared_ptr` with its reference count has a valid use
 
 * Naming conventions

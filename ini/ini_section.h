@@ -31,6 +31,20 @@ namespace ini {
 		string get_key_value(string key_name) const;
 		bool set_key_value(string key_name, string key_value);
 
+		template<typename T>
+		T get(string key_name, T default);
+
+		template<typename R>
+		R read_all() {
+			static_assert(std::is_base_of<IniRecord, R>::value, "Record must derive from IniRecord");
+
+			char record[sizeof(R)];
+			((R*)record)->section = this;
+			new (record) R;
+
+			return *((R*)record);
+		}
+
 		string get_name() const;
 
 		IniFile* get_parent() const;

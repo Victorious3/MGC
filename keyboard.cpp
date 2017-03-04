@@ -14,7 +14,7 @@ mgc::Keyboard::~Keyboard() {
 void mgc::Keyboard::read_config(ini::IniFile& ini) {
 	actionmap[TOGGLE_FULLSCREEN].scancodes.clear();
 
-	actionmap[TOGGLE_FULLSCREEN].scancodes.push_back((Uint8) stoi(ini.get_key_value("key bindings", "toggle_fullscreen")));
+	actionmap[TOGGLE_FULLSCREEN].scancodes.push_back((Uint8) std::stoi(ini.get_key_value("key bindings", "toggle_fullscreen")));
 }
 
 void mgc::Keyboard::process_sdl_event(SDL_Event& event) {

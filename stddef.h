@@ -9,11 +9,8 @@
 // heavy library dependencies here
 
 // stdlib
-#include <string>
-#include <vector>
 #include <iostream>
-#include <functional>
-#include <exception>
+
 
 // Libraries
 extern "C" {
@@ -43,6 +40,10 @@ using std::cin;
 using std::endl;
 
 typedef unsigned int Uint;
+typedef int64_t int64;
+typedef int32_t int32;
+typedef int16_t int16;
+typedef int8_t int8;
 
 namespace constants {
 	const string APP_NAME = "Magical Girl City";

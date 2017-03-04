@@ -1,8 +1,10 @@
 #pragma once
 #include "../stddef.h"
+#include "ini_record.h"
 
 namespace ini {
 	class IniSection;
+
 	class IniFile {
 	public:
 		IniFile();
@@ -29,6 +31,11 @@ namespace ini {
 		bool set_key_value(string section_name, string key_name, string key_value);
 
 		string get_path() const;
+
+		template<typename R>
+		R read_all(const string& section) {
+			return get_section(section)->read_all<R>();
+		}
 
 	private:
 		string path;

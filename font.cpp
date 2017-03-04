@@ -29,7 +29,7 @@ namespace mgc {
 		data.read(reinterpret_cast<char*>(char_sizes), 256);
  	}
 
-	Uint Font::char_width(char c) const {
+	Uint Font::char_width(const char& c) const {
 		return char_sizes[c];
 	}
 

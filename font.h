@@ -8,7 +8,7 @@ namespace mgc {
 	public:
 		Font(string file);
 
-		Uint char_width(char c) const;
+		Uint char_width(const char& c) const;
 		Uint draw_char(const Canvas& canvas, char c, int x, int y, Color color = colors::WHITE);
 		Uint draw_string(const Canvas& canvas, string s, int x, int y, Color color = colors::WHITE);
 		

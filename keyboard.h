@@ -19,11 +19,11 @@ namespace mgc {
 		public:
 			vector<Uint8> scancodes;
 
-			bool down() {
+			bool down() const {
 				return _down;
 			}
 
-			bool pressed() {
+			bool pressed() const {
 				return _pressed;
 			}
 
@@ -33,22 +33,22 @@ namespace mgc {
 			}
 		};
 
-		enum ACTIONS {
+		enum class ACTIONS {
 			TOGGLE_FULLSCREEN
 		};
 
 		Keyboard();
 		~Keyboard();
 
-		Keyboard(ini::IniFile& ini);
+		Keyboard(const ini::IniFile& ini);
 
-		void read_config(ini::IniFile& ini);
+		void read_config(const ini::IniFile& ini);
 
 		void update();
 
 		void process_sdl_event(SDL_Event& key_event);
 
-		Input_Action& get_action(ACTIONS action);
+		const Input_Action& get_action(const ACTIONS& action) const;
 
 	private:
 		map<ACTIONS, Input_Action> actionmap;

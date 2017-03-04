@@ -28,7 +28,7 @@ namespace mgc {
 	Uint screen_fbo = 0;
 	Uint screen_texture = 0;
 
-	Keyboard::Input_Action& key_fullscreen = keyboard.get_action(Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
+	const Keyboard::Input_Action& key_fullscreen = keyboard.get_action(Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
 
 	void run() {
 		while (running) {

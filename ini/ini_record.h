@@ -7,11 +7,10 @@ namespace ini {
 	class IniFile;
 	class IniSection;
 
-	class IniRecord
-	{
+	class IniRecord {
 		friend IniSection;
-
 	protected:
+		IniRecord();
 		thread_local static IniSection* section;
 	};
 }

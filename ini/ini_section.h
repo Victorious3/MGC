@@ -2,6 +2,7 @@
 #include "../stddef.h"
 #include "ini_file.h"
 #include "ini_key.h"
+#include "ini_record.h"
 
 namespace ini {
 	class IniSection {
@@ -37,8 +38,10 @@ namespace ini {
 		template<typename R>
 		R read_all() {
 			static_assert(std::is_base_of<IniRecord, R>::value, "Record must derive from IniRecord");
-			R.section = this;
-			return R();
+			IniRecord::section = this;
+			R r;
+			IniRecord::section = nullptr; // Don't keep the reference valid, would yield surprising behavior when used wrong
+			return r;
 		}
 
 		string get_name() const;

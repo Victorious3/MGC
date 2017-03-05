@@ -302,6 +302,42 @@ namespace mgc {
 	}
 
 	void init_sdl() {
+		static const string category_names[]{
+			"Application",
+			"Error",
+			"Assert",
+			"System",
+			"Audio",
+			"Video",
+			"Render",
+			"Input",
+			"Test"
+		};
+
+		static const string priority_names[]{
+			"???",
+			"VERBOSE",
+			"DEBUG",
+			"INFO",
+			"WARN",
+			"ERROR",
+			"CRITICAL"
+		};
+
+		SDL_LogSetOutputFunction([](void* userdata, int category, SDL_LogPriority priority, const char* message) {
+			string category_name = category < 0 || category >= std::extent<decltype(category_names)>::value ? "???" : category_names[category];
+			string priority_name = priority < 0 || priority >= std::extent<decltype(priority_names)>::value ? "CRITICAL" : priority_names[priority];
+
+			if (priority >= SDL_LOG_PRIORITY_ERROR)
+				cerr << priority_name << " [" << category_name << "]: " << message << endl;
+			else
+				cout << priority_name << " [" << category_name << "]: " << message << endl;
+
+		}, nullptr);
+
+		SDL_LogSetAllPriority(static_cast<SDL_LogPriority>(0)); // I have to cast here to get all messages
+
+
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
 			throw runtime_error("SDL_Init Error: "s + SDL_GetError());
 		}

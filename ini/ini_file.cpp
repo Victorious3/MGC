@@ -22,7 +22,6 @@ namespace ini {
 
 	bool IniFile::load_file(string path) {
 		this->path = path;
-		cout << path << endl;
 		ifstream file(path);
 
 		if (!file) {

@@ -1,10 +1,6 @@
 #pragma once
 
 #include "stddef.h"
-
-#include <map>
-using std::map;
-
 #include "ini.h"
 
 namespace mgc {

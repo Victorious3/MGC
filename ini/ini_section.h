@@ -37,12 +37,8 @@ namespace ini {
 		template<typename R>
 		R read_all() {
 			static_assert(std::is_base_of<IniRecord, R>::value, "Record must derive from IniRecord");
-
-			char record[sizeof(R)];
-			((R*)record)->section = this;
-			new (record) R;
-
-			return *((R*)record);
+			R.section = this;
+			return R();
 		}
 
 		string get_name() const;

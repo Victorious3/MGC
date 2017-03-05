@@ -10,6 +10,7 @@
 
 // stdlib
 #include <iostream>
+#include <map>
 
 
 // Libraries
@@ -30,6 +31,7 @@ using namespace std::literals::string_literals;
 using std::vector;
 using std::list;
 using std::function;
+using std::map;
 
 using std::exception;
 using std::runtime_error;

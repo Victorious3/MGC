@@ -9,7 +9,9 @@ namespace ini {
 
 	class IniRecord
 	{
-	public:
-		IniSection* section;
+		friend IniSection;
+
+	protected:
+		thread_local static IniSection* section;
 	};
 }

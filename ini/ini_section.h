@@ -1,10 +1,14 @@
 #pragma once
+
 #include "../stddef.h"
 #include "ini_file.h"
 #include "ini_key.h"
-#include "ini_record.h"
+
+#define ini_key($x, $def) $x = ini::current_section->get<decltype($x)>(#$x, ($def))
 
 namespace ini {
+	extern thread_local IniSection* current_section;
+
 	class IniSection {
 		friend IniFile;
 
@@ -37,10 +41,9 @@ namespace ini {
 
 		template<typename R>
 		R read_all() {
-			static_assert(std::is_base_of<IniRecord, R>::value, "Record must derive from IniRecord");
-			IniRecord::section = this;
+			current_section = this;
 			R r;
-			IniRecord::section = nullptr; // Don't keep the reference valid, would yield surprising behavior when used wrong
+			current_section = nullptr; // Don't keep the reference valid, would yield surprising behavior when used wrong
 			return r;
 		}
 

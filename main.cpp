@@ -11,7 +11,6 @@ int main(int argc, char* argv[])
 		mgc::init_lua();
 
 		mgc::run();
-		goto finalize;
 	}
 	catch (exception& e) {
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "An exception occured: %s", e.what());
@@ -23,7 +22,6 @@ int main(int argc, char* argv[])
 		cin.ignore();
 	}
 
-finalize:
 	SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Shutting down!");
 
 	mgc::destroy_sdl();

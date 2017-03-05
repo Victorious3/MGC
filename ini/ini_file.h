@@ -1,6 +1,5 @@
 #pragma once
 #include "../stddef.h"
-#include "ini_record.h"
 
 namespace ini {
 	class IniSection;

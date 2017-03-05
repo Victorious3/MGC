@@ -4,6 +4,8 @@
 #include <sstream>
 
 namespace ini {
+	thread_local IniSection* current_section;
+
 	bool IniSection::rename(string new_name) {
 		return parent->rename_section(name, new_name);
 	}

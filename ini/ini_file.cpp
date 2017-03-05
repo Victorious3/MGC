@@ -14,7 +14,8 @@ namespace ini {
 	}
 
 	IniFile::IniFile(string path) {
-		load_file(path);
+		if (!load_file(path))
+			throw runtime_error("Could not open ini file");
 	}
 
 	IniFile::~IniFile() {
@@ -25,60 +26,72 @@ namespace ini {
 		ifstream file(path);
 
 		if (!file) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Could not open ini file %s", path.c_str());
+			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Could not open ini file %s", path.c_str());
 			return false;
 		}
 
-		int mode = 0;
+		enum ParseState {
+			NEW_LINE,
+			COMMENT,
+			CATEGORY,
+			VALUE
+		} mode = NEW_LINE;
+
 		IniSection* current_cat = nullptr;
 		char c;
 		string buffer = "";
 		IniKey* current_key = nullptr;
 		int line_number = 0;
 
+		auto line_end = [&]() -> bool {
+			if (mode == CATEGORY) {
+				SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Malformed ini file %s, new line while reading section header name. Line: %u", path, line_number);
+				file.close();
+				return false;
+			}
+			else if (mode == VALUE) {
+				current_key->set_value(string_tolower(buffer));
+				current_key = nullptr;
+			}
+			return true;
+		};
+
 		while (file.get(c)) {
 			if (c == '\r' || c == '\n') {
 				if (c == '\r' && file.peek() == '\n') {
 					file.get(c);
 				}
-				if (mode == 2) {
-					SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Malformed ini file %s, new line while reading section header name. Line: %u", path, line_number);
-					file.close();
-					return false;
-				}
-				else if (mode == 3) {
-					current_key->set_value(string_tolower(buffer));
-					current_key = nullptr;
-				}
+				if (!line_end()) return false;
+
 				buffer = "";
 				line_number++;
-				mode = 0;
+				mode = NEW_LINE;
 				continue;
 			}
 
-			if (mode == 0) {
+			if (mode == NEW_LINE) {
 				// Reading new line
 				switch (c) {
 				case ';':
-					mode = 1;
+					mode = COMMENT;
 					break;
 				case ' ':
 					buffer += c;
 					break;
 				case '[':
 					buffer = "";
-					mode = 2;
+					mode = CATEGORY;
 					continue;
 					break;
 				case '=':
 					if (current_cat == nullptr) {
-						SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Malformed ini file %s, key definition without category. Line: %u", path, line_number);
+						SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Malformed ini file %s, key definition without category. Line: %u", path, line_number);
 						file.close();
 						return false;
 					}
 					current_key = current_cat->add_key(string_tolower(buffer));
 					buffer = "";
-					mode = 3;
+					mode = VALUE;
 					continue;
 					break;
 				default:
@@ -87,33 +100,34 @@ namespace ini {
 				}
 			}
 
-			if (mode == 1) {
+			if (mode == COMMENT) {
 				// Comment line, ignore all
 				continue;
 			}
-			else if (mode == 2) {
+			else if (mode == CATEGORY) {
 				// Section heading
 				if (c == ']') {
 					buffer = string_trim(buffer);
 					if (get_section(buffer) != nullptr) {
-						SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Malformed ini file %s, duplicate section header name %s. Line: %u", path, buffer, line_number);
+						SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Malformed ini file %s, duplicate section header name %s. Line: %u", path, buffer, line_number);
 						file.close();
 						return false;
 					}
 					current_cat = add_section(string_tolower(buffer));
 					buffer = "";
-					mode = 1; // Ignore rest of line
+					mode = COMMENT; // Ignore rest of line
 				}
 				else {
 					buffer += c;
 				}
 			}
-			else if (mode == 3) {
+			else if (mode == VALUE) {
 				buffer += c;
 				//Reading key's value
 				continue;
 			}
 		}
+		line_end();
 
 		return true;
 	}

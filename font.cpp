@@ -77,8 +77,14 @@ namespace mgc {
 		glColor4ub(color.r, color.g, color.b, color.a);
 		glBegin(GL_QUADS);
 
+		int line = 0;
 		for (char c : s) {
-			w += draw_char_internal(canvas, c, x + w, y, color);
+			if (c == '\n') {
+				line++;
+				w = 0;
+			} else {
+				w += draw_char_internal(canvas, c, x + w, y + line * cell_height, color);
+			}
 		}
 
 		glEnd();

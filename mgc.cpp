@@ -158,7 +158,7 @@ namespace mgc {
 		glColor3ub(255, 255, 255);
 
 		static Texture test("Resources/sprites/test.png");
-		test.draw(canvas, 10, 10);
+		test.draw(canvas, 500, 40);
 
 		glTranslatef((GLfloat)mouse.x, (GLfloat)mouse.y, 0);
 
@@ -198,6 +198,15 @@ namespace mgc {
 
 		static Font montserrat("Resources/fonts/Montserrat");
 		montserrat.draw_string(canvas, fps_string, 0, 0);
+		montserrat.draw_string(canvas, 
+			"I'm just your average school slut, don't mind me.\n" 
+			"Just pretend I had some special narration and\n"
+			"dialog for you.\n\n"
+			"So they let me come up with some shitty lorem\n"
+			"ipsum text. As if they couldn't do that themselves.\n" 
+			"Lazy fucks.\n"
+			"Can all go to hell if it was after me. Skanks.\n"
+			"(Don't let Vic write a dialog)", 10, 50);
 
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

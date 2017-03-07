@@ -127,9 +127,7 @@ namespace ini {
 				continue;
 			}
 		}
-		line_end();
-
-		return true;
+		return line_end();
 	}
 
 	IniSection* IniFile::add_section(string section_name) {

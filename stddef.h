@@ -59,7 +59,8 @@ namespace constants {
 	const Uint TICKRATE = 30;
 }
 
-static inline string string_trim(string& input) {
+static inline string string_trim(const string& input) {
+	if (input.length() == 0) return string(input);
 	size_t first = input.find_first_not_of(' ');
 	size_t last = input.find_last_not_of(' ');
 	return input.substr(first, (last - first + 1));

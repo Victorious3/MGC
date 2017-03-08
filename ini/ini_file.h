@@ -3,17 +3,18 @@
 
 namespace ini {
 	class IniSection;
+	class IniParser;
 
 	class IniFile {
+		friend IniParser;
 	public:
-		IniFile();
 		~IniFile();
 
 		IniFile(string path);
 
-		bool load_file(string path);
-		bool save_file();
-		bool save_file(string path);
+		//bool load_file(string path);
+		bool save_file() const;
+		bool save_file(string path) const;
 
 		IniSection* add_section(string section_name);
 		bool remove_section(string section_name);
@@ -37,7 +38,10 @@ namespace ini {
 		}
 
 	private:
+		IniFile();
 		string path;
+
+		void set_path(string path);
 
 		list<IniSection> sections;
 	};

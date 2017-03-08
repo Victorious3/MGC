@@ -3,9 +3,7 @@
 #include <algorithm>
 
 #include "../filesystem.h"
-#include "ini_file.h"
-#include "ini_section.h"
-#include "ini_key.h"
+#include "../ini.h"
 
 using std::ifstream;
 
@@ -14,14 +12,15 @@ namespace ini {
 	}
 
 	IniFile::IniFile(string path) {
-		if (!load_file(path))
-			throw runtime_error("Could not open ini file");
+		IniParser::fill_ini_file(path, *&*this);
+		//if (!load_file(path))
+		//	throw runtime_error("Could not open ini file");
 	}
 
 	IniFile::~IniFile() {
 	}
 
-	bool IniFile::load_file(string path) {
+	/*bool IniFile::load_file(string path) {
 		this->path = path;
 		ifstream file(path);
 
@@ -128,6 +127,14 @@ namespace ini {
 			}
 		}
 		return line_end();
+	}*/
+
+	bool IniFile::save_file() const {
+		return IniParser::save_ini_file(*&*this);
+	}
+
+	bool IniFile::save_file(string path) const {
+		return IniParser::save_ini_file(path, *&*this);
 	}
 
 	IniSection* IniFile::add_section(string section_name) {
@@ -233,5 +240,9 @@ namespace ini {
 		}
 
 		return section->set_key_value(key_name, key_value);
+	}
+
+	void IniFile::set_path(string path) {
+		this->path = path;
 	}
 }

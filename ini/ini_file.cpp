@@ -12,7 +12,7 @@ namespace ini {
 	}
 
 	IniFile::IniFile(string path) {
-		IniParser::fill_ini_file(path, *&*this);
+		IniParser::fill_ini_file(path, *this);
 		//if (!load_file(path))
 		//	throw runtime_error("Could not open ini file");
 	}
@@ -130,11 +130,11 @@ namespace ini {
 	}*/
 
 	bool IniFile::save_file() const {
-		return IniParser::save_ini_file(*&*this);
+		return IniParser::save_ini_file(*this);
 	}
 
 	bool IniFile::save_file(string path) const {
-		return IniParser::save_ini_file(path, *&*this);
+		return IniParser::save_ini_file(path, *this);
 	}
 
 	IniSection* IniFile::add_section(string section_name) {

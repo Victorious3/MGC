@@ -10,3 +10,4 @@ Release
 cmake-build-debug/
 .idea/
 ipch/
+MGC.VC*

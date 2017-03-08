@@ -20,6 +20,8 @@ namespace ini {
 
 		list<IniKey> keys;
 
+		vector<string> comments{};
+
 	public:
 		bool rename(string new_name);
 
@@ -50,6 +52,11 @@ namespace ini {
 		string get_name() const;
 
 		IniFile* get_parent() const;
+
+		vector<string> get_key_names() const;
+
+		void set_comments(vector<string> comments);
+		vector<string> get_comments() const;
 	};
 
 	bool operator==(const IniSection& s1, const IniSection& s2);

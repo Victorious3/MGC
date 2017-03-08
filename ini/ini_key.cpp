@@ -23,6 +23,14 @@ namespace ini {
 		return parent;
 	}
 
+	void IniKey::set_comments(vector<string> comments) {
+		this->comments = comments;
+	}
+
+	vector<string> IniKey::get_comments() const {
+		return vector<string>{comments};
+	}
+
 	bool operator==(const IniKey& k1, const IniKey& k2) {
 		return (k1.get_name() == k2.get_name() &&
 			k1.get_value() == k2.get_value() &&

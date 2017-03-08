@@ -14,6 +14,7 @@ namespace ini {
 
 		string value;
 		string name;
+		vector<string> comments{};
 
 	public:
 
@@ -25,6 +26,9 @@ namespace ini {
 		string get_name() const;
 
 		IniSection* get_parent() const;
+
+		void set_comments(vector<string>);
+		vector<string> get_comments() const;
 	};
 
 	bool operator==(const IniKey& k1, const IniKey& k2);

@@ -173,6 +173,24 @@ namespace ini {
 		return parent;
 	}
 
+	vector<string> IniSection::get_key_names() const {
+		vector<string> names;
+
+		for (auto& key : keys) {
+			names.push_back(key.get_name());
+		}
+
+		return names;
+	}
+
+	void IniSection::set_comments(vector<string> comments) {
+		this->comments = comments;
+	}
+
+	vector<string> IniSection::get_comments() const {
+		return comments;
+	}
+
 	bool operator==(const IniSection& s1, const IniSection& s2) {
 		return (s1.get_name() == s2.get_name() && s1.get_parent() == s2.get_parent());
 	}

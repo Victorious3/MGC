@@ -34,7 +34,8 @@ namespace ini {
 			}
 		}
 	}
-
+	
+	#pragma warning ( disable : 4868 )
 	IniParser::ParsedLine IniParser::_parse_line(string line) {
 		string trimmed_line = string_trim(line);
 

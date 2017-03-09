@@ -144,7 +144,7 @@ namespace ini {
 
 	bool IniFile::rename_section(string old_name, string new_name) {
 		if (get_section(new_name) != nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename section %s to already existing section %s in file %s", old_name, new_name, path);
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename section %s to already existing section %s in file %s", old_name.c_str(), new_name.c_str(), path.c_str());
 			return false;
 		}
 
@@ -155,13 +155,13 @@ namespace ini {
 			}
 		}
 
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename non-existant category %s to %s in file %s.", old_name, new_name, path);
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename non-existant category %s to %s in file %s.", old_name.c_str(), new_name.c_str(), path.c_str());
 		return false;
 	}
 
 	bool IniFile::rename_section(IniSection* section, string new_name) {
 		if (section->parent != this) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename section %s in file %s to %s, using file %s", section->name, new_name, section->parent->get_path(), path);
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename section %s in file %s to %s, using file %s", section->name.c_str(), new_name.c_str(), section->parent->get_path().c_str(), path.c_str());
 			return false;
 		}
 		return rename_section(section->name, new_name);
@@ -188,21 +188,21 @@ namespace ini {
 	bool IniFile::remove_section(string section_name) {
 		for (auto& iter : sections) {
 			if (iter.get_name() == section_name) {
-				return remove_section(&iter);
+				return remove_section(iter);
 			}
 		}
 
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove non-existant section %s in file %s", section_name, path);
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove non-existant section %s in file %s", section_name.c_str(), path.c_str());
 		return false;
 	}
 
-	bool IniFile::remove_section(IniSection* section) {
-		if (section->parent != this) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove section %s in file %s, using file %s", section->name, section->parent->get_path(), path);
+	bool IniFile::remove_section(IniSection& section) {
+		if (section.parent != this) {
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove section %s in file %s, using file %s", section.name.c_str(), section.parent->get_path().c_str(), path.c_str());
 			return false;
 		}
 
-		sections.remove(*section);
+		sections.remove(section);
 		return true;
 	}
 
@@ -224,7 +224,7 @@ namespace ini {
 		const IniSection* section = get_section(section_name);
 
 		if (section == nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to get key %s from non-existant section %s in file %s", key_name, section_name, path);
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to get key %s from non-existant section %s in file %s", key_name.c_str(), section_name.c_str(), path.c_str());
 			return "";
 		}
 
@@ -235,7 +235,7 @@ namespace ini {
 		IniSection* section = get_section(section_name);
 
 		if (section == nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to set key %s from non-existant section %s in file %s", key_name, section_name, path);
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to set key %s from non-existant section %s in file %s", key_name.c_str(), section_name.c_str(), path.c_str());
 			return false;
 		}
 

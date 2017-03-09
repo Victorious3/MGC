@@ -12,7 +12,7 @@ namespace ini {
 
 	IniKey* IniSection::add_key(string key_name) {
 		if (get_key(key_name) != nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to add duplicate key %s to section %s in file %s", key_name, name, parent->get_path());
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to add duplicate key %s to section %s in file %s", key_name.c_str(), name.c_str(), parent->get_path().c_str());
 			return nullptr;
 		}
 
@@ -27,13 +27,13 @@ namespace ini {
 			}
 		}
 
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove non-existant key %s in section %s in file %s.", key_name, name, parent->get_path());
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove non-existant key %s in section %s in file %s.", key_name.c_str(), name.c_str(), parent->get_path().c_str());
 		return false;
 	}
 
 	bool IniSection::remove_key(IniKey* key) {
 		if (key->parent != this) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove key %s in section %s in file %s, using section %s in file %s", key->get_name(), key->get_parent()->get_name(), key->get_parent()->get_parent()->get_path(), name, parent->get_path());
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove key %s in section %s in file %s, using section %s in file %s", key->get_name().c_str(), key->get_parent()->get_name().c_str(), key->get_parent()->get_parent()->get_path().c_str(), name.c_str(), parent->get_path().c_str());
 			return false;
 		}
 
@@ -43,7 +43,7 @@ namespace ini {
 
 	bool IniSection::rename_key(IniKey* key, string new_name) {
 		if (get_key(new_name) != nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename key %s to already existing key %s in section %s in file %s.", key->name, new_name, name, parent->get_path());
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename key %s to already existing key %s in section %s in file %s.", key->name.c_str(), new_name.c_str(), name.c_str(), parent->get_path().c_str());
 			return false;
 		}
 
@@ -58,7 +58,7 @@ namespace ini {
 			}
 		}
 
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename non-existant key %s to %s in section %s in file %s.", old_name, new_name, name, parent->get_path());
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename non-existant key %s to %s in section %s in file %s.", old_name.c_str(), new_name.c_str(), name.c_str(), parent->get_path().c_str());
 		return false;
 	}
 
@@ -146,7 +146,7 @@ namespace ini {
 		const IniKey* const key = get_key(key_name);
 
 		if (key == nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to get value of non-existant key %s in section %s in file %s.", key_name, name, parent->get_path());
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to get value of non-existant key %s in section %s in file %s.", key_name.c_str(), name.c_str(), parent->get_path().c_str());
 			return nullptr;
 		}
 
@@ -157,7 +157,7 @@ namespace ini {
 		IniKey* key = get_key(key_name);
 
 		if (key == nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to set value of non-existant key %s to %s in section %s in file %s.", key_name, key_value, name, parent->get_path());
+			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to set value of non-existant key %s to %s in section %s in file %s.", key_name.c_str(), key_value.c_str(), name.c_str(), parent->get_path().c_str());
 			return false;
 		}
 

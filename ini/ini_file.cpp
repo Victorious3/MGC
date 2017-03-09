@@ -129,12 +129,12 @@ namespace ini {
 		return line_end();
 	}*/
 
-	bool IniFile::save_file() const {
-		return IniParser::save_ini_file(*this);
+	void IniFile::save_file() const {
+		IniParser::save_ini_file(*this);
 	}
 
-	bool IniFile::save_file(string path) const {
-		return IniParser::save_ini_file(path, *this);
+	void IniFile::save_file(string path) const {
+		IniParser::save_ini_file(path, *this);
 	}
 
 	IniSection* IniFile::add_section(string section_name) {

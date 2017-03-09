@@ -54,7 +54,7 @@ namespace mgc {
 	}
 
 	Texture::Texture(string path, TextureManager& mgr) 
-		: mgr(texture_manager)
+		: mgr(mgr)
 		, path(path) 
 	{}
 

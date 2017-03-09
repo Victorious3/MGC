@@ -1,5 +1,8 @@
 #pragma once
 
+#pragma warning(push, 0) // Ignore warnings for external libraries
+// TODO Should add something similar for other compilers
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #define WIN32
 #include <windows.h>
@@ -12,7 +15,6 @@
 #include <iostream>
 #include <map>
 
-
 // Libraries
 extern "C" {
 #include <SDL.h>
@@ -24,6 +26,8 @@ extern "C" {
 
 #include <lua.hpp>
 #include <sol.hpp>
+
+#pragma warning(pop)
 
 using std::string;
 using namespace std::literals::string_literals;

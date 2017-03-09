@@ -34,8 +34,8 @@ namespace ini {
 		IniParser() = delete;
 		~IniParser() = delete;
 
-		static bool save_ini_file(const IniFile& ini_file);
-		static bool save_ini_file(const string& path, const IniFile& ini_file);
+		static void save_ini_file(const IniFile& ini_file);
+		static void save_ini_file(const string& path, const IniFile& ini_file);
 		static IniFile load_ini_file(string path);
 		static void fill_ini_file(string path, IniFile& ini_file);
 	};

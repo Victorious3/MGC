@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../stddef.h"
-#include "ini_file.h"
-#include "ini_key.h"
+#include "IniFile.h"
+#include "IniKey.h"
 
 #define ini_key($x, $def) $x = ini::current_section->get<decltype($x)>(#$x, ($def))
 

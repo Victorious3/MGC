@@ -1,5 +1,5 @@
 #include "stddef.h"
-#include "ini_section.h"
+#include "IniSection.h"
 
 #include <sstream>
 

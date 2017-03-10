@@ -2,7 +2,7 @@
 
 #include "stddef.h"
 
-#include "ini/ini_file.h"
-#include "ini/ini_key.h"
-#include "ini/ini_section.h"
+#include "ini/IniFile.h"
+#include "ini/IniKey.h"
+#include "ini/IniSection.h"
 #include "ini/IniParser.h"

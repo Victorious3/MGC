@@ -9,6 +9,33 @@ namespace fs {
 		return in.tellg();
 	}
 
+	istream& safe_get_line(istream& is, string& t) {
+		t.clear();
+
+		istream::sentry se(is, true);
+		std::streambuf* sb = is.rdbuf();
+
+		for (;;) {
+			int c = sb->sbumpc();
+			switch (c) {
+			case '\n':
+				return is;
+				break;
+			case '\r':
+				if (sb->sgetc() == '\n')
+					sb->sbumpc();
+				return is;
+				break;
+			case EOF:
+				if (t.empty())
+					is.setstate(std::ios::eofbit);
+				return is;
+			default:
+				t += (char)c;
+			}
+		}
+	}
+
 #ifdef WIN32
 	vector<string> list_files(const string& dir) {
 		vector<string> result;

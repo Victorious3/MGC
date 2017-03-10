@@ -31,8 +31,6 @@ namespace mgc {
 		constexpr Color GREEN = color(0x0000FF);
 	};
 
-	class Sprite;
-
 	class Canvas {
 	public:
 		// TODO These might want to be somewhere else

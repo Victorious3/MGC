@@ -13,5 +13,5 @@ namespace fs {
 
 	Uint64 file_size(const string& file);
 
-	istream& safe_get_line(istream& is, string& t);
+	void read_line(istream& is, string& t);
 }

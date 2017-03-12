@@ -9,27 +9,25 @@ namespace fs {
 		return in.tellg();
 	}
 
-	istream& safe_get_line(istream& is, string& t) {
+	void read_line(istream& is, string& t) {
 		t.clear();
 
 		istream::sentry se(is, true);
 		std::streambuf* sb = is.rdbuf();
 
-		for (;;) {
+		while (true) {
 			int c = sb->sbumpc();
 			switch (c) {
 			case '\n':
-				return is;
-				break;
+				return;
 			case '\r':
 				if (sb->sgetc() == '\n')
 					sb->sbumpc();
-				return is;
-				break;
+				return;
 			case EOF:
 				if (t.empty())
 					is.setstate(std::ios::eofbit);
-				return is;
+				return;
 			default:
 				t += (char)c;
 			}

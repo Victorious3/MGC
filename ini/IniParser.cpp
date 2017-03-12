@@ -1,8 +1,9 @@
 #include "stddef.h"
 
+#include "../log.h"
 #include "../ini.h"
-
 #include "../filesystem.h"
+
 using std::streampos;
 using std::ifstream;
 using std::ofstream;
@@ -115,7 +116,7 @@ namespace ini {
 		string line;
 		IniSection* section = nullptr;
 		vector<string> comments{};
-		fs::safe_get_line(file, line);
+		fs::read_line(file, line);
 		while (!file.eof()) {
 			ParsedLine parsed_line = _parse_line(line);
 
@@ -127,7 +128,7 @@ namespace ini {
 				break;
 			case ParsedLineType::KEY:
 				if (section == nullptr) {
-					SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Skipping key %s = %s while reading file %s, no section set.", parsed_line.params[0].c_str(), parsed_line.params[1].c_str(), path.c_str());
+					mgc::log::error("ini") << "Skipping key " << parsed_line.params[0] << " = " << parsed_line.params[1] << " while reading file " << path << ", no section set." << endl;
 				}
 				else {
 					IniKey* key = section->add_key(parsed_line.params[0]);
@@ -137,7 +138,7 @@ namespace ini {
 				}
 				break;
 			case ParsedLineType::INVALID:
-				SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Skipping invalid line while reading file %s. Line content: %s", path.c_str(), line.c_str());
+				mgc::log::error("ini") << "Skipping invalid line while reading file " << path << ". Line content: " << line << endl;
 				break;
 			case ParsedLineType::COMMENT:
 				comments.push_back(parsed_line.params[0]);
@@ -146,7 +147,7 @@ namespace ini {
 				break;
 			}
 
-			fs::safe_get_line(file, line);
+			fs::read_line(file, line);
 		}
 
 		file.close();

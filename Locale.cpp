@@ -23,7 +23,7 @@ namespace mgc {
 		}
 
 		string line = "";
-		fs::safe_get_line(file, line);
+		fs::read_line(file, line);
 		
 		while (!file.eof()) {
 			size_t pos = line.find_first_of('=', 0);
@@ -35,7 +35,7 @@ namespace mgc {
 				locale_strings[key] = value;
 			}
 
-			fs::safe_get_line(file, line);
+			fs::read_line(file, line);
 		}
 
 		file.close();

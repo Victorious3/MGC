@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "../log.h"
 #include "../filesystem.h"
 #include "../ini.h"
 
@@ -144,7 +145,7 @@ namespace ini {
 
 	bool IniFile::rename_section(string old_name, string new_name) {
 		if (get_section(new_name) != nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename section %s to already existing section %s in file %s", old_name.c_str(), new_name.c_str(), path.c_str());
+			mgc::log::warn("ini") << "Trying to rename section " << old_name << " to already existing section " << new_name << " in file " << path << endl;
 			return false;
 		}
 
@@ -155,13 +156,13 @@ namespace ini {
 			}
 		}
 
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename non-existant category %s to %s in file %s.", old_name.c_str(), new_name.c_str(), path.c_str());
+		mgc::log::warn("ini") << "Trying to rename non - existant category " << old_name << " to " << new_name << " in file " << path << endl;
 		return false;
 	}
 
 	bool IniFile::rename_section(IniSection* section, string new_name) {
 		if (section->parent != this) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename section %s in file %s to %s, using file %s", section->name.c_str(), new_name.c_str(), section->parent->get_path().c_str(), path.c_str());
+			mgc::log::warn("ini") << "Trying to rename section " << section->name << " in file " << section->parent->get_path() << " to " << new_name << ", using file " << path << endl;
 			return false;
 		}
 		return rename_section(section->name, new_name);
@@ -192,13 +193,13 @@ namespace ini {
 			}
 		}
 
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove non-existant section %s in file %s", section_name.c_str(), path.c_str());
+		mgc::log::warn("ini") << "Trying to remove non-existant section " << section_name << " in file " << path << endl;
 		return false;
 	}
 
 	bool IniFile::remove_section(IniSection& section) {
 		if (section.parent != this) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove section %s in file %s, using file %s", section.name.c_str(), section.parent->get_path().c_str(), path.c_str());
+			mgc::log::warn("ini") << "Trying to remove section " << section.name << " in file " << section.parent->get_path() << ", using file " << path << endl;
 			return false;
 		}
 
@@ -224,7 +225,7 @@ namespace ini {
 		const IniSection* section = get_section(section_name);
 
 		if (section == nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to get key %s from non-existant section %s in file %s", key_name.c_str(), section_name.c_str(), path.c_str());
+			mgc::log::warn("ini") << "Trying to get key " << key_name << " from non-existant section " << section_name << " in file " << path << endl;
 			return "";
 		}
 
@@ -235,7 +236,7 @@ namespace ini {
 		IniSection* section = get_section(section_name);
 
 		if (section == nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to set key %s from non-existant section %s in file %s", key_name.c_str(), section_name.c_str(), path.c_str());
+			mgc::log::warn("ini") << "Trying to set key " << key_name << " from non-existant section " << section_name << " in file " << path << endl;
 			return false;
 		}
 

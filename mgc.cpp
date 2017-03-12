@@ -1,8 +1,8 @@
 #include "stddef.h"
 
 #include "mgc.h"
+#include "log.h"
 #include "font.h"
-
 #include "keyboard.h"
 #include "ini.h"
 #include "Locale.h"
@@ -124,7 +124,7 @@ namespace mgc {
 			fullscreen = !fullscreen;
 			update_resolution();
 		} else {
-			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Failed to change display mode");
+			log::error << "Failed to change display mode" << endl;
 		}
 	}
 
@@ -265,7 +265,7 @@ namespace mgc {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screen_texture, 0);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "Framebuffer creation faled");
+			log::error << "Framebuffer creation faled" << endl;
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glShadeModel(GL_FLAT);
@@ -281,7 +281,7 @@ namespace mgc {
 
 		GLenum error = glGetError();
 		if (error) {
-			SDL_LogError(SDL_LOG_CATEGORY_VIDEO, "GL error when setting up projection: %s", glewGetErrorString(error));
+			log::error << "GL error when setting up projection: " << glewGetErrorString(error);
 		}
 	}
 
@@ -354,7 +354,8 @@ namespace mgc {
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
 			throw runtime_error("SDL_Init Error: "s + SDL_GetError());
 		}
-		SDL_Log("SDL initialized successfully");
+		
+		log::info << "SDL initialized successfully" << endl;
 
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);

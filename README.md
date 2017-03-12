@@ -48,6 +48,34 @@
 4. Done
 
 ### Visual Studio Setup (Visual Studio Community 2015)
+
+Short version:
+
+1. git clone the repo
+2. Add the repo to Team Explorer
+3. Doubleclick repo
+4. Create a new solution with an empty project (uncheck Create directory for solution, unless you prefer that of course)
+5. (Optional) Add a filter for each code subdirectory to both header/source files
+6. Add the header/source files to the project
+7. Go to Project Properties
+8. C/C++ -> Precompiled Header. Set "Precompiled Header" to "Create (/Yc)"
+9. C/C++ -> Precompiled Header. Set "Precompiled Header File" to "stddef.h"
+10. VC++ Directories. Add the include folder to "Include Directories"
+11. VC++ Directories. Add the repective library subfolder to "Library Directories"
+12. Linker -> Input. Add the following to "Additional Dependencies"
+    glew32s.lib
+    lua53.lib
+    SDL2.lib
+    SDL2_image.lib
+    SDL2_ttf.lib
+    SDL2main.lib
+    SDL2test.lib
+    opengl32.lib
+    glu32.lib
+13. Linker -> System. Set "SubSystem" to "Console (/SUBSYSTEM:CONSOLE)".
+14. Build the project
+15. Copy the DLL files from the respective library subfolder to Debug/ (where the .exe file was created).
+ 
 Step by step:
 
 1. git clone the repository.
@@ -59,7 +87,7 @@ Step by step:
 6. Doubleclick the newly added entry.
 7. Under "Solution" in the Team Explorer window, click "New..."
 8. Choose "Empty Project"
-9. Make sure "Create director for solution" is unchecked
+9. Make sure "Create directory for solution" is unchecked
 10. Give it a name and click "OK"
 11. In Solution Explorer, rightclick "Header Files" choose Add -> New Filter. Name the filter "ini".
 12. Rightclick the newly created filter and choose Add -> Existing Item...

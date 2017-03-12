@@ -3,29 +3,31 @@
 #include "mgc.h"
 #include "font.h"
 #include "ini.h"
+#include "log.h"
+
+using namespace mgc;
 
 int main(int argc, char* argv[])
 {
 	try {
-		mgc::init_sdl();
-		mgc::init_lua();
-
-		mgc::run();
+		init_sdl();
+		init_lua();
+		run();
 	}
 	catch (exception& e) {
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "An exception occured: %s", e.what());
+		log::error << "An exception occured: " << e.what() << endl;
 		cin.ignore();
 	}
 	catch (...) {
 		// Unexpected error
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "An unexpected error occured!");
+		log::error << "An unexpected error occured!" << endl;
 		cin.ignore();
 	}
 
-	SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "Shutting down!");
+	log::critical << "Shutting down!" << endl;
 
-	mgc::destroy_sdl();
-	mgc::destroy_lua();
+	destroy_sdl();
+	destroy_lua();
 
 	return 0;
 }

@@ -11,7 +11,7 @@ using std::ofstream;
 namespace ini {
 
 #pragma warning ( disable : 4868 )
-	ParsedLine _parse_line(string line) {
+	static ParsedLine _parse_line(string line) {
 		string trimmed_line = string_trim(line);
 
 		if (trimmed_line.length() == 0) {
@@ -68,7 +68,7 @@ namespace ini {
 		save_ini_file(ini_file.get_path(), ini_file);
 	}
 
-	inline void write_str(ofstream& stream, string str) {
+	static inline void write_str(ofstream& stream, string str) {
 		stream.write(str.c_str(), str.length());
 	}
 

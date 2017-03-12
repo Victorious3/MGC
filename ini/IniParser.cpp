@@ -2,39 +2,13 @@
 
 #include "../ini.h"
 
-#include <fstream>
+#include "../filesystem.h"
 using std::streampos;
 using std::ifstream;
 using std::ofstream;
 
 namespace ini {
-	std::istream& safe_get_line(std::istream& is, std::string& t) {
-		t.clear();
-
-		std::istream::sentry se(is, true);
-		std::streambuf* sb = is.rdbuf();
-
-		for (;;) {
-			int c = sb->sbumpc();
-			switch (c) {
-			case '\n':
-				return is;
-				break;
-			case '\r':
-				if (sb->sgetc() == '\n')
-					sb->sbumpc();
-				return is;
-				break;
-			case EOF:
-				if (t.empty())
-					is.setstate(std::ios::eofbit);
-				return is;
-			default:
-				t += (char)c;
-			}
-		}
-	}
-
+	#pragma warning ( disable : 4868 )
 	IniParser::ParsedLine IniParser::_parse_line(string line) {
 		string trimmed_line = string_trim(line);
 
@@ -141,7 +115,7 @@ namespace ini {
 		string line;
 		IniSection* section = nullptr;
 		vector<string> comments{};
-		safe_get_line(file, line);
+		fs::safe_get_line(file, line);
 		while (!file.eof()) {
 			ParsedLine parsed_line = _parse_line(line);
 
@@ -153,7 +127,7 @@ namespace ini {
 				break;
 			case ParsedLineType::KEY:
 				if (section == nullptr) {
-					SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Skipping key %s = %s while reading file %s, no section set.", parsed_line.params[0], parsed_line.params[1], path);
+					SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Skipping key %s = %s while reading file %s, no section set.", parsed_line.params[0].c_str(), parsed_line.params[1].c_str(), path.c_str());
 				}
 				else {
 					IniKey* key = section->add_key(parsed_line.params[0]);
@@ -163,7 +137,7 @@ namespace ini {
 				}
 				break;
 			case ParsedLineType::INVALID:
-				SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Skipping invalid line while reading file %s. Line content: %s", path, line);
+				SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Skipping invalid line while reading file %s. Line content: %s", path.c_str(), line.c_str());
 				break;
 			case ParsedLineType::COMMENT:
 				comments.push_back(parsed_line.params[0]);
@@ -172,7 +146,7 @@ namespace ini {
 				break;
 			}
 
-			safe_get_line(file, line);
+			fs::safe_get_line(file, line);
 		}
 
 		file.close();

@@ -5,6 +5,7 @@
 
 #include "keyboard.h"
 #include "ini.h"
+#include "Locale.h"
 
 namespace mgc {
 
@@ -17,6 +18,7 @@ namespace mgc {
 	Timing timing;
 	ini::IniFile ini("mgc.ini");
 	Keyboard keyboard(ini);
+	Locale loc("en-us");
 
 	bool running = true;
 	bool fullscreen = false;
@@ -207,6 +209,8 @@ namespace mgc {
 			"Lazy fucks.\n"
 			"Can all go to hell if it was after me. Skanks.\n"
 			"(Don't let Vic write a dialog)", 10, 50);
+
+		montserrat.draw_string(canvas, loc.get_string("test_string"), 0, 30);
 
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

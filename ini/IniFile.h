@@ -18,7 +18,7 @@ namespace ini {
 
 		IniSection* add_section(string section_name);
 		bool remove_section(string section_name);
-		bool remove_section(IniSection* section);
+		bool remove_section(IniSection& section);
 
 		bool rename_section(string old_name, string new_name);
 		bool rename_section(IniSection* section, string new_name);

@@ -9,12 +9,13 @@ using std::ifstream;
 using std::ofstream;
 
 namespace ini {
-	#pragma warning ( disable : 4868 )
-	IniParser::ParsedLine IniParser::_parse_line(string line) {
+
+#pragma warning ( disable : 4868 )
+	ParsedLine _parse_line(string line) {
 		string trimmed_line = string_trim(line);
 
 		if (trimmed_line.length() == 0) {
-			return ParsedLine {
+			return ParsedLine{
 				ParsedLineType::EMPTY,
 				"",
 				""
@@ -22,7 +23,7 @@ namespace ini {
 		}
 
 		if (trimmed_line[0] == ';') {
-			return ParsedLine {
+			return ParsedLine{
 				ParsedLineType::COMMENT,
 				string_trim(trimmed_line.substr(1)),
 				""
@@ -31,13 +32,13 @@ namespace ini {
 		else if (trimmed_line[0] == '[') {
 			if (trimmed_line[trimmed_line.length() - 1] != ']') {
 				// ERROR
-				return ParsedLine {
+				return ParsedLine{
 					ParsedLineType::INVALID,
 					"",
 					""
 				};
 			}
-			return ParsedLine {
+			return ParsedLine{
 				ParsedLineType::SECTION,
 				string_trim(trimmed_line.substr(1, trimmed_line.length() - 2)),
 				""
@@ -47,14 +48,14 @@ namespace ini {
 			size_t pos = line.find_first_of('=');
 
 			if (pos != -1) {
-				return ParsedLine {
+				return ParsedLine{
 					ParsedLineType::KEY,
 					string_trim(line.substr(0, pos)),
 					line.substr(pos + 1)
 				};
 			}
 			else {
-				return ParsedLine {
+				return ParsedLine{
 					ParsedLineType::INVALID,
 					"",
 					""
@@ -63,15 +64,15 @@ namespace ini {
 		}
 	}
 
-	void IniParser::save_ini_file(const IniFile& ini_file) {
+	void save_ini_file(const IniFile& ini_file) {
 		save_ini_file(ini_file.get_path(), ini_file);
 	}
 
-	void inline write_str(ofstream& stream, string str) {
+	inline void write_str(ofstream& stream, string str) {
 		stream.write(str.c_str(), str.length());
 	}
 
-	void IniParser::save_ini_file(const string& path, const IniFile& ini_file) {
+	void save_ini_file(const string& path, const IniFile& ini_file) {
 		ofstream file;
 
 		file.open(path, ofstream::out);
@@ -103,7 +104,7 @@ namespace ini {
 		file.close();
 	}
 
-	void IniParser::fill_ini_file(string path, IniFile& ini_file) {
+	void fill_ini_file(string path, IniFile& ini_file) {
 		ini_file.set_path(path);
 
 		ifstream file{};
@@ -153,8 +154,8 @@ namespace ini {
 		file.close();
 	}
 
-	IniFile IniParser::load_ini_file(string path) {
-		IniFile ini_file{};
+	IniFile load_ini_file(string path) {
+		IniFile ini_file;
 
 		fill_ini_file(path, ini_file);
 

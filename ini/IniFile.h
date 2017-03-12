@@ -3,10 +3,8 @@
 
 namespace ini {
 	class IniSection;
-	class IniParser;
 
 	class IniFile {
-		friend IniParser;
 	public:
 		~IniFile();
 
@@ -38,6 +36,9 @@ namespace ini {
 		}
 
 	private:
+		friend void fill_ini_file(string path, IniFile& ini_file);
+		friend IniFile load_ini_file(string path);
+
 		IniFile();
 		string path;
 

@@ -41,15 +41,10 @@ namespace mgc {
 		Uint32 tick_delay_ms;
 	};
 
-	void init_sdl();
-	void init_lua();
+	void init();
 
-	void sdl_event();
 	void toggle_fullscreen();
-	void render();
-	void update();
 	void run();
 
-	void destroy_sdl();
-	void destroy_lua();
+	void destroy();
 }

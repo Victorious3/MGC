@@ -32,18 +32,7 @@ namespace mgc {
 
 	const Keyboard::Input_Action& key_fullscreen = keyboard.get_action(Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
 
-	void run() {
-		while (running) {
-			while (SDL_TICKS_PASSED(SDL_GetTicks(), timing.tick_last + timing.tick_delay_ms)) {
-				update();
-				timing.tick_last += timing.tick_delay_ms;
-			}
-
-			render();
-		}
-	}
-
-	void sdl_event() {
+	static void sdl_event() {
 		SDL_Event event;
 
 		mouse.clicked = mouse.moved = false;
@@ -249,7 +238,20 @@ namespace mgc {
 		}*/
 	}
 
-	static void setup_gl() {
+	void run() {
+		while (running) {
+			while (SDL_TICKS_PASSED(SDL_GetTicks(), timing.tick_last + timing.tick_delay_ms)) {
+				update();
+				timing.tick_last += timing.tick_delay_ms;
+			}
+
+			render();
+		}
+	}
+
+	// Initialization code
+
+	static void init_gl() {
 		// Initializing glew
 		glewInit();
 		// Setup framebuffer for scaling
@@ -285,36 +287,30 @@ namespace mgc {
 		}
 	}
 
-	void setup_ttf() {
-		if (TTF_Init() == -1) {
-			throw runtime_error("TTF_Init Error: could not initialize TTF. Error: "s + TTF_GetError());
-		}
-	}
-
-	void setup_image() {
+	static void init_image() {
 		int imgFlags = IMG_INIT_PNG;
 		if (!(IMG_Init(imgFlags) & imgFlags)) {
 			throw runtime_error("Image_Init Error: could not initialize SDL_IMAGE. Error: "s + IMG_GetError() + "\n");
 		}
 	}
 
-	void setup_graphics() {
+	static void init_graphics() {
 		graphics.framerate_actual = constants::FRAMERATE;
 		graphics.frame_delay_ms = (Uint32)(1000.0f / constants::FRAMERATE);
 	}
 
-	void setup_timing() {
+	static void init_timing() {
 		timing.tick_delay_ms = (1000 / constants::TICKRATE);
 		timing.tick_counter = 0;
 		timing.tick_last = SDL_GetTicks();
 	}
 
-	void setup_input() {
+	static void init_input() {
 		//keyboard.read_config(ini);
 		//key_fullscreen = keyboard.get_action(mgc::Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
 	}
 
-	void init_sdl() {
+	static void init_sdl() {
 		static const string category_names[]{
 			"Application",
 			"Error",
@@ -387,35 +383,33 @@ namespace mgc {
 		}
 
 		SDL_ShowCursor(false);
-		setup_gl();
-
-		setup_ttf();
-		setup_image();
-		setup_graphics();
-		setup_timing();
-
-		setup_input();
 	}
 
-	void destroy_graphics() {
+	// Finalization code
+
+	static void destroy_graphics() {
 		texture_manager.destroy_all();
 
 		IMG_Quit();
 	}
 
-	void destroy_sdl() {
-		destroy_graphics();
-
+	static void destroy_sdl() {
 		if (window) SDL_DestroyWindow(window);
 		if (context) SDL_GL_DeleteContext(context);
 		SDL_Quit();
 	}
 
-	void init_lua() {
-
+	void init() {
+		init_sdl();
+		init_gl();
+		init_image();
+		init_graphics();
+		init_timing();
+		init_input();
 	}
-	
-	void destroy_lua() {
 
+	void destroy() {
+		destroy_graphics();
+		destroy_sdl();
 	}
 }

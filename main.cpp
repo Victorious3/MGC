@@ -10,8 +10,8 @@ using namespace mgc;
 int main(int argc, char* argv[])
 {
 	try {
-		init_sdl();
-		init_lua();
+		init();
+
 		run();
 	}
 	catch (exception& e) {
@@ -26,8 +26,7 @@ int main(int argc, char* argv[])
 
 	log::critical << "Shutting down!" << endl;
 
-	destroy_sdl();
-	destroy_lua();
+	destroy();
 
 	return 0;
 }

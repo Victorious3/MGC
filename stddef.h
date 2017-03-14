@@ -4,7 +4,9 @@
 // TODO Should add something similar for other compilers
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#ifndef WIN32
 #define WIN32
+#endif
 #include <windows.h>
 #endif
 
@@ -37,8 +39,6 @@ using std::function;
 using std::map;
 
 using std::exception;
-using std::runtime_error;
-using std::logic_error;
 
 using std::cout;
 using std::cerr;
@@ -50,6 +50,13 @@ typedef int64_t int64;
 typedef int32_t int32;
 typedef int16_t int16;
 typedef int8_t int8;
+
+#ifdef NDEBUG
+#define RUNTIME_ERROR($str) std::runtime_error($str)
+#else
+#define RUNTIME_ERROR($str) \
+	std::runtime_error(string(__FILE__) + "(" + std::to_string(__LINE__) + ") " + ($str))
+#endif
 
 namespace constants {
 	const string APP_NAME = "Magical Girl City";
@@ -82,9 +89,9 @@ static inline string string_tolower(string& input) {
 // Windows only
 
 #ifdef WIN32
-// Convert a wide Unicode string to an UTF8 string
+// Convert a wide Unicode string to a UTF8 string
 string utf8_encode(const std::wstring& wstr);
 
-// Convert an UTF8 string to a wide Unicode String
+// Convert a UTF8 string to a wide Unicode String
 std::wstring utf8_decode(const string& str);
 #endif

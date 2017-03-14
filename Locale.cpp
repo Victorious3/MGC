@@ -19,7 +19,7 @@ namespace mgc {
 		ifstream file("Resources/lang/" + locale + ".cfg");
 
 		if (!file.is_open()) {
-			throw runtime_error("Could not open locale: " + locale);
+			throw RUNTIME_ERROR("Could not open locale: " + locale);
 		}
 
 		string line = "";

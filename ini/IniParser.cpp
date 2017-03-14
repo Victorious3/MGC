@@ -77,7 +77,7 @@ namespace ini {
 
 		file.open(path, ofstream::out);
 		if (!file.is_open()) {
-			throw runtime_error("Could not open file "s + path + " for writing.");
+			throw RUNTIME_ERROR("Could not open file "s + path + " for writing.");
 		}
 
 		for (auto& section_name : ini_file.get_section_names()) {
@@ -111,7 +111,7 @@ namespace ini {
 		file.open(path, ifstream::in);
 
 		if (!file.is_open()) {
-			throw runtime_error("Could not open ini file: "s + path);
+			throw RUNTIME_ERROR("Could not open ini file: "s + path);
 		}
 
 		string line;

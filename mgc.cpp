@@ -290,7 +290,7 @@ namespace mgc {
 	static void init_image() {
 		int imgFlags = IMG_INIT_PNG;
 		if (!(IMG_Init(imgFlags) & imgFlags)) {
-			throw runtime_error("Image_Init Error: could not initialize SDL_IMAGE. Error: "s + IMG_GetError() + "\n");
+			throw RUNTIME_ERROR("Image_Init Error: could not initialize SDL_IMAGE. Error: "s + IMG_GetError() + "\n");
 		}
 	}
 
@@ -348,7 +348,7 @@ namespace mgc {
 
 
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
-			throw runtime_error("SDL_Init Error: "s + SDL_GetError());
+			throw RUNTIME_ERROR("SDL_Init Error: "s + SDL_GetError());
 		}
 		
 		log::info << "SDL initialized successfully" << endl;
@@ -374,12 +374,12 @@ namespace mgc {
 		);
 
 		if (!window) {
-			throw runtime_error("SDL_CreateWindow Error: "s + SDL_GetError());
+			throw RUNTIME_ERROR("SDL_CreateWindow Error: "s + SDL_GetError());
 		}
 
 		context = SDL_GL_CreateContext(window);
 		if (!context) {
-			throw runtime_error("SDL_GL_CreateContext Error: "s + SDL_GetError());
+			throw RUNTIME_ERROR("SDL_GL_CreateContext Error: "s + SDL_GetError());
 		}
 
 		SDL_ShowCursor(false);

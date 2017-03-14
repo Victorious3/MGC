@@ -18,7 +18,7 @@ namespace mgc {
 		: texture(file + ".png")
 	{
 		ifstream data(file + ".dat", std::ios_base::binary);
-		if (!data) throw runtime_error("Font could not be loaded. File \"" + file + ".dat\"");
+		if (!data) throw RUNTIME_ERROR("Font could not be loaded. File \"" + file + ".dat\"");
 		
 		read_Uint64(&map_width, data);
 		read_Uint64(&map_height, data);

@@ -56,7 +56,7 @@ namespace fs {
 			} while (FindNextFileW(handle, &data));
 			FindClose(handle);
 		}
-		else throw runtime_error("Invalid handle, file \"" + dir + "\"");
+		else throw RUNTIME_ERROR("Invalid handle, file \"" + dir + "\"");
 		return result;
 	}
 #else

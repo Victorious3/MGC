@@ -13,7 +13,7 @@ namespace mgc {
 		int Log::sync() {
 			if (name.empty())
 				SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, priority, this->str().c_str());
-			else SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, priority, "[%s] %s", name, this->str().c_str());
+			else SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, priority, "[%s] %s", name.c_str(), this->str().c_str());
 
 			return 0;
 		}

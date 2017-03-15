@@ -1,5 +1,5 @@
 #pragma once
-#include "../stddef.h"
+#include <stdafx.h>
 
 namespace ini {
 	class IniSection;

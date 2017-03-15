@@ -1,4 +1,4 @@
-#include "stddef.h"
+#include <stdafx.h>
 #include "keyboard.h"
 
 namespace mgc {

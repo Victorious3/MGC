@@ -1,6 +1,5 @@
 #pragma once
-
-#include "stddef.h"
+#include <stdafx.h>
 
 #include "ini/IniFile.h"
 #include "ini/IniKey.h"

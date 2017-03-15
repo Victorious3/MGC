@@ -1,6 +1,5 @@
 #pragma once
-
-#include "stddef.h"
+#include <stdafx.h>
 
 typedef SDL_Color Color;
 

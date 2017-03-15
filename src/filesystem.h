@@ -1,7 +1,8 @@
 #pragma once
-#include "stddef.h"
+#include <stdafx.h>
 
 #include <fstream>
+
 using std::fstream;
 using std::ifstream;
 using std::ofstream;

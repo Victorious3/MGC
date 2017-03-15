@@ -1,6 +1,5 @@
 #pragma once
-
-#include "stddef.h"
+#include <stdafx.h>
 
 namespace mgc {
 	class Locale

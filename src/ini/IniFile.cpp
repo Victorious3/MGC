@@ -1,5 +1,4 @@
-#include "stddef.h"
-
+#include <stdafx.h>
 #include <algorithm>
 
 #include "../log.h"

@@ -3,9 +3,8 @@
 ## Conribute
 ### Style guidelines
 * File structure
-    * Remember to #include "stddef.h" in all your files as first line, its the precompiled header, its best to do this after `#pragma once`
     * Use `#pragma once` instead of include guards, every half decent compiler should support it
-    * Add very frequent includes to `stddef.h` with the appropriate `using` statements
+    * Add very frequent includes to `stdafx.h` with the appropriate `using` statements
     * Yes: `using std::vector;` No: ~~`using namespace std;`~~
     * You should include external libraries (angle brackets) before internal ones (quotes)
     * Every compilation unit should have an associated header by the same name
@@ -59,7 +58,7 @@ Short version:
 6. Add the header/source files to the project
 7. Go to Project Properties
 8. C/C++ -> Precompiled Header. Set "Precompiled Header" to "Create (/Yc)"
-9. C/C++ -> Precompiled Header. Set "Precompiled Header File" to "stddef.h"
+9. C/C++ -> Precompiled Header. Set "Precompiled Header File" to "stdafx.h"
 10. VC++ Directories. Add the include folder to "Include Directories"
 11. VC++ Directories. Add the repective library subfolder to "Library Directories"
 12. Linker -> Input. Add the following to "Additional Dependencies"
@@ -104,7 +103,7 @@ Step by step:
 23. On the left pane of the newly opened "Property Pages" window, expand the C/C++.
 24. Choose "Precompiled Header" under C/C++.
 25. On the right pane, for "Precompiled Header" choose "Create (/Yc)" from the dropdown
-26. Put "stddef.h" (without "") for "Precompiled Header File"
+26. Put "stdafx.h" (without "") for "Precompiled Header File"
 27. On the left pane, choose "VC++ Directories"
 28. On the right pane open the dropdown of "Include Directories" and click "<Edit...>"
 29. In the newly opened "Include Directories" window, click the leftmost button of the top right button row ("New Line")

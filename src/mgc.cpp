@@ -1,4 +1,4 @@
-#include "stddef.h"
+#include <stdafx.h>
 
 #include "mgc.h"
 #include "log.h"
@@ -149,7 +149,7 @@ namespace mgc {
 		glColor3ub(255, 255, 255);
 
 		static Texture test("Resources/sprites/test.png");
-		test.draw(canvas, 500, 40);
+		test.draw(canvas, 450, 10);
 
 		glTranslatef((GLfloat)mouse.x, (GLfloat)mouse.y, 0);
 

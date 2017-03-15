@@ -1,4 +1,4 @@
-#include "stddef.h"
+#include <stdafx.h>
 
 #include "Locale.h"
 #include "filesystem.h"

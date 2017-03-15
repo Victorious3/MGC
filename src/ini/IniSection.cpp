@@ -1,6 +1,6 @@
-#include "stddef.h"
-#include "IniSection.h"
+#include <stdafx.h>
 
+#include "IniSection.h"
 #include <sstream>
 
 namespace ini {

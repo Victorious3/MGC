@@ -1,6 +1,6 @@
 #pragma once
+#include <stdafx.h>
 
-#include "stddef.h"
 #include "canvas.h"
 #include "texture.h"
 

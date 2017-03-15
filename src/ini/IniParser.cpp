@@ -1,4 +1,4 @@
-#include "stddef.h"
+#include <stdafx.h>
 
 #include "../log.h"
 #include "../ini.h"

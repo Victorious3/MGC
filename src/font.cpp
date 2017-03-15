@@ -1,5 +1,4 @@
-#include "stddef.h"
-
+#include <stdafx.h>
 #include <pendian.h>
 
 #include "font.h"

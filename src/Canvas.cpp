@@ -1,4 +1,4 @@
-#include "stddef.h"
+#include <stdafx.h>
 
 #include "canvas.h"
 #include "texture.h"

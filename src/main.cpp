@@ -1,4 +1,4 @@
-#include "stddef.h"
+#include <stdafx.h>
 
 #include "mgc.h"
 #include "font.h"
@@ -7,6 +7,7 @@
 
 using namespace mgc;
 
+extern "C"
 int main(int argc, char* argv[])
 {
 	try {

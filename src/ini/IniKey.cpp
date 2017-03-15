@@ -1,4 +1,5 @@
-#include "stddef.h"
+#include <stdafx.h>
+
 #include "IniKey.h"
 #include "IniSection.h"
 

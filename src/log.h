@@ -1,5 +1,5 @@
 #pragma once
-#include "stddef.h"
+#include <stdafx.h>
 
 #include <sstream>
 

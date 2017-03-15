@@ -1,7 +1,7 @@
 Debug
 Release
-*.vcxproj*
-/*.dll
+*.vcxproj.user
+*.vcxproj.filters
 /*.dll
 *.sln
 *.sdf

@@ -1,5 +1,5 @@
+#include <stdafx.h>
 // Precompiled header
-#include "stddef.h"
 
 #ifdef WIN32
 string utf8_encode(const std::wstring& wstr)

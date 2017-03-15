@@ -1,6 +1,6 @@
 #pragma once
+#include <stdafx.h>
 
-#include "../stddef.h"
 #include "IniFile.h"
 #include "IniKey.h"
 

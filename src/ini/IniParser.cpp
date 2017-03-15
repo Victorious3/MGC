@@ -10,7 +10,6 @@ using std::ofstream;
 
 namespace ini {
 
-#pragma warning ( disable : 4868 )
 	static ParsedLine _parse_line(string line) {
 		string trimmed_line = string_trim(line);
 

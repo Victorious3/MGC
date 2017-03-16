@@ -8,25 +8,14 @@ namespace mgc {
 	class Keyboard
 	{
 	public:
-		struct Input_Action {
-		private:
-			bool _down;
-			bool _pressed;
+		class InputAction {
 		public:
+			bool down;
+			bool pressed;
+		private:
+			friend Keyboard;
+
 			vector<Uint8> scancodes;
-
-			bool down() const {
-				return _down;
-			}
-
-			bool pressed() const {
-				return _pressed;
-			}
-
-			void set(bool down_state, bool pressed_state) {
-				_down = down_state;
-				_pressed = pressed_state;
-			}
 		};
 
 		enum class ACTIONS {
@@ -44,9 +33,9 @@ namespace mgc {
 
 		void process_sdl_event(SDL_Event& key_event);
 
-		const Input_Action& get_action(const ACTIONS& action) const;
+		const InputAction& get_action(const ACTIONS& action) const;
 
 	private:
-		map<ACTIONS, Input_Action> actionmap;
+		map<ACTIONS, InputAction> actionmap;
 	};
 }

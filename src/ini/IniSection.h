@@ -4,10 +4,11 @@
 #include "IniFile.h"
 #include "IniKey.h"
 
-#define ini_key($x, $def) $x = ini::current_section->get<decltype($x)>(#$x, ($def))
+#define ini_key($x, $def) $x = ini::_current_section->get<decltype($x)>(#$x, ($def))
 
 namespace ini {
-	extern thread_local IniSection* current_section;
+	// Internal
+	extern thread_local IniSection* _current_section;
 
 	class IniSection {
 		friend IniFile;
@@ -23,23 +24,25 @@ namespace ini {
 		vector<string> comments{};
 
 	public:
-		bool rename(string new_name);
+		bool rename(const string new_name);
 
-		IniKey* add_key(string key_name);
+		IniKey* add_key(const string key_name);
 
 		bool remove_key(IniKey* key);
-		bool remove_key(string key_name);
+		bool remove_key(const string& key_name);
 
-		bool rename_key(IniKey* key, string new_name);
-		bool rename_key(string old_name, string new_name);
+		bool rename_key(IniKey* key, const string new_name);
+		bool rename_key(const string& old_name, const string new_name);
 
-		const IniKey* get_key(string key_name) const;
-		IniKey* get_key(string key_name);
-		string get_key_value(string key_name) const;
-		bool set_key_value(string key_name, string key_value);
+		const IniKey* get_key(const string& key_name) const;
+		IniKey* get_key(const string& key_name);
+		string get_key_value(const string& key_name) const;
+		bool set_key_value(const string& key_name, string key_value);
 
 		template<typename T>
-		T get(string key_name, T default);
+		T get(const string& key_name, T default) const;
+		template<typename T>
+		bool set(const string& key_name, T value) { return set_key_value(key_name, std::to_string(value)); }
 
 		template<typename R>
 		R read_all() {

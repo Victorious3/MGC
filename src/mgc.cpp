@@ -30,7 +30,7 @@ namespace mgc {
 	Uint screen_fbo = 0;
 	Uint screen_texture = 0;
 
-	const Keyboard::Input_Action& key_fullscreen = keyboard.get_action(Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
+	static const Keyboard::InputAction& key_fullscreen = keyboard.get_action(Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
 
 	static void sdl_event() {
 		SDL_Event event;
@@ -88,7 +88,7 @@ namespace mgc {
 
 		// Update game here
 
-		if (key_fullscreen.pressed()) {
+		if (key_fullscreen.pressed) {
 			toggle_fullscreen();
 		}
 

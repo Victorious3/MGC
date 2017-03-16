@@ -106,7 +106,7 @@ namespace ini {
 	void fill_ini_file(string path, IniFile& ini_file) {
 		ini_file.set_path(path);
 
-		ifstream file{};
+		ifstream file;
 		file.open(path, ifstream::in);
 
 		if (!file.is_open()) {
@@ -115,7 +115,7 @@ namespace ini {
 
 		string line;
 		IniSection* section = nullptr;
-		vector<string> comments{};
+		vector<string> comments;
 		fs::read_line(file, line);
 		while (!file.eof()) {
 			ParsedLine parsed_line = _parse_line(line);

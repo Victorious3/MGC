@@ -15,7 +15,7 @@ namespace mgc {
 	void Keyboard::read_config(const ini::IniFile& ini) {
 		actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.clear();
 
-		actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.push_back(ini.get_section("key bindings")->get<Uint>("toggle_fullscreen", SDL_SCANCODE_F11));
+		actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.push_back(static_cast<SDL_Scancode>(ini.get_section("key bindings")->get<Uint>("toggle_fullscreen", SDL_SCANCODE_F11)));
 	}
 
 	void Keyboard::process_sdl_event(SDL_Event& event) {
@@ -27,12 +27,13 @@ namespace mgc {
 		for (auto& iter : actionmap) {
 			for (auto& scan_iter : iter.second.scancodes) {
 				if (keyboard_state[scan_iter]) {
+					bool last = iter.second.down;
 					iter.second.down = true;
-					iter.second.pressed = !iter.second.down;
-					break;
+					iter.second.pressed = !last;
+				} else {
+					iter.second.down = false;
+					iter.second.pressed = false;
 				}
-				iter.second.down = false;
-				iter.second.pressed = false;
 			}
 		}
 	}

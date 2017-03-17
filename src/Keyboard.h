@@ -15,7 +15,7 @@ namespace mgc {
 		private:
 			friend Keyboard;
 
-			vector<Uint8> scancodes;
+			vector<SDL_Scancode> scancodes;
 		};
 
 		enum class ACTIONS {

@@ -48,7 +48,12 @@
 * Style
     * Const correctness is encouraged (if a function can be const it should probably be const)
     * `constexpr` > inline function > template magic > preprocessor macros (last resort)
-    * The only real use case for macros is the use of the stringify operator    
+    * The only real use case for macros is the use of the stringify operator
+ 
+* Namespaces vs Classes
+   * Use a namespace for free floating functions, and classes for state + functions
+   * Don't abuse classes as namespaces
+   * If you feel like deleting the only constructor you are doing something wrong
 
 ### msys2/mingw64 guide for using clion/cmake on windows
 1. get the msys2 installer from http://www.msys2.org/

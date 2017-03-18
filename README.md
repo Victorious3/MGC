@@ -28,14 +28,13 @@
 
 * Getters and Setters
    * Don't write get/set pairs for private variables, make the variable public instead.
-   * If you feel like you have to make a variable read-only for public there's a neat trick:
+   * If you feel like you have to make a variable read-only for public do this:
    ```C++
    class Foo {
    private:
       Bar my_bar_; // Mutable for private
    public:
-      const Bar& my_bar = my_bar_; // Immutable for public
-      // No extra methods needed!
+      const Bar my_bar() { return my_bar_; } // Immutable for public
    }
    ```
    * If the get/set pair has side effects, consider picking a verb instead like `set_name` -> `rename`

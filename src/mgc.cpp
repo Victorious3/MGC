@@ -6,6 +6,8 @@
 #include "keyboard.h"
 #include "ini.h"
 #include "Locale.h"
+#include "ui/UI.h"
+#include "ui/Image.h"
 
 namespace mgc {
 
@@ -121,6 +123,7 @@ namespace mgc {
 		// Handle sdl events
 		keyboard.update();
 		sdl_event();
+		UI::update();
 	}
 
 	void render() {
@@ -147,9 +150,6 @@ namespace mgc {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClearColor(0, 0, 0, 0);
 		glColor3ub(255, 255, 255);
-
-		static Texture test("Resources/sprites/test.png");
-		canvas.draw_sprite(test, 450, 10);
 
 		glTranslatef((GLfloat)mouse.x, (GLfloat)mouse.y, 0);
 
@@ -200,6 +200,8 @@ namespace mgc {
 			"(Don't let Vic write a dialog)", 10, 50);
 
 		montserrat.draw_string(canvas, loc.get_string("test_string"), 0, 30);
+
+		UI::render();
 
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -384,6 +386,10 @@ namespace mgc {
 		log::info << "SDL initialized successfully" << endl;
 	}
 
+	void init_ui() {
+		UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", texture_manager, canvas));
+	}
+
 	// Finalization code
 
 	static void destroy_graphics() {
@@ -405,6 +411,7 @@ namespace mgc {
 		init_graphics();
 		init_timing();
 		init_input();
+		init_ui();
 	}
 
 	void destroy() {

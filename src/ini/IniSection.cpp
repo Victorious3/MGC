@@ -47,7 +47,7 @@ namespace ini {
 			return false;
 		}
 
-		key->name = new_name;
+		key->name_ = new_name;
 		return true;
 	}
 

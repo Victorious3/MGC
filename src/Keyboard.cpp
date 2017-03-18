@@ -16,10 +16,6 @@ namespace mgc {
 				kv.second.scancode = static_cast<SDL_Scancode>(section->get<Uint>(kv.first, kv.second.scancode));
 			}
 		}
-		
-		//actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.clear();
-
-		//actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.push_back(static_cast<SDL_Scancode>(ini.get_section("key bindings")->get<Uint>("toggle_fullscreen", SDL_SCANCODE_F11)));
 	}
 
 	void Keyboard::process_sdl_event(SDL_Event& event) {

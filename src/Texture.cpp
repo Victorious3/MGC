@@ -13,6 +13,11 @@ namespace mgc {
 		}
 	}
 
+	void TextureManager::reload() {
+		destroy_all();
+		load_all();
+	}
+
 	void TextureManager::destroy_all() {
 		vector<GLuint> glt(textures.size());
 		for (Uint i = 0; i < textures.size(); i++) {
@@ -51,15 +56,5 @@ namespace mgc {
 
 	void TextureManager::destroy(Texture& texture) {
 		glDeleteTextures(1, &texture.gl_texture);
-	}
-
-	Texture::Texture(string path, TextureManager& mgr) 
-		: mgr(mgr)
-		, path(path) 
-	{}
-
-	void Texture::draw(const Canvas& canvas, int x, int y) {
-		load();
-		canvas.draw_gl_texture(gl_texture, x, y, w, h);
 	}
 }

@@ -5,6 +5,9 @@
 #include "mgc.h"
 
 namespace mgc {
+	void Canvas::draw_sprite(const Sprite& sprite, int x, int y, Color color) const {
+		draw_gl_texture(sprite.gl_texture, x, y, sprite.w, sprite.h, sprite.umin, sprite.vmin, sprite.umax, sprite.vmax, color);
+	}
 
 	void Canvas::draw_gl_texture(GLuint texture, int x, int y, int w, int h, Color color) const {
 		draw_gl_texture(texture, x, y, w, h, 0, 0, 1, 1, color);

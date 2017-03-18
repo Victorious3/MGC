@@ -1,4 +1,5 @@
 #pragma once
+
 #include <stdafx.h>
 
 typedef SDL_Color Color;
@@ -30,6 +31,7 @@ namespace mgc {
 		constexpr Color GREEN = color(0x0000FF);
 	};
 
+	class Sprite;
 	class Canvas {
 	public:
 		// TODO These might want to be somewhere else
@@ -44,6 +46,7 @@ namespace mgc {
 			glDisable(GL_TEXTURE_2D);
 		}
 
+		void draw_sprite(const Sprite& sprite, int x, int y, Color color = colors::WHITE) const;
 		void draw_gl_texture(GLuint texture, int x, int y, int w, int h, Color color = colors::WHITE) const;
 		void draw_gl_texture(GLuint texture, int x, int y, int w, int h, float umin, float vmin, float umax, float vmax, Color color = colors::WHITE) const;
 	};

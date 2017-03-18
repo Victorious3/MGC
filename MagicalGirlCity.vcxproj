@@ -157,7 +157,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-
   <ItemGroup>
     <Library Include="lib\x86\glew32s.lib" />
     <Library Include="lib\x86\lua53.lib" />
@@ -194,6 +193,8 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\ui\Image.cpp" />
+    <ClCompile Include="src\ui\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Canvas.h" />
@@ -210,18 +211,19 @@
     <ClInclude Include="src\mgc.h" />
     <ClInclude Include="src\stddef\stdafx.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\ui\Image.h" />
+    <ClInclude Include="src\ui\UI.h" />
+    <ClInclude Include="src\ui\UIElement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-
   <ItemGroup>
-    <Dllx86 Include="lib\x86\*.dll"/>
-    <Dllx64 Include="lib\x64\*.dll"/>
+    <Dllx86 Include="lib\x86\*.dll" />
+    <Dllx64 Include="lib\x64\*.dll" />
   </ItemGroup>
   <Target Name="AfterBuild">
     <Copy Condition="'$(Platform)'=='Win32'" SourceFiles="@(Dllx86)" DestinationFolder="$(TargetDir)" />
     <Copy Condition="'$(Platform)'=='x64'" SourceFiles="@(Dllx64)" DestinationFolder="$(TargetDir)" />
   </Target>
-
 </Project>

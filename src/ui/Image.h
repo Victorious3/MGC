@@ -5,23 +5,21 @@
 #include "UIElement.h"
 #include "../Texture.h"
 
-namespace mgc {
-	namespace UI {
-		class Image : public UIElement
-		{
-		public:
-			Image(int x, int y, string path, TextureManager& manager, Canvas& canvas);
-			~Image();
+namespace UI {
 
-			virtual void update();
-			virtual void render();
+	class Image : public UIElement
+	{
+	public:
+		Image(int x, int y, string path, render::TextureManager& manager);
+		~Image();
 
-		private:
+		virtual void update();
+		virtual void render();
 
-			string path;
-			Texture texture;
-			int x, y;
-			Canvas& canvas;
-		};
-	}
+	private:
+
+		string path;
+		render::Texture texture;
+		int x, y;
+	};
 }

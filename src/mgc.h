@@ -1,7 +1,7 @@
 #pragma once
 #include <stdafx.h>
 
-#include "canvas.h"
+#include "render.h"
 #include "texture.h"
 
 namespace mgc {
@@ -10,8 +10,7 @@ namespace mgc {
 	extern SDL_Window* window;
 	// GL context
 	extern SDL_GLContext context;
-	extern Canvas canvas;
-	
+
 	extern float scale;
 	extern Uint xoff;
 	extern Uint yoff;

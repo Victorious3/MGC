@@ -1,9 +1,9 @@
 #include <stdafx.h>
 
 #include "texture.h"
-#include "canvas.h"
+#include "render.h"
 
-namespace mgc {
+namespace render {
 
 	TextureManager texture_manager;
 

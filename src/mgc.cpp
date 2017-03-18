@@ -13,7 +13,6 @@ namespace mgc {
 
 	SDL_Window* window = nullptr;
 	SDL_GLContext context = nullptr;
-	Canvas canvas;
 
 	Mouse mouse;
 	Graphics graphics;
@@ -188,8 +187,8 @@ namespace mgc {
 		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
 
 		static Font montserrat("Resources/fonts/Montserrat");
-		montserrat.draw_string(canvas, fps_string, 0, 0);
-		montserrat.draw_string(canvas, 
+		montserrat.draw_string(fps_string, 0, 0);
+		montserrat.draw_string( 
 			"I'm just your average school slut, don't mind me.\n" 
 			"Just pretend I had some special narration and\n"
 			"dialog for you.\n\n"
@@ -199,7 +198,7 @@ namespace mgc {
 			"Can all go to hell if it was after me. Skanks.\n"
 			"(Don't let Vic write a dialog)", 10, 50);
 
-		montserrat.draw_string(canvas, loc.get_string("test_string"), 0, 30);
+		montserrat.draw_string(loc.get_string("test_string"), 0, 30);
 
 		UI::render();
 
@@ -387,13 +386,13 @@ namespace mgc {
 	}
 
 	void init_ui() {
-		UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", texture_manager, canvas));
+		UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", render::texture_manager));
 	}
 
 	// Finalization code
 
 	static void destroy_graphics() {
-		texture_manager.destroy_all();
+		render::texture_manager.destroy_all();
 
 		IMG_Quit();
 	}

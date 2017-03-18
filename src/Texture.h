@@ -1,7 +1,7 @@
 #pragma once
 #include <stdafx.h>
 
-namespace mgc {
+namespace render {
 	class Canvas;
 	class Texture;
 

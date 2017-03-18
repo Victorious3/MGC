@@ -32,7 +32,7 @@ namespace mgc {
 		return char_sizes[c];
 	}
 
-	Uint Font::draw_char_internal(const Canvas& canvas, char c, int x, int y, Color color) const {
+	Uint Font::draw_char_internal(char c, int x, int y, Color color) const {
 		Uint w = char_width(c);
 
 		Uint32 t = cell_width * (c - start_char);
@@ -54,24 +54,24 @@ namespace mgc {
 		return w;
 	}
 
-	Uint Font::draw_char(const Canvas& canvas, char c, int x, int y, Color color) {
+	Uint Font::draw_char(char c, int x, int y, Color color) {
 		Uint w;
 
 		texture.load();
-		canvas.enable_gl_texture();
+		render::enable_gl_texture();
 		glBindTexture(GL_TEXTURE_2D, texture.gl_texture);
 		glBegin(GL_QUADS);
-		w = draw_char_internal(canvas, c, x, y, color);
+		w = draw_char_internal(c, x, y, color);
 		glEnd();
-		canvas.disable_gl_texture();
+		render::disable_gl_texture();
 
 		return w;
 	}
 
-	Uint Font::draw_string(const Canvas& canvas, string s, int x, int y, Color color) {
+	Uint Font::draw_string(string s, int x, int y, Color color) {
 		Uint w = 0;
 		texture.load();
-		canvas.enable_gl_texture();
+		render::enable_gl_texture();
 		glBindTexture(GL_TEXTURE_2D, texture.gl_texture);
 		glColor4ub(color.r, color.g, color.b, color.a);
 		glBegin(GL_QUADS);
@@ -82,12 +82,12 @@ namespace mgc {
 				line++;
 				w = 0;
 			} else {
-				w += draw_char_internal(canvas, c, x + w, y + line * cell_height, color);
+				w += draw_char_internal(c, x + w, y + line * cell_height, color);
 			}
 		}
 
 		glEnd();
-		canvas.disable_gl_texture();
+		render::disable_gl_texture();
 		return w;
 	}
 }

@@ -183,7 +183,7 @@
     <Text Include="Resources\fonts\OFL.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Canvas.cpp" />
+    <ClCompile Include="src\render.cpp" />
     <ClCompile Include="src\filesystem.cpp" />
     <ClCompile Include="src\font.cpp" />
     <ClCompile Include="src\ini\IniFile.cpp" />
@@ -203,7 +203,7 @@
     <ClCompile Include="src\ui\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Canvas.h" />
+    <ClInclude Include="src\render.h" />
     <ClInclude Include="src\filesystem.h" />
     <ClInclude Include="src\font.h" />
     <ClInclude Include="src\ini.h" />

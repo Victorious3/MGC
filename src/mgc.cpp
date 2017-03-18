@@ -17,7 +17,7 @@ namespace mgc {
 	Graphics graphics;
 	Timing timing;
 	ini::IniFile ini("mgc.ini");
-	Keyboard keyboard(ini);
+	Keyboard keyboard(ini, "key bindings");
 	Locale loc("en-us");
 
 	bool running = true;
@@ -30,7 +30,7 @@ namespace mgc {
 	Uint screen_fbo = 0;
 	Uint screen_texture = 0;
 
-	static const Keyboard::InputAction& key_fullscreen = keyboard.get_action(Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
+	static const Keyboard::InputAction& key_fullscreen = keyboard.get_action("toggle_fullscreen", SDL_SCANCODE_F11);
 
 	static void sdl_event() {
 		SDL_Event event;
@@ -88,7 +88,7 @@ namespace mgc {
 
 		// Update game here
 
-		if (key_fullscreen.pressed) {
+		if (key_fullscreen.fired) {
 			toggle_fullscreen();
 		}
 

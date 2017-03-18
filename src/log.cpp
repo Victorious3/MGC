@@ -18,7 +18,7 @@ namespace mgc {
 			return 0;
 		}
 
-		LogStream::LogStream(Log _log) : std::ostream(&log), log(_log) {};
+		LogStream::LogStream(Log log_) : std::ostream(&log), log(log_) {};
 		LogStream::LogStream(LogStream&& other) : std::ostream(std::move(other)), log(other.log) {
 			this->set_rdbuf(&log);
 		}

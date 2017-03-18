@@ -5,17 +5,21 @@ namespace mgc {
 	Keyboard::Keyboard() {
 	}
 
-	Keyboard::Keyboard(const ini::IniFile& ini) {
-		read_config(ini);
+	Keyboard::Keyboard(const ini::IniFile& ini, const string& section_name) {
+		read_config(ini, section_name);
 	}
 
-	Keyboard::~Keyboard() {
-	}
+	void Keyboard::read_config(const ini::IniFile& ini, const string& section_name) {
+		auto section = ini.get_section(section_name);
+		if (section) {
+			for (auto& kv : actionmap) {
+				kv.second.scancode = static_cast<SDL_Scancode>(section->get<Uint>(kv.first, kv.second.scancode));
+			}
+		}
+		
+		//actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.clear();
 
-	void Keyboard::read_config(const ini::IniFile& ini) {
-		actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.clear();
-
-		actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.push_back(static_cast<SDL_Scancode>(ini.get_section("key bindings")->get<Uint>("toggle_fullscreen", SDL_SCANCODE_F11)));
+		//actionmap[ACTIONS::TOGGLE_FULLSCREEN].scancodes.push_back(static_cast<SDL_Scancode>(ini.get_section("key bindings")->get<Uint>("toggle_fullscreen", SDL_SCANCODE_F11)));
 	}
 
 	void Keyboard::process_sdl_event(SDL_Event& event) {
@@ -25,20 +29,13 @@ namespace mgc {
 		const Uint8* keyboard_state = SDL_GetKeyboardState(nullptr);
 		
 		for (auto& iter : actionmap) {
-			for (auto& scan_iter : iter.second.scancodes) {
-				if (keyboard_state[scan_iter]) {
-					bool last = iter.second.down;
-					iter.second.down = true;
-					iter.second.pressed = !last;
-				} else {
-					iter.second.down = false;
-					iter.second.pressed = false;
-				}
-			}
+			bool last = iter.second.active;
+			iter.second.active = keyboard_state[iter.second.scancode];
+			iter.second.fired = !last && iter.second.active;
 		}
 	}
 
-	const Keyboard::InputAction& Keyboard::get_action(const ACTIONS& action) const {
-		return actionmap.at(action);
+	const Keyboard::InputAction& Keyboard::get_action(const string& name, SDL_Scancode default) {
+		return actionmap.emplace(name, InputAction(default)).first->second;
 	}
 }

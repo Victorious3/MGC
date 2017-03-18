@@ -11,22 +11,25 @@ namespace ini {
 	extern thread_local IniSection* _current_section;
 
 	class IniSection {
-		friend IniFile;
-
 	private:
-		IniSection(IniFile* parent, string section_name) : parent(parent), name(section_name) {};
+		friend IniFile;
+		friend void fill_ini_file(string path, IniFile& ini_file);
 
-		IniFile* parent;
-		string name;
+		IniSection(IniFile* parent, string section_name) : parent(parent), name_(section_name) {};
 
 		list<IniKey> keys;
-
-		vector<string> comments{};
+		vector<string> comments_;
+		string name_;
 
 	public:
+		IniFile* const parent;
+		const vector<string>& comments = comments_;
+		const string& name = name_;
+
 		bool rename(const string new_name);
 
-		IniKey* add_key(const string key_name);
+		// Adds a key if not present or else returns an existing one
+		IniKey& add_key(const string key_name);
 
 		bool remove_key(IniKey* key);
 		bool remove_key(const string& key_name);
@@ -36,13 +39,29 @@ namespace ini {
 
 		const IniKey* get_key(const string& key_name) const;
 		IniKey* get_key(const string& key_name);
-		string get_key_value(const string& key_name) const;
-		bool set_key_value(const string& key_name, string key_value);
+
+		string& operator[](const string& key_name);
 
 		template<typename T>
 		T get(const string& key_name, T default) const;
+
+		template<> 
+		string get(const string& key_name, string def) const {
+			if (const IniKey* key = get_key(key_name)) {
+				return key->value;
+			}
+			return def;
+		}
+
 		template<typename T>
-		bool set(const string& key_name, T value) { return set_key_value(key_name, std::to_string(value)); }
+		void set(const string& key_name, T value) { 
+			set<string>(key_name, std::to_string(value)); 
+		}
+
+		template<>
+		void set(const string& key_name, string value) {
+			add_key(key_name).value = value;
+		}
 
 		template<typename R>
 		R read_all() {
@@ -52,14 +71,7 @@ namespace ini {
 			return r;
 		}
 
-		string get_name() const;
-
-		IniFile* get_parent() const;
-
 		vector<string> get_key_names() const;
-
-		void set_comments(vector<string> comments);
-		vector<string> get_comments() const;
 	};
 
 	bool operator==(const IniSection& s1, const IniSection& s2);

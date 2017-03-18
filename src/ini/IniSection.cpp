@@ -1,7 +1,9 @@
 #include <stdafx.h>
 
-#include "IniSection.h"
 #include <sstream>
+
+#include "IniSection.h"
+#include "../log.h"
 
 namespace ini {
 	thread_local IniSection* _current_section;
@@ -10,30 +12,28 @@ namespace ini {
 		return parent->rename_section(name, new_name);
 	}
 
-	IniKey* IniSection::add_key(const string key_name) {
-		if (get_key(key_name) != nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to add duplicate key %s to section %s in file %s", key_name.c_str(), name.c_str(), parent->get_path().c_str());
-			return nullptr;
-		}
+	IniKey& IniSection::add_key(const string key_name) {
+		IniKey* key = get_key(key_name);
+		if (key) return *key;
 
 		keys.push_back(IniKey(this, key_name, ""));
-		return &keys.back();
+		return keys.back();
 	}
 
 	bool IniSection::remove_key(const string& key_name) {
 		for (auto& iter : keys) {
-			if (iter.get_name() == key_name) {
+			if (iter.name == key_name) {
 				return remove_key(&iter);
 			}
 		}
 
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove non-existant key %s in section %s in file %s.", key_name.c_str(), name.c_str(), parent->get_path().c_str());
+		mgc::log::warn("ini") << "Trying to remove non-existant key " << key_name << " in section " << name << " in file " << parent->path;
 		return false;
 	}
 
 	bool IniSection::remove_key(IniKey* key) {
 		if (key->parent != this) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to remove key %s in section %s in file %s, using section %s in file %s", key->get_name().c_str(), key->get_parent()->get_name().c_str(), key->get_parent()->get_parent()->get_path().c_str(), name.c_str(), parent->get_path().c_str());
+			mgc::log::warn("ini") << "Trying to remove key " << key->name << " in section " << key->parent->name << " in file " << key->parent->parent->path << " , using section " << name << " in file " << parent->path;
 			return false;
 		}
 
@@ -42,8 +42,8 @@ namespace ini {
 	}
 
 	bool IniSection::rename_key(IniKey* key, const string new_name) {
-		if (get_key(new_name) != nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename key %s to already existing key %s in section %s in file %s.", key->name.c_str(), new_name.c_str(), name.c_str(), parent->get_path().c_str());
+		if (get_key(new_name)) {
+			mgc::log::warn("ini") << "Trying to rename key " << key->name << " to already existing key " << new_name << " in section " << name << " in file " << parent->path;
 			return false;
 		}
 
@@ -58,13 +58,13 @@ namespace ini {
 			}
 		}
 
-		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to rename non-existant key %s to %s in section %s in file %s.", old_name.c_str(), new_name.c_str(), name.c_str(), parent->get_path().c_str());
+		mgc::log::warn("ini") << "Trying to rename non-existant key " << old_name << " to " << new_name << " in section " << name << " in file " << parent->path;
 		return false;
 	}
 
 	const IniKey* IniSection::get_key(const string& key_name) const {
 		for (auto& iter : keys) {
-			if (iter.get_name() == key_name) {
+			if (iter.name == key_name) {
 				return &iter;
 			}
 		}
@@ -78,10 +78,14 @@ namespace ini {
 			);
 	}
 
+	string& IniSection::operator[](const string& key_name) {
+		return add_key(key_name).value;
+	}
+
 	template<> vector<string> IniSection::get(const string& key_name, vector<string> def) const {
 		if (const IniKey* key = get_key(key_name)) {
 			vector<string> v;
-			std::istringstream stream(key->get_value());
+			std::istringstream stream(key->value);
 			string s;
 			while (std::getline(stream, s, ',')) {
 				v.push_back(s);
@@ -92,7 +96,7 @@ namespace ini {
 	}
 
 	// Special case: vector
-	template<> bool IniSection::set(const string& key_name, vector<string> value) {
+	template<> void IniSection::set(const string& key_name, vector<string> value) {
 		string ret;
 		if (!value.empty()) {
 			for (auto& v = value.begin(); v != value.end() - 1; v++) {
@@ -100,25 +104,18 @@ namespace ini {
 			}
 			ret += *value.end();
 		}
-		return set_key_value(key_name, ret);
+		set(key_name, ret);
 	};
 
-	template<> string IniSection::get(const string& key_name, string def) const {
-		if (const IniKey* key = get_key(key_name)) {
-			return key->get_value();
-		}
-		return def;
-	}
-
 	// Special case: string
-	template<> bool IniSection::set(const string& key_name, string value) {
-		return set_key_value(key_name, value);
-	}
+	/*template<> void IniSection::set(const string& key_name, string value) {
+		add_key(key_name).value = value;
+	}*/
 
 	template<typename T> 
 	static inline T get_number_signed(const IniSection& section, const string& key_name, T def) {
 		if (const IniKey* key = section.get_key(key_name)) {
-			try { return static_cast<T>(std::stoll(key->get_value())); }
+			try { return static_cast<T>(std::stoll(key->value)); }
 			catch (...) {}
 		}
 		return def;
@@ -127,7 +124,7 @@ namespace ini {
 	template<typename T>
 	static inline T get_number_unsigned(const IniSection& section, const string& key_name, T def) {
 		if (const IniKey* key = section.get_key(key_name)) {
-			try { return static_cast<T>(std::stoull(key->get_value())); }
+			try { return static_cast<T>(std::stoull(key->value)); }
 			catch (...) {}
 		}
 		return def;
@@ -145,7 +142,7 @@ namespace ini {
 
 	template<> float IniSection::get(const string& key_name, float def) const {
 		if (const IniKey* key = get_key(key_name)) {
-			try { return std::stof(key->get_value()); }
+			try { return std::stof(key->value); }
 			catch (...) {}
 		}
 		return def;
@@ -153,62 +150,23 @@ namespace ini {
 
 	template<> double IniSection::get(const string& key_name, double def) const {
 		if (const IniKey* key = get_key(key_name)) {
-			try { return std::stod(key->get_value()); }
+			try { return std::stod(key->value); }
 			catch (...) {}
 		}
 		return def;
-	}
-
-	string IniSection::get_key_value(const string& key_name) const {
-		const IniKey* const key = get_key(key_name);
-
-		if (key == nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to get value of non-existant key %s in section %s in file %s.", key_name.c_str(), name.c_str(), parent->get_path().c_str());
-			return nullptr;
-		}
-
-		return key->get_value();
-	}
-
-	bool IniSection::set_key_value(const string& key_name, const string key_value) {
-		IniKey* key = get_key(key_name);
-
-		if (key == nullptr) {
-			SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Ini-Error. Trying to set value of non-existant key %s to %s in section %s in file %s.", key_name.c_str(), key_value.c_str(), name.c_str(), parent->get_path().c_str());
-			return false;
-		}
-
-		key->set_value(key_value);
-		return true;
-	}
-
-	string IniSection::get_name() const {
-		return name;
-	}
-
-	IniFile* IniSection::get_parent() const {
-		return parent;
 	}
 
 	vector<string> IniSection::get_key_names() const {
 		vector<string> names;
 
 		for (auto& key : keys) {
-			names.push_back(key.get_name());
+			names.push_back(key.name);
 		}
 
 		return names;
 	}
 
-	void IniSection::set_comments(vector<string> comments) {
-		this->comments = comments;
-	}
-
-	vector<string> IniSection::get_comments() const {
-		return comments;
-	}
-
 	bool operator==(const IniSection& s1, const IniSection& s2) {
-		return (s1.get_name() == s2.get_name() && s1.get_parent() == s2.get_parent());
+		return (s1.name == s2.name && s1.parent == s2.parent);
 	}
 }

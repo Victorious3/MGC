@@ -137,12 +137,12 @@ namespace ini {
 		save_ini_file(path, *this);
 	}
 
-	IniSection* IniFile::add_section(string section_name) {
+	IniSection& IniFile::add_section(string section_name) {
 		sections.push_back(IniSection(this, section_name));
-		return &sections.back();
+		return sections.back();
 	}
 
-	bool IniFile::rename_section(string old_name, string new_name) {
+	bool IniFile::rename_section(const string& old_name, string new_name) {
 		if (get_section(new_name) != nullptr) {
 			mgc::log::warn("ini") << "Trying to rename section " << old_name << " to already existing section " << new_name << " in file " << path << endl;
 			return false;
@@ -150,7 +150,7 @@ namespace ini {
 
 		for (auto& iter : sections) {
 			if (iter.name == old_name) {
-				iter.name = new_name;
+				iter.name_ = new_name;
 				return true;
 			}
 		}
@@ -161,7 +161,7 @@ namespace ini {
 
 	bool IniFile::rename_section(IniSection* section, string new_name) {
 		if (section->parent != this) {
-			mgc::log::warn("ini") << "Trying to rename section " << section->name << " in file " << section->parent->get_path() << " to " << new_name << ", using file " << path << endl;
+			mgc::log::warn("ini") << "Trying to rename section " << section->name << " in file " << section->parent->path << " to " << new_name << ", using file " << path << endl;
 			return false;
 		}
 		return rename_section(section->name, new_name);
@@ -169,7 +169,7 @@ namespace ini {
 
 	const IniSection* const IniFile::get_section(string section_name) const {
 		for (auto& iter : sections) {
-			if (iter.get_name() == section_name) {
+			if (iter.name == section_name) {
 				return &iter;
 			}
 		}
@@ -185,9 +185,9 @@ namespace ini {
 
 
 
-	bool IniFile::remove_section(string section_name) {
+	bool IniFile::remove_section(const string& section_name) {
 		for (auto& iter : sections) {
-			if (iter.get_name() == section_name) {
+			if (iter.name == section_name) {
 				return remove_section(iter);
 			}
 		}
@@ -198,16 +198,12 @@ namespace ini {
 
 	bool IniFile::remove_section(IniSection& section) {
 		if (section.parent != this) {
-			mgc::log::warn("ini") << "Trying to remove section " << section.name << " in file " << section.parent->get_path() << ", using file " << path << endl;
+			mgc::log::warn("ini") << "Trying to remove section " << section.name << " in file " << section.parent->path << ", using file " << path << endl;
 			return false;
 		}
 
 		sections.remove(section);
 		return true;
-	}
-
-	string IniFile::get_path() const {
-		return path;
 	}
 
 	vector<string> IniFile::get_section_names() const {
@@ -228,7 +224,7 @@ namespace ini {
 			return "";
 		}
 
-		return section->get_key_value(key_name);
+		return section->get(key_name, ""s);
 	}
 
 	bool IniFile::set_key_value(string section_name, string key_name, string key_value) {
@@ -239,10 +235,7 @@ namespace ini {
 			return false;
 		}
 
-		return section->set_key_value(key_name, key_value);
-	}
-
-	void IniFile::set_path(string path) {
-		this->path = path;
+		section->set(key_name, key_value);
+		return true;
 	}
 }

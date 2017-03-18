@@ -19,7 +19,7 @@ namespace mgc {
 	private:
 		string locale;
 
-		void _load_locale();
+		void load_locale();
 
 		map<string, string> locale_strings {};
 	};

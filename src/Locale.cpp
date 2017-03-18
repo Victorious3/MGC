@@ -7,14 +7,14 @@ namespace mgc {
 	Locale::Locale(string locale) {
 		this->locale = locale;
 
-		_load_locale();
+		load_locale();
 	}
 
 	Locale::~Locale()
 	{
 	}
 
-	void Locale::_load_locale() {
+	void Locale::load_locale() {
 		locale_strings.clear();
 		ifstream file("Resources/lang/" + locale + ".cfg");
 
@@ -44,7 +44,7 @@ namespace mgc {
 	void Locale::set_locale(string locale) {
 		this->locale = locale;
 
-		_load_locale();
+		load_locale();
 	}
 
 	string Locale::get_locale() const {

@@ -9,6 +9,8 @@ namespace ini {
 		~IniFile();
 
 		IniFile(string path);
+		IniFile(const IniFile& other) = delete;
+		IniFile(IniFile&& other) = delete;
 
 		//bool load_file(string path);
 		void save_file() const;
@@ -28,19 +30,18 @@ namespace ini {
 		string get_key_value(string section_name, string key_name) const;
 		bool set_key_value(string section_name, string key_name, string key_value);
 
-		const string& path = path_;
-
 		template<typename R>
 		R read_all(const string& section) {
 			return get_section(section)->read_all<R>();
 		}
 
+		string get_path() const { return path; }
+
 	private:
 		friend void fill_ini_file(string path, IniFile& ini_file);
-		friend IniFile load_ini_file(string path);
 
 		IniFile();
-		string path_;
+		string path;
 
 		list<IniSection> sections;
 	};

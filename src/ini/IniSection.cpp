@@ -9,7 +9,7 @@ namespace ini {
 	thread_local IniSection* _current_section;
 
 	bool IniSection::rename(const string new_name) {
-		return parent->rename_section(name, new_name);
+		return parent->rename_section(get_name(), new_name);
 	}
 
 	IniKey& IniSection::add_key(const string key_name) {
@@ -22,18 +22,18 @@ namespace ini {
 
 	bool IniSection::remove_key(const string& key_name) {
 		for (auto& iter : keys) {
-			if (iter.name == key_name) {
+			if (iter.get_name() == key_name) {
 				return remove_key(&iter);
 			}
 		}
 
-		mgc::log::warn("ini") << "Trying to remove non-existant key " << key_name << " in section " << name << " in file " << parent->path;
+		mgc::log::warn("ini") << "Trying to remove non-existant key " << key_name << " in section " << get_name() << " in file " << parent->get_path();
 		return false;
 	}
 
 	bool IniSection::remove_key(IniKey* key) {
 		if (key->parent != this) {
-			mgc::log::warn("ini") << "Trying to remove key " << key->name << " in section " << key->parent->name << " in file " << key->parent->parent->path << " , using section " << name << " in file " << parent->path;
+			mgc::log::warn("ini") << "Trying to remove key " << key->get_name() << " in section " << key->parent->get_name() << " in file " << key->parent->parent->get_path() << " , using section " << get_name() << " in file " << parent->get_path();
 			return false;
 		}
 
@@ -43,28 +43,28 @@ namespace ini {
 
 	bool IniSection::rename_key(IniKey* key, const string new_name) {
 		if (get_key(new_name)) {
-			mgc::log::warn("ini") << "Trying to rename key " << key->name << " to already existing key " << new_name << " in section " << name << " in file " << parent->path;
+			mgc::log::warn("ini") << "Trying to rename key " << key->get_name() << " to already existing key " << new_name << " in section " << get_name() << " in file " << parent->get_path();
 			return false;
 		}
 
-		key->name_ = new_name;
+		key->name = new_name;
 		return true;
 	}
 
 	bool IniSection::rename_key(const string& old_name, const string new_name) {
 		for (auto& iter : keys) {
-			if (iter.name == old_name) {
+			if (iter.get_name() == old_name) {
 				return rename_key(&iter, new_name);
 			}
 		}
 
-		mgc::log::warn("ini") << "Trying to rename non-existant key " << old_name << " to " << new_name << " in section " << name << " in file " << parent->path;
+		mgc::log::warn("ini") << "Trying to rename non-existant key " << old_name << " to " << new_name << " in section " << get_name() << " in file " << parent->get_path();
 		return false;
 	}
 
 	const IniKey* IniSection::get_key(const string& key_name) const {
 		for (auto& iter : keys) {
-			if (iter.name == key_name) {
+			if (iter.get_name() == key_name) {
 				return &iter;
 			}
 		}
@@ -160,13 +160,13 @@ namespace ini {
 		vector<string> names;
 
 		for (auto& key : keys) {
-			names.push_back(key.name);
+			names.push_back(key.get_name());
 		}
 
 		return names;
 	}
 
 	bool operator==(const IniSection& s1, const IniSection& s2) {
-		return (s1.name == s2.name && s1.parent == s2.parent);
+		return (s1.get_name() == s2.get_name() && s1.parent == s2.parent);
 	}
 }

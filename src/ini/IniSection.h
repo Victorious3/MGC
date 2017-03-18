@@ -15,16 +15,18 @@ namespace ini {
 		friend IniFile;
 		friend void fill_ini_file(string path, IniFile& ini_file);
 
-		IniSection(IniFile* parent, string section_name) : parent(parent), name_(section_name) {};
+		IniSection(IniFile* parent, string section_name) : parent(parent), name(section_name) {};
 
 		list<IniKey> keys;
-		vector<string> comments_;
-		string name_;
+		vector<string> comments;
+		string name;
 
 	public:
+
 		IniFile* const parent;
-		const vector<string>& comments = comments_;
-		const string& name = name_;
+
+		vector<string> get_comments() const { return comments; }
+		string get_name() const { return name; }
 
 		bool rename(const string new_name);
 

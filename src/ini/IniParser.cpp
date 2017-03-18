@@ -64,7 +64,7 @@ namespace ini {
 	}
 
 	void save_ini_file(const IniFile& ini_file) {
-		save_ini_file(ini_file.path, ini_file);
+		save_ini_file(ini_file.get_path(), ini_file);
 	}
 
 	static inline void write_str(ofstream& stream, string str) {
@@ -82,10 +82,10 @@ namespace ini {
 		for (auto& section_name : ini_file.get_section_names()) {
 			const IniSection* const section = ini_file.get_section(section_name);
 
-			for (auto& comment : section->comments) {
+			for (auto& comment : section->get_comments()) {
 				write_str(file, "; "s + comment + "\n");
 			}
-			write_str(file, "["s + section->name + "]\n");
+			write_str(file, "["s + section->get_name() + "]\n");
 
 			for (auto& key_name : section->get_key_names()) {
 				const IniKey* const key = section->get_key(key_name);
@@ -94,7 +94,7 @@ namespace ini {
 					write_str(file, "; "s + comment + "\n");
 				}
 
-				write_str(file, key->name + "=" + key->value + "\n");
+				write_str(file, key->get_name() + "=" + key->value + "\n");
 			}
 		}
 
@@ -104,7 +104,7 @@ namespace ini {
 	}
 
 	void fill_ini_file(string path, IniFile& ini_file) {
-		ini_file.path_ = path;
+		ini_file.path = path;
 
 		ifstream file;
 		file.open(path, ifstream::in);
@@ -123,7 +123,7 @@ namespace ini {
 			switch (parsed_line.type) {
 			case ParsedLineType::SECTION:
 				section = &ini_file.add_section(parsed_line.params[0]);
-				section->comments_ = comments;
+				section->comments = comments;
 				comments.clear();
 				break;
 			case ParsedLineType::KEY:
@@ -151,13 +151,5 @@ namespace ini {
 		}
 
 		file.close();
-	}
-
-	IniFile load_ini_file(string path) {
-		IniFile ini_file;
-
-		fill_ini_file(path, ini_file);
-
-		return ini_file;
 	}
 }

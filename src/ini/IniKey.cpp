@@ -10,7 +10,7 @@ namespace ini {
 	}
 
 	bool operator==(const IniKey& k1, const IniKey& k2) {
-		return (k1.name == k2.name &&
+		return (k1.get_name() == k2.get_name() &&
 			k1.value == k2.value &&
 			k1.parent == k2.parent);
 	}

@@ -17,7 +17,7 @@ namespace mgc {
 	Graphics graphics;
 	Timing timing;
 	ini::IniFile ini("mgc.ini");
-	Keyboard keyboard(ini, "key bindings");
+	Keyboard keyboard;
 	Locale loc("en-us");
 
 	bool running = true;
@@ -306,8 +306,7 @@ namespace mgc {
 	}
 
 	static void init_input() {
-		//keyboard.read_config(ini);
-		//key_fullscreen = keyboard.get_action(mgc::Keyboard::ACTIONS::TOGGLE_FULLSCREEN);
+		keyboard.read_config(ini, "key bindings");
 	}
 
 	static void init_sdl() {

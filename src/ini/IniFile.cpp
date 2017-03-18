@@ -138,7 +138,7 @@ namespace ini {
 	}
 
 	IniSection& IniFile::add_section(string section_name) {
-		sections.push_back(IniSection(this, section_name));
+		sections.emplace_back(IniSection(this, section_name));
 		return sections.back();
 	}
 
@@ -150,7 +150,7 @@ namespace ini {
 
 		for (auto& iter : sections) {
 			if (iter.name == old_name) {
-				iter.name_ = new_name;
+				iter.name = new_name;
 				return true;
 			}
 		}
@@ -207,7 +207,7 @@ namespace ini {
 	}
 
 	vector<string> IniFile::get_section_names() const {
-		vector<string> section_names{};
+		vector<string> section_names;
 
 		for (auto& iter : sections) {
 			section_names.push_back(iter.name);

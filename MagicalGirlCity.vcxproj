@@ -217,6 +217,7 @@
     <ClInclude Include="src\mgc.h" />
     <ClInclude Include="src\stddef\stdafx.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\ui\effects.h" />
     <ClInclude Include="src\ui\Image.h" />
     <ClInclude Include="src\ui\UI.h" />
     <ClInclude Include="src\ui\UIElement.h" />

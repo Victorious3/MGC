@@ -43,7 +43,7 @@ namespace render {
 		if (ticks <= start) return 0;
 		else if (ticks >= end) return 1;
 		else {
-			return (ticks - start) / (end - start);
+			return (float)(ticks - start) / (end - start);
 		}
 	}
 
@@ -52,6 +52,11 @@ namespace render {
 	}
 
 	inline void linear_interpolatef(float& target, const int& start_time, const int& end_time, const float& start_val, const float& end_val) {
+		target = linear_interpolatef(start_time, end_time) * (end_val - start_val) + start_val;
+	}
+
+	template <class T>
+	inline void linear_interpolate(T& target, const int& start_time, const int& end_time, const float& start_val, const float& end_val) {
 		target = linear_interpolatef(start_time, end_time) * (end_val - start_val) + start_val;
 	}
 

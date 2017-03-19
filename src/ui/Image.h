@@ -15,11 +15,10 @@ namespace UI {
 
 		virtual void update();
 		virtual void render();
+		int x, y;
 
 	private:
-
 		string path;
 		render::Texture texture;
-		int x, y;
 	};
 }

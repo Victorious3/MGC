@@ -9,6 +9,7 @@
 #include "ui/UI.h"
 #include "ui/Image.h"
 #include "TaskExecutor.h"
+#include "InterpolateTask.h"
 
 namespace mgc {
 
@@ -33,6 +34,9 @@ namespace mgc {
 	Uint screen_texture = 0;
 
 	static const Keyboard::InputAction& key_fullscreen = keyboard.get_action("toggle_fullscreen", SDL_SCANCODE_F11);
+	static const Keyboard::InputAction& move_test = keyboard.get_action("anim_test", SDL_SCANCODE_F10);
+
+	UI::Image* test_image = nullptr;
 
 	static void sdl_event() {
 		SDL_Event event;
@@ -124,6 +128,10 @@ namespace mgc {
 		keyboard.update();
 		sdl_event();
 		UI::update();
+
+		if (move_test.fired) {
+			add_task(new InterpolateTask<int>(test_image->x, test_image->x, test_image->x - 50, SDL_GetTicks() + 1_sec, SDL_GetTicks() + 5_sec));
+		}
 	}
 
 	void render() {
@@ -388,7 +396,8 @@ namespace mgc {
 	}
 
 	void init_ui() {
-		UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", render::texture_manager));
+		test_image = new UI::Image(450, 10, "Resources/sprites/test.png", render::texture_manager);
+		UI::push_element(test_image);
 	}
 
 	// Finalization code

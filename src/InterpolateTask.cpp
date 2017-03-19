@@ -1,11 +1,7 @@
 #include <stdafx.h>
 
 #include "InterpolateTask.h"
-<<<<<<< HEAD
 #include "render.h"
-=======
-#include "util.h"
->>>>>>> 5378460509052c72e66ea6b8d02edfe92f411594
 
 namespace mgc{
 	InterpolateTask::InterpolateTask(float& target, int start_val, int end_val, int start_time, int end_time) : 
@@ -30,10 +26,6 @@ namespace mgc{
 			return;
 		}
 
-<<<<<<< HEAD
 		render::linear_interpolatef(target, start_time, end_time, start_val, end_val);
-=======
-		target = util::linear_interpolatef(start_val, end_val, (time - start_time) / (end_time - start_time));
->>>>>>> 5378460509052c72e66ea6b8d02edfe92f411594
 	}
 }

@@ -183,6 +183,7 @@
     <Text Include="Resources\fonts\OFL.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\InterpolateTask.cpp" />
     <ClCompile Include="src\render.cpp" />
     <ClCompile Include="src\filesystem.cpp" />
     <ClCompile Include="src\font.cpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="src\ui\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\InterpolateTask.h" />
     <ClInclude Include="src\render.h" />
     <ClInclude Include="src\filesystem.h" />
     <ClInclude Include="src\font.h" />
@@ -216,11 +218,13 @@
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\mgc.h" />
     <ClInclude Include="src\stddef\stdafx.h" />
+    <ClInclude Include="src\Task.h" />
+    <ClInclude Include="src\TaskExecutor.h" />
     <ClInclude Include="src\Texture.h" />
-    <ClInclude Include="src\ui\effects.h" />
     <ClInclude Include="src\ui\Image.h" />
     <ClInclude Include="src\ui\UI.h" />
     <ClInclude Include="src\ui\UIElement.h" />
+    <ClInclude Include="src\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

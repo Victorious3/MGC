@@ -7,6 +7,7 @@
 #include "ini.h"
 #include "Locale.h"
 #include "ui/UI.h"
+#include "ui/effects.h"
 #include "ui/Image.h"
 
 namespace mgc {
@@ -123,6 +124,7 @@ namespace mgc {
 		keyboard.update();
 		sdl_event();
 		UI::update();
+		UI::effects::update(SDL_GetTicks());
 	}
 
 	void render() {
@@ -387,6 +389,7 @@ namespace mgc {
 
 	void init_ui() {
 		UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", render::texture_manager));
+		UI::effects::init();
 	}
 
 	// Finalization code

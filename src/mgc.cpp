@@ -7,8 +7,8 @@
 #include "ini.h"
 #include "Locale.h"
 #include "ui/UI.h"
-#include "ui/effects.h"
 #include "ui/Image.h"
+#include "TaskExecutor.h"
 
 namespace mgc {
 
@@ -124,7 +124,6 @@ namespace mgc {
 		keyboard.update();
 		sdl_event();
 		UI::update();
-		UI::effects::update(SDL_GetTicks());
 	}
 
 	void render() {
@@ -202,6 +201,7 @@ namespace mgc {
 
 		montserrat.draw_string(loc.get_string("test_string"), 0, 30);
 
+		update_tasks(SDL_GetTicks());
 		UI::render();
 
 		// Draw to screen
@@ -389,7 +389,6 @@ namespace mgc {
 
 	void init_ui() {
 		UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", render::texture_manager));
-		UI::effects::init();
 	}
 
 	// Finalization code

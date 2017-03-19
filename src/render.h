@@ -4,6 +4,13 @@
 
 typedef SDL_Color Color;
 
+constexpr Uint64 operator ""_sec(Uint64 val) {
+	return val * 1000;
+}
+
+constexpr Uint64 operator ""_min(Uint64 val) {
+	return val * 1000 * 60;
+}
 
 namespace render {
 
@@ -22,7 +29,6 @@ namespace render {
 	constexpr Color color_a(Uint32 rbga) {
 		return Color { (Uint8)(rbga >> 24), (Uint8)(rbga >> 16), (Uint8)(rbga >> 8) };
 	}
-
 
 	namespace colors {
 		constexpr Color BLACK = color(0x000000);

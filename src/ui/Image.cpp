@@ -17,6 +17,6 @@ namespace UI {
 
 	void Image::render() {
 		texture.load();
-		render::draw_sprite(texture, x, y, colors::WHITE);
+		render::draw_texture(texture, x, y, colors::WHITE);
 	}
 }

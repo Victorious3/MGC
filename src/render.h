@@ -54,6 +54,8 @@ namespace render {
 	struct Sprite;
 
 	void draw_sprite(const Sprite& sprite, int x, int y, Color color = colors::WHITE);
+	void draw_texture(const Texture& sprite, int x, int y, Color color = colors::WHITE);
+
 	void draw_gl_texture(GLuint texture, int x, int y, int w, int h, Color color = colors::WHITE);
 	void draw_gl_texture(GLuint texture, int x, int y, int w, int h, float umin, float vmin, float umax, float vmax, Color color = colors::WHITE);
 };

@@ -1,7 +1,7 @@
 #include <stdafx.h>
 
 #include "Image.h"
-//#include "../Texture.h"
+#include "../render.h"
 
 namespace UI {
 	using namespace render;
@@ -16,6 +16,7 @@ namespace UI {
 	}
 
 	void Image::render() {
-		
+		texture.load();
+		render::draw_sprite(texture, x, y, colors::WHITE);
 	}
 }

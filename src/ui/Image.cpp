@@ -7,15 +7,9 @@ namespace UI {
 	using namespace render;
 
 	Image::Image(int x, int y, string path, TextureManager& manager)
-		: texture(path, manager),
+		: texture(manager.get_texture(path)),
 		x(x),
 		y(y){}
-
-	Image::~Image()	{
-		if (texture.is_loaded()) {
-			texture.destroy();
-		}
-	}
 
 	void Image::update() {
 

@@ -14,7 +14,7 @@ namespace mgc {
 	}
 
 	Font::Font(string file) 
-		: texture(file + ".png")
+		: texture(render::get_texture(file + ".png"))
 	{
 		ifstream data(file + ".dat", std::ios_base::binary);
 		if (!data) throw RUNTIME_ERROR("Font could not be loaded. File \"" + file + ".dat\"");

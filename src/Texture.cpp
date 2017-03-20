@@ -8,8 +8,8 @@ namespace render {
 	TextureManager texture_manager;
 
 	void TextureManager::load_all() {
-		for (Texture* t : textures) {
-			load(*t);
+		for (auto it : textures) {
+			load(it.second);
 		}
 	}
 
@@ -20,14 +20,10 @@ namespace render {
 
 	void TextureManager::destroy_all() {
 		vector<GLuint> glt(textures.size());
-		for (Uint i = 0; i < textures.size(); i++) {
-			glt[i] = textures[i]->gl_texture;
+		for (auto it : textures) {
+			glt.push_back(it.second.gl_texture);
 		}
 		glDeleteTextures(textures.size(), glt.data());
-	}
-
-	void TextureManager::store(Texture& texture) {
-		textures.push_back(&texture);
 	}
 	
 	void TextureManager::load(Texture& texture) {
@@ -56,5 +52,13 @@ namespace render {
 
 	void TextureManager::destroy(Texture& texture) {
 		glDeleteTextures(1, &texture.gl_texture);
+		texture.gl_texture = 0;
+	}
+
+	Texture& TextureManager::get_texture(string path) {
+		auto tex = textures.find(path);
+		if (tex != textures.end()) {
+			return tex->second;
+		}
 	}
 }

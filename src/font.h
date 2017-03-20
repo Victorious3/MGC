@@ -15,7 +15,7 @@ namespace mgc {
 		
 	private:
 		// Sprite
-		render::Texture texture;
+		render::Texture& texture;
 
 		Uint32 map_width;
 		Uint32 map_height;

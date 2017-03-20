@@ -5,8 +5,14 @@
 #include "mgc.h"
 
 namespace render {
-	void draw_sprite(const Sprite& sprite, int x, int y, Color color) {
+	void draw_sprite(Sprite& sprite, int x, int y, Color color) {
 		draw_gl_texture(sprite.gl_texture, x, y, sprite.w, sprite.h, sprite.umin, sprite.vmin, sprite.umax, sprite.vmax, color);
+	}
+
+	// Ensures that the texture is properly loaded
+	void draw_texture(Texture& texture, int x, int y, Color color) {
+		texture.load();
+		draw_gl_texture(texture.gl_texture, x, y, texture.w, texture.h, texture.umin, texture.vmin, texture.umax, texture.vmax, color);
 	}
 
 	void draw_gl_texture(GLuint texture, int x, int y, int w, int h, Color color) {

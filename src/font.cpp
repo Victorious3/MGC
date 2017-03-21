@@ -6,23 +6,16 @@
 
 namespace mgc {
 
-	static void read_Uint64(Uint32* out, ifstream& data) {
-		char buffer[4];
-		data.read(buffer, 4);
-		std::memcpy(out, buffer, 4);
-		*out = le32toh(*out);
-	}
-
 	Font::Font(string file) 
-		: texture(render::get_texture(file + ".png"))
+		: texture(render::add_texture(file + ".png"))
 	{
 		ifstream data(file + ".dat", std::ios_base::binary);
 		if (!data) throw RUNTIME_ERROR("Font could not be loaded. File \"" + file + ".dat\"");
 		
-		read_Uint64(&map_width, data);
-		read_Uint64(&map_height, data);
-		read_Uint64(&cell_width, data);
-		read_Uint64(&cell_height, data);
+		data.read((char*)&map_width,   sizeof(Uint32)); map_width   = le32toh(map_width);
+		data.read((char*)&map_height,  sizeof(Uint32)); map_height  = le32toh(map_height);
+		data.read((char*)&cell_width,  sizeof(Uint32)); cell_width  = le32toh(cell_width);
+		data.read((char*)&cell_height, sizeof(Uint32)); cell_height = le32toh(cell_height);
 		
 		data.read(&start_char, 1);
 		data.read(reinterpret_cast<char*>(char_sizes), 256);

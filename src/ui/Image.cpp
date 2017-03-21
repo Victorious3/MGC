@@ -1,13 +1,12 @@
 #include <stdafx.h>
 
 #include "Image.h"
-#include "../render.h"
+
+using namespace render;
 
 namespace UI {
-	using namespace render;
-
 	Image::Image(int x, int y, string path, TextureManager& manager)
-		: texture(manager.get_texture(path)),
+		: texture(manager.add_texture(path)),
 		x(x),
 		y(y){}
 
@@ -16,7 +15,6 @@ namespace UI {
 	}
 
 	void Image::render() {
-		texture.load();
-		render::draw_texture(texture, x, y, colors::WHITE);
+		draw_texture(texture, x, y, colors::WHITE);
 	}
 }

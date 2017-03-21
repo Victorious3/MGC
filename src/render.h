@@ -2,6 +2,8 @@
 
 #include <stdafx.h>
 
+#include "Texture.h"
+
 typedef SDL_Color Color;
 
 constexpr Uint64 operator ""_sec(Uint64 val) {
@@ -51,10 +53,10 @@ namespace render {
 		glDisable(GL_TEXTURE_2D);
 	}
 
-	struct Sprite;
+	GLuint allocate_texture(Uint w, Uint h, const void* pBuffer = nullptr);
 
 	void draw_sprite(const Sprite& sprite, int x, int y, Color color = colors::WHITE);
-	void draw_texture(const Texture& sprite, int x, int y, Color color = colors::WHITE);
+	void draw_texture(Texture& sprite, int x, int y, Color color = colors::WHITE);
 
 	void draw_gl_texture(GLuint texture, int x, int y, int w, int h, Color color = colors::WHITE);
 	void draw_gl_texture(GLuint texture, int x, int y, int w, int h, float umin, float vmin, float umax, float vmax, Color color = colors::WHITE);

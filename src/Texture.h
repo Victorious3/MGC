@@ -12,14 +12,19 @@ namespace render {
 
 		void load_all();
 		void destroy_all();
-		void reload();
+		
+		inline void reload() { 
+			destroy_all(); 
+			load_all(); 
+		}
 
 		// Force loading a texture
 		virtual void load(Texture& texture);
 		// Force destroying a texture
 		virtual void destroy(Texture& texture);
 
-		Texture& get_texture(string path);
+		// Returns a (cached) texture instance for the given path
+		Texture& add_texture(string path);
 	protected:
 		std::unordered_map<string, Texture> textures;
 	};
@@ -38,13 +43,18 @@ namespace render {
 		GLuint gl_texture = 0;
 	};
 
-	inline Texture& get_texture(string path, TextureManager& mgr = texture_manager) {
-		return texture_manager.get_texture(path);
+	inline Texture& add_texture(string path, TextureManager& mgr = texture_manager) {
+		return texture_manager.add_texture(path);
 	}
 
+	// Only reads the file header. Checks for validity, so feel free to pass garbage.
+	void read_img_dim_png(Uint32* w, Uint32* h, const string& file);
+
+	class TextureAtlas;
 	class Texture final : public Sprite {
 	private:
-		friend Texture& get_texture(string, TextureManager&);
+		friend TextureManager;
+		friend TextureAtlas;
 		Texture(string path, TextureManager& mgr) : Sprite(0, 0), path(path), mgr(mgr) {}
 
 	public:
@@ -58,17 +68,29 @@ namespace render {
 
 	class TextureAtlas final {
 	public:
+		// The cache_file doesn't have a file extension, it generates a bmp/dat file combo
+		// An empty string means no cache file is used, this is explicit to avoid erros
 		TextureAtlas(string cache_file) : cache_file(cache_file) {}
 
-		Sprite& add(string texture); // The sprite returned is only usable after load() is called
+		// The sprite returned is only usable after load() is called
+		// This reads the width & height of the image, has the side
+		// effect of enforcing that we get a valid image path
+		// TextureManager doesn't do this, it fails later
+		Sprite& add_sprite(string sprite); 
 
 		void load();
 		void destroy();
-		void reload();
+
+		inline void reload() { 
+			destroy();
+			load();
+		}
 
 	private:
+		bool refresh_cache = false; // Flag to rewrite the cache, set when destroy is called
 		Sprite texture;
 		const string cache_file;
+		std::list<Sprite> sprites {32};
 	};
 
 }

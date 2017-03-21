@@ -138,7 +138,7 @@ namespace ini {
 	}
 
 	IniSection& IniFile::add_section(string section_name) {
-		sections.emplace_back(IniSection(this, section_name));
+		sections.push_back(IniSection(this, section_name));
 		return sections.back();
 	}
 

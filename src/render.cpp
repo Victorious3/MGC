@@ -1,11 +1,23 @@
 #include <stdafx.h>
 
 #include "render.h"
-#include "Texture.h"
 #include "mgc.h"
 
 namespace render {
-	void draw_sprite(Sprite& sprite, int x, int y, Color color) {
+	
+	GLuint allocate_texture(Uint w, Uint h, const void* pBuffer) {
+		GLuint tex;
+		glGenTextures(1, &tex);
+		glBindTexture(GL_TEXTURE_2D, tex);
+		if (pBuffer) glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		return tex;
+	}
+
+	void draw_sprite(const Sprite& sprite, int x, int y, Color color) {
 		draw_gl_texture(sprite.gl_texture, x, y, sprite.w, sprite.h, sprite.umin, sprite.vmin, sprite.umax, sprite.vmax, color);
 	}
 

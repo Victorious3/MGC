@@ -1,9 +1,10 @@
 #include <stdafx.h>
 
 #include "mgc.h"
-#include "font.h"
-#include "ini.h"
 #include "log.h"
+
+#include "Texture.h"
+#include "render.h"
 
 using namespace mgc;
 

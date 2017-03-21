@@ -16,7 +16,7 @@ namespace ini {
 		IniKey* key = get_key(key_name);
 		if (key) return *key;
 
-		keys.emplace_back(IniKey(this, key_name, ""));
+		keys.push_back(IniKey(this, key_name, ""));
 		return keys.back();
 	}
 

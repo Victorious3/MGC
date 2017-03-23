@@ -4,7 +4,13 @@
 #include "mgc.h"
 
 namespace render {
+
+	GLVars glvars;
 	
+	void init_glvars() {
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &glvars.max_tex_size);
+	}
+
 	GLuint allocate_texture(Uint w, Uint h, const void* pBuffer) {
 		GLuint tex;
 		glGenTextures(1, &tex);

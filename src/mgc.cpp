@@ -255,6 +255,9 @@ namespace mgc {
 	static void init_gl() {
 		// Initializing glew
 		glewInit();
+
+		render::init_glvars();
+
 		// Setup framebuffer for scaling
 		glGenFramebuffers(1, &screen_fbo);
 		glGenTextures(1, &screen_texture);

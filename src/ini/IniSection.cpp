@@ -107,11 +107,6 @@ namespace ini {
 		set(key_name, ret);
 	};
 
-	// Special case: string
-	/*template<> void IniSection::set(const string& key_name, string value) {
-		add_key(key_name).value = value;
-	}*/
-
 	template<typename T> 
 	static inline T get_number_signed(const IniSection& section, const string& key_name, T def) {
 		if (const IniKey* key = section.get_key(key_name)) {

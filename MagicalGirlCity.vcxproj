@@ -200,6 +200,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\TextureAtlas.cpp" />
     <ClCompile Include="src\ui\Image.cpp" />
     <ClCompile Include="src\ui\UI.cpp" />
   </ItemGroup>
@@ -218,6 +219,7 @@
     <ClInclude Include="src\mgc.h" />
     <ClInclude Include="src\stddef\stdafx.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\TextureAtlas.h" />
     <ClInclude Include="src\ui\Image.h" />
     <ClInclude Include="src\ui\UI.h" />
     <ClInclude Include="src\ui\UIElement.h" />

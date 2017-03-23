@@ -40,6 +40,12 @@ namespace render {
 		constexpr Color GREEN = color(0x0000FF);
 	};
 
+	struct GLVars {
+		GLint max_tex_size;
+	};
+	extern GLVars glvars;
+	
+	void init_glvars();
 
 	// TODO These might want to be somewhere else
 	inline void enable_gl_texture() {

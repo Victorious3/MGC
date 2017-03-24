@@ -25,7 +25,7 @@ namespace mgc {
 		return char_sizes[c];
 	}
 
-	Uint Font::draw_char_internal(char c, int x, int y, Color color) const {
+	Uint Font::draw_char_internal(char c, int x, int y, render::Color color) const {
 		Uint w = char_width(c);
 
 		Uint32 t = cell_width * (c - start_char);
@@ -47,7 +47,7 @@ namespace mgc {
 		return w;
 	}
 
-	Uint Font::draw_char(char c, int x, int y, Color color) {
+	Uint Font::draw_char(char c, int x, int y, render::Color color) {
 		Uint w;
 
 		texture.load();
@@ -61,7 +61,7 @@ namespace mgc {
 		return w;
 	}
 
-	Uint Font::draw_string(string s, int x, int y, Color color) {
+	Uint Font::draw_string(string s, int x, int y, render::Color color) {
 		Uint w = 0;
 		texture.load();
 		render::enable_gl_texture();

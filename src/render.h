@@ -4,8 +4,6 @@
 
 #include "Texture.h"
 
-typedef SDL_Color Color;
-
 constexpr Uint64 operator ""_sec(Uint64 val) {
 	return val * 1000;
 }
@@ -15,6 +13,10 @@ constexpr Uint64 operator ""_min(Uint64 val) {
 }
 
 namespace render {
+
+	typedef SDL_Color Color;
+	typedef SDL_Rect  Rectangle;
+	typedef SDL_Point Point;
 
 	constexpr Color color(Uint8 r, Uint8 g, Uint8 b) {
 		return Color { r, g, b, 255 };

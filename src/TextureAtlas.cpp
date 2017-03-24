@@ -2,11 +2,20 @@
 #include "TextureAtlas.h"
 
 namespace render {
+
 	Sprite& TextureAtlas::add_sprite(string sprite) {
 		Uint32 w, h;
 		read_img_dim_png(&w, &h, sprite);
 		sprites.push_back(Sprite(w, h));
 		return sprites.back();
+	}
+
+	bool fit(Sprite& sprite, Rectangle& bucket) {
+
+	}
+
+	void split(Sprite& sprite, Rectangle bucket[2]) {
+
 	}
 
 	void TextureAtlas::load() {
@@ -21,8 +30,6 @@ namespace render {
 		return;
 		}
 		}*/
-
-
 
 		// We have to rebuild the cache
 	}

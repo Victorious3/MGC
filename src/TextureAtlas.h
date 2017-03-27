@@ -7,7 +7,6 @@ namespace render {
 
 	class TextureAtlas final {
 	public:
-		// The cache_file doesn't have a file extension, it generates a bmp/dat file combo
 		// An empty string means no cache file is used, this is explicit to avoid erros
 		TextureAtlas(string cache_file) : cache_file(cache_file) {}
 
@@ -26,9 +25,15 @@ namespace render {
 		}
 
 	private:
+		struct SpriteEntry {
+			Sprite sprite;
+			string path;
+			int x, y;
+		};
+
 		bool refresh_cache = false; // Flag to rewrite the cache, set when destroy is called
 		Sprite texture;
 		const string cache_file;
-		std::list<Sprite> sprites { 32 };
+		std::list<SpriteEntry> sprites;
 	};
 }

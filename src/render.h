@@ -34,6 +34,10 @@ namespace render {
 		return Color { (Uint8)(rbga >> 24), (Uint8)(rbga >> 16), (Uint8)(rbga >> 8) };
 	}
 
+	constexpr Rectangle rectangle(int w, int h, int x = 0, int y = 0) {
+		return Rectangle { x, y, w, h };
+	}
+
 	namespace colors {
 		constexpr Color BLACK = color(0x000000);
 		constexpr Color WHITE = color(0xFFFFFF);
@@ -62,6 +66,11 @@ namespace render {
 	}
 
 	GLuint allocate_texture(Uint w, Uint h, const void* pBuffer = nullptr);
+	
+	GLuint create_framebuffer(GLuint texture_attachment);
+
+	// Returns the current fbo
+	GLuint bind_framebuffer(GLuint fbo);
 
 	void draw_sprite(const Sprite& sprite, int x, int y, Color color = colors::WHITE);
 	void draw_texture(Texture& sprite, int x, int y, Color color = colors::WHITE);

@@ -47,6 +47,8 @@ namespace render {
 		return texture_manager.add_texture(path);
 	}
 
+	GLuint create_texture(const string& path, Uint* w, Uint* h);
+
 	// Only reads the file header. Checks for validity, so feel free to pass garbage.
 	void read_img_dim_png(Uint32* w, Uint32* h, const string& file);
 
@@ -54,7 +56,6 @@ namespace render {
 	class Texture final : public Sprite {
 	private:
 		friend TextureManager;
-		friend TextureAtlas;
 		Texture(string path, TextureManager& mgr) : Sprite(0, 0), path(path), mgr(mgr) {}
 
 	public:

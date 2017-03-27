@@ -259,20 +259,8 @@ namespace mgc {
 		render::init_glvars();
 
 		// Setup framebuffer for scaling
-		glGenFramebuffers(1, &screen_fbo);
-		glGenTextures(1, &screen_texture);
-
-		glBindTexture(GL_TEXTURE_2D, screen_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, constants::SCR_WIDTH, constants::SCR_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		
-		glBindFramebuffer(GL_FRAMEBUFFER, screen_fbo);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screen_texture, 0);
-
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			log::error << "Framebuffer creation faled" << endl;
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		screen_texture = render::allocate_texture(constants::SCR_WIDTH, constants::SCR_HEIGHT);
+		screen_fbo = render::create_framebuffer(screen_texture);
 
 		glShadeModel(GL_FLAT);
 		glClearColor(0, 0, 0, 0);

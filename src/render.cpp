@@ -2,6 +2,7 @@
 
 #include "render.h"
 #include "mgc.h"
+#include "log.h"
 
 namespace render {
 
@@ -15,12 +16,29 @@ namespace render {
 		GLuint tex;
 		glGenTextures(1, &tex);
 		glBindTexture(GL_TEXTURE_2D, tex);
-		if (pBuffer) glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
-			GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pBuffer);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		return tex;
+	}
+
+	GLuint create_framebuffer(GLuint texture_attachment) {
+		GLuint fbo; glGenFramebuffers(1, &fbo);
+		GLint current_fbo = bind_framebuffer(fbo);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture_attachment, 0);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			mgc::log::error << "Framebuffer creation failed" << endl;
+		glBindFramebuffer(GL_FRAMEBUFFER, current_fbo);
+		return fbo;
+	}
+
+	GLuint bind_framebuffer(GLuint fbo) {
+		GLint current_fbo;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &current_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		return current_fbo;
 	}
 
 	void draw_sprite(const Sprite& sprite, int x, int y, Color color) {

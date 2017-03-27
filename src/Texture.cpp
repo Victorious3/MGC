@@ -26,18 +26,7 @@ namespace render {
 	
 	void TextureManager::load(Texture& texture) {
 		if (texture.gl_texture != 0) return;
-		//cout << "Generating texture from path \"" << texture.path << "\"" << endl;
-		if (SDL_Surface* raw = IMG_Load(texture.path.c_str())) {
-			if (SDL_Surface* surface = SDL_ConvertSurfaceFormat(raw, SDL_PIXELFORMAT_RGBA32, 0)) {
-				//cout << "FORMAT: " << SDL_GetPixelFormatName(surface->format->format) << endl;
-				texture.w = surface->w;
-				texture.h = surface->h;
-				texture.gl_texture = allocate_texture(surface->w, surface->h, surface->pixels);
-
-				SDL_FreeSurface(surface);
-			} else throw RUNTIME_ERROR("Couldn't convert image " + texture.path + " to internal gl representation");
-			SDL_FreeSurface(raw);
-		} else throw RUNTIME_ERROR("Couldn't load PNG " + texture.path);
+		texture.gl_texture = create_texture(texture.path, &texture.w, &texture.h);
 	}
 
 	void TextureManager::destroy(Texture& texture) {
@@ -52,6 +41,24 @@ namespace render {
 		}
 		auto it = textures.emplace(path, Texture(path, *this));
 		return it.first->second;
+	}
+
+	GLuint create_texture(const string& path, Uint* w, Uint* h) {
+		GLuint texture = 0;
+		//cout << "Generating texture from path \"" << texture.path << "\"" << endl;
+		if (SDL_Surface* raw = IMG_Load(path.c_str())) {
+			if (SDL_Surface* surface = SDL_ConvertSurfaceFormat(raw, SDL_PIXELFORMAT_RGBA32, 0)) {
+				//cout << "FORMAT: " << SDL_GetPixelFormatName(surface->format->format) << endl;
+				*w = surface->w;
+				*h = surface->h;
+				texture = allocate_texture(surface->w, surface->h, surface->pixels);
+
+				SDL_FreeSurface(surface);
+			} else throw RUNTIME_ERROR("Couldn't convert image " + path + " to internal gl representation");
+			SDL_FreeSurface(raw);
+		} else throw RUNTIME_ERROR("Couldn't load PNG " + path);
+
+		return texture;
 	}
 
 	void read_img_dim_png(Uint32* w, Uint32* h, const string& file) {

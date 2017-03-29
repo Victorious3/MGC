@@ -99,22 +99,35 @@ namespace render {
 			}
 		}
 
-		// Render our texture & calculate UVs
+		// Render our texture
 		GLuint gl_texture = allocate_texture(width, height);
-		GLuint fbo = create_framebuffer(gl_texture); // Throw away framebuffer
+		GLuint fbo = create_framebuffer(gl_texture);
+		
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		gluOrtho2D(0, width, height, 0);
-		
-		for (SpriteEntry* sprite : input_sprites) {
-			Uint w, h;
-			// TODO
-		}
+		glMatrixMode(GL_MODELVIEW);
 
 		GLint curr_fbo = bind_framebuffer(fbo);
-		bind_framebuffer(curr_fbo);
+		
+		for (SpriteEntry* entry : input_sprites) {
+			Uint w, h;
+			GLuint texture = create_texture(entry->path, &w, &h);
+			draw_gl_texture(texture, entry->x, entry->y, w, h);
+			Sprite& sprite = entry->sprite;
 
-		glDeleteFramebuffers(1, &fbo);
+			// Calculate UVs
+			sprite.vmin = entry->x / width;
+			sprite.umin = entry->y / height;
+			sprite.vmax = (entry->x + w) / width;
+			sprite.umax = (entry->y + h) / height;
+		}
+
+		
+		bind_framebuffer(curr_fbo);
+		glDeleteFramebuffers(1, &fbo); // Throw away framebuffer
+
+		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 	}

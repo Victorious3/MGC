@@ -73,13 +73,13 @@ namespace render {
 		static const char png_magic[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A };
 		static const char png_ihdr[] { 0x49, 0x48, 0x44, 0x52 };
 
-		in.readsome(buff, 8); // PNG magic number
-		if (!std::strncmp(buff, png_magic, 8))
-			throw RUNTIME_ERROR("Not a valid png file! " + file);
-		in.seekg(4); // Chunk length, we dont care about this, supposedly 13
-		in.readsome(buff, 4); // What matters is that we have the IHDR chunk here
-		if (!std::strncmp(buff, png_ihdr, 4))
-			throw RUNTIME_ERROR("Not a valid png file! " + file);
+		in.read(buff, 8); // PNG magic number
+		if (std::strncmp(buff, png_magic, 8) != 0)
+			throw RUNTIME_ERROR("Not a valid png file! (Magic Number): " + file);
+		in.ignore(4); // Chunk length, we dont care about this, supposedly 13
+		in.read(buff, 4); // What matters is that we have the IHDR chunk here
+		if (std::strncmp(buff, png_ihdr, 4) != 0)
+			throw RUNTIME_ERROR("Not a valid png file! (IHDR): " + file);
 		
 		in.read((char*)w, sizeof(Uint32)); *w = be32toh(*w);
 		in.read((char*)h, sizeof(Uint32)); *h = be32toh(*h);

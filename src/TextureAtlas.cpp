@@ -25,6 +25,7 @@ namespace render {
 
 		int n = 0;
 		for (SpriteEntry& sprite : sprites) { 
+			cout << sprite.sprite.w << " " << sprite.sprite.h << endl;
 			size_estimate += sprite.sprite.w * sprite.sprite.h;
 			max_width = std::fmaxl(max_width, sprite.sprite.w);
 			input_sprites.push_back(&sprite); 	

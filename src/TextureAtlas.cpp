@@ -25,7 +25,6 @@ namespace render {
 
 		int n = 0;
 		for (SpriteEntry& sprite : sprites) { 
-			cout << sprite.sprite.w << " " << sprite.sprite.h << endl;
 			size_estimate += sprite.sprite.w * sprite.sprite.h;
 			max_width = std::fmaxl(max_width, sprite.sprite.w);
 			input_sprites.push_back(&sprite); 	
@@ -43,7 +42,6 @@ namespace render {
 		if (width < max_width)
 			throw RUNTIME_ERROR("Can't stitch texture, MAX_TEX_SIZE too small");
 
-		
 		list<Scanline> upper_edge = { Scanline { 0, width } };
 
 		for (SpriteEntry* sprite : input_sprites) {

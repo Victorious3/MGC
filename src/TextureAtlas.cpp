@@ -10,24 +10,11 @@ namespace render {
 		return sprites.back().sprite;
 	}
 
+	struct Scanline {
+		int y, w;
+	};
+
 	void TextureAtlas::load() {
-		/*if (!refresh_cache && !cache_file.empty()) {
-		// First we try to read the cache
-		// The cache file is a simple binary file that stores the computed positions of the sprites
-		// and the size of the cache file
-		ifstream cachef(cache_file + ".dat", std::ios_base::binary);
-		if (cachef.good()) {
-		// TODO
-
-		return;
-		}
-		}*/
-
-
-
-		struct Scanline { 
-			int y, w; 
-		};
 
 		// We have to rebuild the cache
 		// First we have to sort the sprites by their surface area
@@ -44,8 +31,8 @@ namespace render {
 			n++;
 		}
 
-		std::sort(input_sprites.begin(), input_sprites.end(), [](SpriteEntry& a, SpriteEntry& b) { 
-			return a.sprite.w * a.sprite.h < b.sprite.w * b.sprite.h;
+		std::sort(input_sprites.begin(), input_sprites.end(), [](SpriteEntry* a, SpriteEntry* b) { 
+			return a->sprite.w * a->sprite.h < b->sprite.w * b->sprite.h;
 		});
 
 		// Height and width of our final sprite
@@ -122,8 +109,17 @@ namespace render {
 			sprite.vmax = (entry->x + w) / width;
 			sprite.umax = (entry->y + h) / height;
 		}
-
 		
+		// Write to output
+		glBindTexture(GL_TEXTURE_2D, gl_texture);
+		Uint8* pixel_buffer = new Uint8[width * height * 4];
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixel_buffer);
+		SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(pixel_buffer, width, height, 8, width * 4, SDL_PIXELFORMAT_RGBA8888);
+		SDL_SaveBMP(surface, cache_file.c_str());
+
+		SDL_FreeSurface(surface);
+		delete[] pixel_buffer;
+
 		bind_framebuffer(curr_fbo);
 		glDeleteFramebuffers(1, &fbo); // Throw away framebuffer
 

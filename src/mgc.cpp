@@ -143,15 +143,12 @@ namespace mgc {
 		// Bind framebuffer for rendering
 
 		glBindFramebuffer(GL_FRAMEBUFFER, screen_fbo);
-
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(0, 0, 0, 0);
 		glColor3ub(255, 255, 255);
 
 		glTranslatef((GLfloat)mouse.x, (GLfloat)mouse.y, 0);
-
 		glBegin(GL_QUADS);
 		{
 			glVertex2i(1, -1);
@@ -211,7 +208,7 @@ namespace mgc {
 
 		glColor4ub(255, 255, 255, 255);
 		glEnable(GL_TEXTURE_2D);
-
+		
 		glBindTexture(GL_TEXTURE_2D, screen_texture);
 		glBegin(GL_QUADS);
 		{

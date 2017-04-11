@@ -21,7 +21,7 @@ namespace mgc {
 	void Keyboard::process_sdl_event(SDL_Event& event) {
 	}
 
-	void Keyboard::update(Uint64 delta_ms) {
+	void Keyboard::update(const Uint64& delta_ms) {
 		const Uint8* keyboard_state = SDL_GetKeyboardState(nullptr);
 		
 		for (auto& iter : actionmap) {

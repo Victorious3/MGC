@@ -21,7 +21,7 @@ namespace UI {
 
 	static vector<UIElement*> elements;
 
-	void update(Uint64 delta_ms);
+	void update(const Uint64& delta_ms);
 	void render();
 
 	void push_element(UIElement* element);

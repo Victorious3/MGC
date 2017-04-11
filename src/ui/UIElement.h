@@ -8,7 +8,7 @@ namespace UI {
 	public:
 		virtual ~UIElement() {}
 
-		virtual void update(const Uint64& delta_ms) = 0;
+		virtual void update(Uint64 delta_ms) = 0;
 		virtual void render() = 0;
 	};
 }

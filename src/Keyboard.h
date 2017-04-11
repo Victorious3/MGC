@@ -21,7 +21,7 @@ namespace mgc {
 		Keyboard();
 		Keyboard(const ini::IniFile& ini, const string& section_name);
 
-		void update(const Uint64& delta_ms);
+		void update(Uint64 delta_ms);
 		void read_config(const ini::IniFile& ini, const string& section_name);
 		void process_sdl_event(SDL_Event& key_event);
 

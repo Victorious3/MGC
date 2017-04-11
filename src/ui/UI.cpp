@@ -4,7 +4,7 @@
 #include "UIElement.h"
 
 namespace UI {
-	void update(const Uint64& delta_ms) {
+	void update(Uint64 delta_ms) {
 		for (auto& element : elements) {
 			element->update(delta_ms);
 		}

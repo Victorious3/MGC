@@ -132,6 +132,7 @@ namespace mgc {
 		// Update stuff on ticks
 		{
 			while (timing.ticks_delta_ms >= timing.tick_delay_ms) {
+				timing.ticks++;
 				timing.ticks_delta_ms -= timing.tick_delay_ms;
 
 				//call tick update stuff

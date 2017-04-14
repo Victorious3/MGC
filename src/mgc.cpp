@@ -8,6 +8,7 @@
 #include "Locale.h"
 #include "ui/UI.h"
 #include "ui/Image.h"
+#include "timing.h"
 
 namespace mgc {
 
@@ -119,13 +120,45 @@ namespace mgc {
 	}
 
 	void update() {
-		// Handle sdl events
-		keyboard.update();
-		sdl_event();
-		UI::update();
+		timing.ticks_delta_ms += timing.time_delta;
+
+		// Update stuff with delta time
+		{
+			keyboard.update(timing.time_delta);
+			sdl_event();
+			UI::update(timing.time_delta);
+		}
+
+		// Update stuff on ticks
+		{
+			while (timing.ticks_delta_ms >= timing.tick_delay_ms) {
+				timing.ticks++;
+				timing.ticks_delta_ms -= timing.tick_delay_ms;
+
+				//call tick update stuff
+				tick();
+			}
+		}
+	}
+
+	void tick() {
+
 	}
 
 	void render() {
+		graphics.render_delta_ms += timing.time_delta;
+		Uint64 time_now = timing::get_millis();
+
+		if (time_now - graphics.last_count_taken > 1000) {
+			graphics.last_count_taken = time_now;
+			graphics.framerate_actual = (graphics.framerate_actual + graphics.frame_counter) / 2.0f;
+			graphics.frame_counter = 0;
+		}
+
+		// Only render when we need to
+		if (graphics.render_delta_ms < graphics.frame_delay_ms)
+			return;
+
 		graphics.frame_counter++;
 
 		// Update the mouse position
@@ -133,11 +166,7 @@ namespace mgc {
 		mouse.x = (int)(std::floor(mouse.x / scale));
 		mouse.y = (int)(std::floor(mouse.y / scale));
 
-		if (SDL_GetTicks() - graphics.last_count_taken > 1000) {
-			graphics.last_count_taken = SDL_GetTicks();
-			graphics.framerate_actual = (graphics.framerate_actual + graphics.frame_counter) / 2.0f;
-			graphics.frame_counter = 0;
-		}
+		
 		Uint32 startTime = SDL_GetTicks();
 
 		// Bind framebuffer for rendering
@@ -233,12 +262,13 @@ namespace mgc {
 
 	void run() {
 		while (running) {
-			while (SDL_TICKS_PASSED(SDL_GetTicks(), timing.tick_last + timing.tick_delay_ms)) {
-				update();
-				timing.tick_last += timing.tick_delay_ms;
-			}
+			Uint64 time_now = timing::get_millis();
+			timing.time_delta = time_now - timing.time_last;
 
+			update();
 			render();
+
+			timing.time_last = time_now;
 		}
 	}
 
@@ -285,8 +315,11 @@ namespace mgc {
 
 	static void init_timing() {
 		timing.tick_delay_ms = (1000 / constants::TICKRATE);
-		timing.tick_counter = 0;
-		timing.tick_last = SDL_GetTicks();
+		timing.ticks = 0;
+		timing.time_last = timing::get_millis();
+		timing.ticks_delta = 0;
+		timing.time_delta = 0;
+		timing.ticks_delta_ms = 0;
 	}
 
 	static void init_input() {
@@ -368,8 +401,8 @@ namespace mgc {
 		log::info << "SDL initialized successfully" << endl;
 	}
 
-	static void init_ui() {
-		UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", render::texture_manager));
+	void init_ui() {
+		//UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", render::texture_manager));
 	}
 
 	static void init_lua() {

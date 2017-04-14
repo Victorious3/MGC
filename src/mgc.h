@@ -31,19 +31,27 @@ namespace mgc {
 		float framerate_actual;
 		Uint32 frame_delay_ms;
 		Uint32 frame_counter;
-		Uint32 last_count_taken;
+		Uint64 last_count_taken;
+		Uint64 render_delta_ms;
 	};
 
 	struct Timing {
-		Uint32 tick_counter;
-		Uint32 tick_last;
-		Uint32 tick_delay_ms;
+		Uint64 time_last;
+		Uint64 time_delta;
+		Uint64 ticks;
+		Uint64 ticks_delta;
+		Uint64 ticks_delta_ms;
+		Uint64 tick_delay_ms;
 	};
 
 	void init();
 
 	void toggle_fullscreen();
 	void run();
+
+	void update();
+	void tick();
+	void render();
 
 	void destroy();
 }

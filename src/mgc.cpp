@@ -6,31 +6,22 @@
 #include "keyboard.h"
 #include "ini.h"
 #include "Locale.h"
+
 #include "ui/UI.h"
 #include "ui/Image.h"
-#include "timing.h"
 
 namespace mgc {
 
-	SDL_Window* window = nullptr;
-	SDL_GLContext context = nullptr;
-
+	Window window;
 	Mouse mouse;
 	Graphics graphics;
 	Timing timing;
-	ini::IniFile ini("mgc.ini");
 	Keyboard keyboard;
-	Locale loc("en-us");
+
+	ini::IniFile main_config("mgc.ini");
+	Locale locale("en-us");
 
 	bool running = true;
-	bool fullscreen = false;
-
-	float scale = 1;
-	Uint xoff = 0;
-	Uint yoff = 0;
-
-	Uint screen_fbo = 0;
-	Uint screen_texture = 0;
 
 	static const Keyboard::InputAction& key_fullscreen = keyboard.get_action("toggle_fullscreen", SDL_SCANCODE_F11);
 
@@ -106,13 +97,13 @@ namespace mgc {
 
 	static void update_resolution() {
 		int w, h;
-		SDL_GetWindowSize(window, &w, &h);
-		scale = std::fminf((float)w / (float)constants::SCR_WIDTH, (float)h / (float)constants::SCR_HEIGHT);
+		SDL_GetWindowSize(window.sdl_window, &w, &h);
+		window.scale = std::fminf((float)w / (float)constants::SCR_WIDTH, (float)h / (float)constants::SCR_HEIGHT);
 	}
 	
 	void toggle_fullscreen() {
-		if (!SDL_SetWindowFullscreen(window, fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP)) {
-			fullscreen = !fullscreen;
+		if (!SDL_SetWindowFullscreen(window.sdl_window, window.fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP)) {
+			window.fullscreen = !window.fullscreen;
 			update_resolution();
 		} else {
 			log::error << "Failed to change display mode" << endl;
@@ -121,21 +112,18 @@ namespace mgc {
 
 	void update() {
 		timing.ticks_delta_ms += timing.time_delta;
-
-		// Update stuff with delta time
-		{
+	
+		{ // Update stuff with delta time
 			keyboard.update(timing.time_delta);
 			sdl_event();
 			UI::update(timing.time_delta);
 		}
 
-		// Update stuff on ticks
-		{
+		{ // Update tick intervals
 			while (timing.ticks_delta_ms >= timing.tick_delay_ms) {
 				timing.ticks++;
 				timing.ticks_delta_ms -= timing.tick_delay_ms;
 
-				//call tick update stuff
 				tick();
 			}
 		}
@@ -147,7 +135,7 @@ namespace mgc {
 
 	void render() {
 		graphics.render_delta_ms += timing.time_delta;
-		Uint64 time_now = timing::get_millis();
+		Uint64 time_now = time_millis();
 
 		if (time_now - graphics.last_count_taken > 1000) {
 			graphics.last_count_taken = time_now;
@@ -163,15 +151,15 @@ namespace mgc {
 
 		// Update the mouse position
 		SDL_GetMouseState(&mouse.x, &mouse.y);
-		mouse.x = (int)(std::floor(mouse.x / scale));
-		mouse.y = (int)(std::floor(mouse.y / scale));
+		mouse.x = (int)(std::floor(mouse.x / window.scale));
+		mouse.y = (int)(std::floor(mouse.y / window.scale));
 
 		
 		Uint32 startTime = SDL_GetTicks();
 
 		// Bind framebuffer for rendering
 
-		glBindFramebuffer(GL_FRAMEBUFFER, screen_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, window.screen_fbo);
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -190,7 +178,7 @@ namespace mgc {
 			"Can all go to hell if it was after me. Skanks.\n"
 			"(Don't let Vic write a dialog)", 10, 50);
 
-		montserrat.draw_string(loc.get_string("test_string"), 0, 30);
+		montserrat.draw_string(locale.get_string("test_string"), 0, 30);
 
 		UI::render();
 
@@ -227,13 +215,13 @@ namespace mgc {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		int w, h;
-		SDL_GetWindowSize(window, &w, &h);
+		SDL_GetWindowSize(window.sdl_window, &w, &h);
 		glViewport(0, 0, w, h);
 
 		glColor4ub(255, 255, 255, 255);
 		glEnable(GL_TEXTURE_2D);
 		
-		glBindTexture(GL_TEXTURE_2D, screen_texture);
+		glBindTexture(GL_TEXTURE_2D, window.screen_texture);
 		glBegin(GL_QUADS);
 		{
 			glTexCoord2f(0, 1);
@@ -249,7 +237,7 @@ namespace mgc {
 
 		glDisable(GL_TEXTURE_2D);
 
-		SDL_GL_SwapWindow(window);
+		SDL_GL_SwapWindow(window.sdl_window);
 
 		if (int i = glGetError()) {
 			cout << "GL ERROR " << i << ": " << glewGetErrorString(i) << endl;
@@ -262,7 +250,7 @@ namespace mgc {
 
 	void run() {
 		while (running) {
-			Uint64 time_now = timing::get_millis();
+			Uint64 time_now = time_millis();
 			timing.time_delta = time_now - timing.time_last;
 
 			update();
@@ -281,8 +269,8 @@ namespace mgc {
 		render::init_glvars();
 
 		// Setup framebuffer for scaling
-		screen_texture = render::allocate_texture(constants::SCR_WIDTH, constants::SCR_HEIGHT);
-		screen_fbo = render::create_framebuffer(screen_texture);
+		window.screen_texture = render::allocate_texture(constants::SCR_WIDTH, constants::SCR_HEIGHT);
+		window.screen_fbo = render::create_framebuffer(window.screen_texture);
 
 		glShadeModel(GL_FLAT);
 		glClearColor(0, 0, 0, 0);
@@ -316,58 +304,59 @@ namespace mgc {
 	static void init_timing() {
 		timing.tick_delay_ms = (1000 / constants::TICKRATE);
 		timing.ticks = 0;
-		timing.time_last = timing::get_millis();
+		timing.time_last = time_millis();
 		timing.ticks_delta = 0;
 		timing.time_delta = 0;
 		timing.ticks_delta_ms = 0;
 	}
 
 	static void init_input() {
-		keyboard.read_config(ini, "key bindings");
+		keyboard.read_config(main_config, "key bindings");
 	}
 
 	static void init_sdl() {
-		static const string category_names[]{
-			"Application",
-			"Error",
-			"Assert",
-			"System",
-			"Audio",
-			"Video",
-			"Render",
-			"Input",
-			"Test"
-		};
+		{ // SDL log
+			static const string category_names[] {
+				"Application",
+				"Error",
+				"Assert",
+				"System",
+				"Audio",
+				"Video",
+				"Render",
+				"Input",
+				"Test"
+			};
 
-		static const string priority_names[]{
-			"???",
-			"VERBOSE",
-			"DEBUG",
-			"INFO",
-			"WARN",
-			"ERROR",
-			"CRITICAL"
-		};
+			static const string priority_names[] {
+				"???",
+				"VERBOSE",
+				"DEBUG",
+				"INFO",
+				"WARN",
+				"ERROR",
+				"CRITICAL"
+			};
 
-		SDL_LogSetOutputFunction([](void* userdata, int category, SDL_LogPriority priority, const char* message) {
-			string category_name = category < 0 || category >= std::extent<decltype(category_names)>::value ? "???" : category_names[category];
-			string priority_name = priority < 0 || priority >= std::extent<decltype(priority_names)>::value ? "CRITICAL" : priority_names[priority];
+			SDL_LogSetOutputFunction([](void* userdata, int category, SDL_LogPriority priority, const char* message) {
+				string category_name = category < 0 || category >= std::extent<decltype(category_names)>::value ? "???" : category_names[category];
+				string priority_name = priority < 0 || priority >= std::extent<decltype(priority_names)>::value ? "CRITICAL" : priority_names[priority];
 
-			if (priority >= SDL_LOG_PRIORITY_ERROR)
-				cerr << priority_name << " [" << category_name << "]: " << message << endl;
-			else
-				cout << priority_name << " [" << category_name << "]: " << message << endl;
+				if (priority >= SDL_LOG_PRIORITY_ERROR)
+					cerr << priority_name << " [" << category_name << "]: " << message << endl;
+				else
+					cout << priority_name << " [" << category_name << "]: " << message << endl;
 
-		}, nullptr);
+			}, nullptr);
 
-		SDL_LogSetAllPriority(static_cast<SDL_LogPriority>(0)); // I have to cast here to get all messages
-
+			SDL_LogSetAllPriority(static_cast<SDL_LogPriority>(0)); // I have to cast here to get all messages
+		}
 
 		if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS)) {
 			throw RUNTIME_ERROR("SDL_Init Error: "s + SDL_GetError());
 		}
 
-		window = SDL_CreateWindow(
+		window.sdl_window = SDL_CreateWindow(
 			constants::APP_NAME.c_str(), // title
 			SDL_WINDOWPOS_CENTERED,	// xpos
 			SDL_WINDOWPOS_CENTERED, // ypos
@@ -376,12 +365,12 @@ namespace mgc {
 			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL // flags, we force OpenGL
 		);
 
-		if (!window) {
+		if (!window.sdl_window) {
 			throw RUNTIME_ERROR("SDL_CreateWindow Error: "s + SDL_GetError());
 		}
 
-		context = SDL_GL_CreateContext(window);
-		if (!context) {
+		window.sdl_context = SDL_GL_CreateContext(window.sdl_window);
+		if (!window.sdl_context) {
 			throw RUNTIME_ERROR("SDL_GL_CreateContext Error: "s + SDL_GetError());
 		}
 
@@ -418,8 +407,8 @@ namespace mgc {
 	}
 
 	static void destroy_sdl() {
-		if (window) SDL_DestroyWindow(window);
-		if (context) SDL_GL_DeleteContext(context);
+		if (window.sdl_window) SDL_DestroyWindow(window.sdl_window);
+		if (window.sdl_context) SDL_GL_DeleteContext(window.sdl_context);
 		SDL_Quit();
 	}
 

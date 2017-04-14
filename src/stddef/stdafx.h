@@ -16,6 +16,7 @@
 // stdlib
 #include <iostream>
 #include <map>
+#include <chrono>
 
 // Libraries
 extern "C" {
@@ -84,6 +85,10 @@ static inline string string_tolower(string& input) {
 		elem = std::tolower(elem, loc);
 	}
 	return output;
+}
+
+static inline Uint64 time_millis() {
+	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 // Windows only

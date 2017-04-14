@@ -3,17 +3,27 @@
 
 #include "render.h"
 #include "texture.h"
+#include "Keyboard.h"
+#include "ini.h"
+#include "Locale.h"
 
 namespace mgc {
+	struct Window {
+		// SDL window instance
+		SDL_Window* sdl_window = nullptr;
+		// GL context
+		SDL_GLContext sdl_context = nullptr;
 
-	// SDL window instance
-	extern SDL_Window* window;
-	// GL context
-	extern SDL_GLContext context;
+		float scale = 1;
+		Uint xoff;
+		Uint yoff;
 
-	extern float scale;
-	extern Uint xoff;
-	extern Uint yoff;
+		bool fullscreen = false;
+
+		Uint screen_fbo = 0;
+		Uint screen_texture = 0;
+	};
+	extern Window window;
 
 	struct Mouse {
 		int x;
@@ -26,6 +36,7 @@ namespace mgc {
 		bool clicked;
 		bool moved;
 	};
+	extern Mouse mouse;
 
 	struct Graphics {
 		float framerate_actual;
@@ -34,6 +45,7 @@ namespace mgc {
 		Uint64 last_count_taken;
 		Uint64 render_delta_ms;
 	};
+	extern Graphics graphics;
 
 	struct Timing {
 		Uint64 time_last;
@@ -43,6 +55,15 @@ namespace mgc {
 		Uint64 ticks_delta_ms;
 		Uint64 tick_delay_ms;
 	};
+	extern Timing timing;
+
+	extern Keyboard keyboard;
+	extern ini::IniFile main_config;
+	extern Locale locale;
+
+	extern bool running;
+	
+	// Externally visible functions
 
 	void init();
 

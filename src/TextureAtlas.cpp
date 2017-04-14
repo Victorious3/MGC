@@ -82,8 +82,6 @@ namespace render {
 				}
 			}
 			
-
-			// FIXME
 			// Now we have to update the segments ahead
 			int x2 = x;
 			while (it != upper_edge.end()) {

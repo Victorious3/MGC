@@ -146,8 +146,28 @@ namespace mgc {
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 
 		glClear(GL_COLOR_BUFFER_BIT);
-		glColor3ub(255, 255, 255);
 
+		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
+
+		static Font montserrat("Resources/fonts/Montserrat");
+		montserrat.draw_string(fps_string, 0, 0);
+		montserrat.draw_string( 
+			"I'm just your average school slut, don't mind me.\n" 
+			"Just pretend I had some special narration and\n"
+			"dialog for you.\n\n"
+			"So they let me come up with some shitty lorem\n"
+			"ipsum text. As if they couldn't do that themselves.\n" 
+			"Lazy fucks.\n"
+			"Can all go to hell if it was after me. Skanks.\n"
+			"(Don't let Vic write a dialog)", 10, 50);
+
+		montserrat.draw_string(loc.get_string("test_string"), 0, 30);
+
+		UI::render();
+
+		// "Mouse cursor"
+
+		glColor3ub(255, 255, 255);
 		glTranslatef((GLfloat)mouse.x, (GLfloat)mouse.y, 0);
 		glBegin(GL_QUADS);
 		{
@@ -173,31 +193,6 @@ namespace mgc {
 		}
 		glEnd();
 		glTranslatef((GLfloat)-mouse.x, (GLfloat)-mouse.y, 0);
-
-		glBegin(GL_LINES);
-		{
-			glVertex2i(0, 0);
-			glVertex2i(mouse.x, mouse.y);
-		}
-		glEnd();
-
-		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
-
-		static Font montserrat("Resources/fonts/Montserrat");
-		montserrat.draw_string(fps_string, 0, 0);
-		montserrat.draw_string( 
-			"I'm just your average school slut, don't mind me.\n" 
-			"Just pretend I had some special narration and\n"
-			"dialog for you.\n\n"
-			"So they let me come up with some shitty lorem\n"
-			"ipsum text. As if they couldn't do that themselves.\n" 
-			"Lazy fucks.\n"
-			"Can all go to hell if it was after me. Skanks.\n"
-			"(Don't let Vic write a dialog)", 10, 50);
-
-		montserrat.draw_string(loc.get_string("test_string"), 0, 30);
-
-		UI::render();
 
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -373,8 +368,12 @@ namespace mgc {
 		log::info << "SDL initialized successfully" << endl;
 	}
 
-	void init_ui() {
+	static void init_ui() {
 		UI::push_element(new UI::Image(450, 10, "Resources/sprites/test.png", render::texture_manager));
+	}
+
+	static void init_lua() {
+		
 	}
 
 	// Finalization code
@@ -399,6 +398,7 @@ namespace mgc {
 		init_timing();
 		init_input();
 		init_ui();
+		init_lua();
 	}
 
 	void destroy() {

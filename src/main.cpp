@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
 	try {
 		init();
 
+		/*
 		render::TextureAtlas test_atlas("Resources/sprites/testatlas.bmp");
 		test_atlas.add_sprite("Resources/sprites/test.png");
 		test_atlas.add_sprite("Resources/sprites/tsprite1.png");
@@ -22,6 +23,7 @@ int main(int argc, char* argv[])
 		test_atlas.add_sprite("Resources/sprites/tsprite5.png");
 		test_atlas.add_sprite("Resources/sprites/tsprite6.png");
 		test_atlas.load();
+		*/
 
 		run();
 	}

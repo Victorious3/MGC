@@ -7,6 +7,8 @@
 #include "ini.h"
 #include "Locale.h"
 
+#include "game/stage.h"
+
 namespace mgc {
 	struct Window {
 		// SDL window instance
@@ -62,6 +64,9 @@ namespace mgc {
 	extern Locale locale;
 
 	extern bool running;
+
+	// Gameplay
+	extern Stage stage;
 	
 	// Externally visible functions
 

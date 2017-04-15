@@ -11,6 +11,11 @@ extern "C"
 int main(int argc, char* argv[])
 {
 	try {
+		std::set_terminate([] {
+			cerr << "Fatal error, unexpected termination!" << endl;
+			std::abort();
+		});
+
 		init();
 
 		/*

@@ -184,6 +184,8 @@
     <Text Include="Resources\fonts\OFL.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\game\Entity.cpp" />
+    <ClCompile Include="src\game\Actor.cpp" />
     <ClCompile Include="src\game\player.cpp" />
     <ClCompile Include="src\game\stage.cpp" />
     <ClCompile Include="src\render.cpp" />
@@ -207,6 +209,8 @@
     <ClCompile Include="src\ui\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\game\Entity.h" />
+    <ClInclude Include="src\game\Actor.h" />
     <ClInclude Include="src\game\player.h" />
     <ClInclude Include="src\game\stage.h" />
     <ClInclude Include="src\render.h" />

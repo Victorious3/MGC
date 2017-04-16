@@ -2,8 +2,10 @@
 
 #include <stddef.h>
 
+#include "Actor.h"
+
 namespace mgc {
-	class Player {
+	class Player : public Actor {
 
 	};
 }

@@ -1,8 +1,8 @@
 #include <stdafx.h>
 #include <pendian.h>
 
-#include "font.h"
-#include "filesystem.h"
+#include "../render/font.h"
+#include "../filesystem.h"
 
 namespace mgc {
 

@@ -188,9 +188,9 @@
     <ClCompile Include="src\game\Actor.cpp" />
     <ClCompile Include="src\game\player.cpp" />
     <ClCompile Include="src\game\stage.cpp" />
-    <ClCompile Include="src\render.cpp" />
+    <ClCompile Include="src\render\render.cpp" />
     <ClCompile Include="src\filesystem.cpp" />
-    <ClCompile Include="src\font.cpp" />
+    <ClCompile Include="src\render\font.cpp" />
     <ClCompile Include="src\ini\IniFile.cpp" />
     <ClCompile Include="src\ini\IniKey.cpp" />
     <ClCompile Include="src\ini\IniParser.cpp" />
@@ -203,8 +203,8 @@
     <ClCompile Include="src\stddef\stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Texture.cpp" />
-    <ClCompile Include="src\TextureAtlas.cpp" />
+    <ClCompile Include="src\render\Texture.cpp" />
+    <ClCompile Include="src\render\TextureAtlas.cpp" />
     <ClCompile Include="src\ui\Image.cpp" />
     <ClCompile Include="src\ui\UI.cpp" />
   </ItemGroup>
@@ -213,10 +213,10 @@
     <ClInclude Include="src\game\Actor.h" />
     <ClInclude Include="src\game\player.h" />
     <ClInclude Include="src\game\stage.h" />
-    <ClInclude Include="src\render.h" />
+    <ClInclude Include="src\render\render.h" />
     <ClInclude Include="src\filesystem.h" />
-    <ClInclude Include="src\font.h" />
-    <ClInclude Include="src\ini.h" />
+    <ClInclude Include="src\render\font.h" />
+    <ClInclude Include="src\ini\ini.h" />
     <ClInclude Include="src\ini\IniFile.h" />
     <ClInclude Include="src\ini\IniKey.h" />
     <ClInclude Include="src\ini\IniParser.h" />
@@ -226,8 +226,8 @@
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\mgc.h" />
     <ClInclude Include="src\stddef\stdafx.h" />
-    <ClInclude Include="src\Texture.h" />
-    <ClInclude Include="src\TextureAtlas.h" />
+    <ClInclude Include="src\render\Texture.h" />
+    <ClInclude Include="src\render\TextureAtlas.h" />
     <ClInclude Include="src\ui\Image.h" />
     <ClInclude Include="src\ui\UI.h" />
     <ClInclude Include="src\ui\UIElement.h" />

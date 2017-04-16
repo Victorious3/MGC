@@ -1,8 +1,8 @@
 #include <stdafx.h>
 
 #include "render.h"
-#include "mgc.h"
-#include "log.h"
+#include "../mgc.h"
+#include "../log.h"
 
 namespace render {
 

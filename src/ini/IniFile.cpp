@@ -3,7 +3,7 @@
 
 #include "../log.h"
 #include "../filesystem.h"
-#include "../ini.h"
+#include "../ini/ini.h"
 
 using std::ifstream;
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdafx.h>
 
-#include "../Texture.h"
+#include "../render/Texture.h"
 
 namespace mgc {
 	class Entity {

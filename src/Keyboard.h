@@ -1,7 +1,7 @@
 #pragma once
 #include <stdafx.h>
 
-#include "ini.h"
+#include "ini/ini.h"
 
 namespace mgc {
 

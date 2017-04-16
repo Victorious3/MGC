@@ -1,7 +1,7 @@
 #include <stdafx.h>
 
 #include "../log.h"
-#include "../ini.h"
+#include "../ini/ini.h"
 #include "../filesystem.h"
 
 using std::streampos;

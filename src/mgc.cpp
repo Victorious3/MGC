@@ -2,10 +2,11 @@
 
 #include "mgc.h"
 #include "log.h"
-#include "font.h"
 #include "keyboard.h"
-#include "ini.h"
 #include "Locale.h"
+
+#include "ini/ini.h"
+#include "render/font.h"
 
 #include "ui/UI.h"
 #include "ui/Image.h"

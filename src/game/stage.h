@@ -4,7 +4,8 @@
 
 #include "Actor.h"
 #include "Entity.h"
-#include "../TextureAtlas.h"
+#include "player.h"
+#include "../render/TextureAtlas.h"
 
 namespace mgc {
 	class Layer {
@@ -18,6 +19,7 @@ namespace mgc {
 	
 	public:	
 		vector<Actor> actors;
+		Player player;
 	
 		Layer& foreground = layers[0];
 		Layer& center     = layers[1];

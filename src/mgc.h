@@ -1,13 +1,13 @@
 #pragma once
 #include <stdafx.h>
 
-#include "render.h"
-#include "texture.h"
 #include "Keyboard.h"
-#include "ini.h"
 #include "Locale.h"
 
+#include "ini/ini.h"
 #include "game/stage.h"
+#include "render/render.h"
+#include "render/texture.h"
 
 namespace mgc {
 	struct Window {

@@ -3,7 +3,7 @@
 #include "mgc.h"
 #include "log.h"
 
-#include "TextureAtlas.h"
+#include "render/TextureAtlas.h"
 
 using namespace mgc;
 

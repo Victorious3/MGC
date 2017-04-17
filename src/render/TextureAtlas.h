@@ -7,8 +7,8 @@ namespace render {
 
 	class TextureAtlas final {
 	public:
-		// An empty string means no cache file is used, this is explicit to avoid erros
-		TextureAtlas(string cache_file) : cache_file(cache_file) {}
+		TextureAtlas(string cache_file = "") : cache_file(cache_file) {}
+		~TextureAtlas() { destroy(); }
 
 		// The sprite returned is only usable after load() is called
 		// This reads the width & height of the image, has the side
@@ -31,8 +31,10 @@ namespace render {
 			int x, y;
 		};
 
+		void create_bucket(std::list<SpriteEntry>::iterator& iter);
+
 		bool refresh_cache = false; // Flag to rewrite the cache, set when destroy is called
-		Sprite texture;
+		vector<GLuint> gl_textures;
 		const string cache_file;
 		std::list<SpriteEntry> sprites;
 	};

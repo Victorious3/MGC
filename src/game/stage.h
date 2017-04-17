@@ -18,6 +18,8 @@ namespace mgc {
 		render::TextureAtlas cached_sprites;
 	
 	public:	
+		Stage();
+
 		vector<Actor> actors;
 		Player player;
 	

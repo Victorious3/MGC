@@ -91,6 +91,17 @@ static inline Uint64 time_millis() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
+static inline Uint next_power_of_two(Uint x) {
+	x--;
+	x |= x >> 1;  // handle  2 bit numbers
+	x |= x >> 2;  // handle  4 bit numbers
+	x |= x >> 4;  // handle  8 bit numbers
+	x |= x >> 8;  // handle 16 bit numbers
+	x |= x >> 16; // handle 32 bit numbers
+	x++;
+	return x;
+}
+
 // Windows only
 
 #ifdef WIN32

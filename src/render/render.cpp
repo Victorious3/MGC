@@ -9,7 +9,8 @@ namespace render {
 	GLVars glvars;
 	
 	void init_glvars() {
-		glGetIntegerv(GL_MAX_TEXTURE_SIZE, &glvars.max_tex_size);
+		//glGetIntegerv(GL_MAX_TEXTURE_SIZE, &glvars.max_tex_size);
+		glvars.max_tex_size = 512;
 	}
 
 	GLuint allocate_texture(Uint w, Uint h, const void* pBuffer) {

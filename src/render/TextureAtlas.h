@@ -31,7 +31,7 @@ namespace render {
 			int x, y;
 		};
 
-		void create_bucket(std::list<SpriteEntry>::iterator& iter, std::list<SpriteEntry>::iterator end);
+		void create_bucket(std::list<SpriteEntry*>& sprites);
 
 		bool refresh_cache = false; // Flag to rewrite the cache, set when destroy is called
 		vector<GLuint> gl_textures;

@@ -17,17 +17,6 @@ int main(int argc, char* argv[])
 		});
 
 		init();
-
-		render::TextureAtlas test_atlas("Resources/sprites/testatlas");
-		for (int i = 0; i < std::rand() % 30 + 10; i++) test_atlas.add_sprite("Resources/sprites/test.png");
-		for (int i = 0; i < std::rand() % 30 + 10; i++) test_atlas.add_sprite("Resources/sprites/tsprite1.png");
-		for (int i = 0; i < std::rand() % 30 + 10; i++) test_atlas.add_sprite("Resources/sprites/tsprite2.png");
-		for (int i = 0; i < std::rand() % 30 + 10; i++) test_atlas.add_sprite("Resources/sprites/tsprite3.png");
-		for (int i = 0; i < std::rand() % 30 + 10; i++) test_atlas.add_sprite("Resources/sprites/tsprite4.png");
-		for (int i = 0; i < std::rand() % 30 + 10; i++) test_atlas.add_sprite("Resources/sprites/tsprite5.png");
-		for (int i = 0; i < std::rand() % 30 + 10; i++) test_atlas.add_sprite("Resources/sprites/tsprite6.png");
-		test_atlas.load();
-
 		run();
 	}
 	catch (exception& e) {

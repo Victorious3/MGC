@@ -18,19 +18,19 @@ namespace render {
 	};
 
 	// TODO Clean this up a bit (Especially the goto)
-	void TextureAtlas::create_bucket(std::list<SpriteEntry>::iterator& begin, std::list<SpriteEntry>::iterator end) {
+	void TextureAtlas::create_bucket(std::list<SpriteEntry*>& sprites) {
 
 		int size_estimate = 0; // The area all sprites would fit into, assuming best fit
 		int max_size = glvars.max_tex_size * glvars.max_tex_size;
 
-		auto entry = begin; // Entry is our pointer
-		while (entry != end) {
+		vector<SpriteEntry*> stitched_textures; // A list of the textures stitched successfully
+
+		for (auto entry : sprites) {
 			size_estimate += entry->sprite.w * entry->sprite.h;
 			if (size_estimate > max_size) {
 				size_estimate = max_size;
 				break;
 			}
-			entry++;
 		}
 
 		// Height and width of our final sprite
@@ -43,8 +43,10 @@ namespace render {
 
 		list<Scanline> upper_edge = { Scanline { 0, width } };
 
-		entry = begin;
-		while (entry != end) {
+		auto entry = sprites.begin();
+		while (entry != sprites.end()) {
+			auto sprite_entry = (*entry);
+
 			auto it = upper_edge.begin();
 			int x = 0;
 			int y_offset = 0; // If we overlap with the sprite(s) ahead we have to correct the y coordinate
@@ -54,13 +56,13 @@ namespace render {
 				auto it2 = it;
 				do {
 					// Could it fit in the first place?
-					if (x2 + entry->sprite.w <= width) {
+					if (x2 + sprite_entry->sprite.w <= width) {
 						// Calculate y offset if we collide with the segments up front
 						auto it3 = it2;
 						int x3 = it3->w;
 						int y_offset2 = 0;
 
-						while (++it3 != upper_edge.end() && x3 < entry->sprite.w) {
+						while (++it3 != upper_edge.end() && x3 < sprite_entry->sprite.w) {
 							y_offset2 = std::fmaxl(y_offset2, it3->y - it2->y);
 							x3 += it3->w;
 						}
@@ -79,49 +81,53 @@ namespace render {
 				// We found a line to place the texture on
 				it->y += y_offset; // Update the y offset of the line
 
-				height = std::fmaxl(it->y + entry->sprite.h, height);
-				if (height > glvars.max_tex_size) { // Can't fit the sprite, need to create a new bucket
+				height = std::fmaxl(it->y + sprite_entry->sprite.h, height);
+				if (height > glvars.max_tex_size) { // Can't fit the sprite, try a smaller one
 					height = glvars.max_tex_size;
-					goto generate_texture;
+					
+					entry++;
+					continue;
 				}
 
-				entry->x = x;
-				entry->y = it->y;
+				sprite_entry->x = x;
+				sprite_entry->y = it->y;
 			}
 
-			// Create a new Scanline for the sprite
-			Scanline line { it->y + entry->sprite.h, entry->sprite.w };
+			{ // Create a new Scanline for the sprite
+				Scanline line { it->y + sprite_entry->sprite.h, sprite_entry->sprite.w };
 
-			{ // Try to combine segments
-				auto it2 = upper_edge.insert(it, line);
-				if (it2 != upper_edge.begin()) {
-					auto it3 = it2; it3--;
-					if (it3->y == it2->y) {
-						it2->w += it3->w;
-						upper_edge.erase(it3);
+				{ // Try to combine segments
+					auto it2 = upper_edge.insert(it, line);
+					if (it2 != upper_edge.begin()) {
+						auto it3 = it2; it3--;
+						if (it3->y == it2->y) {
+							it2->w += it3->w;
+							upper_edge.erase(it3);
+						}
+					}
+				}
+
+				// Now we have to update the segments ahead
+				int x2 = x;
+				while (it != upper_edge.end()) {
+					int diff = (x + line.w) - (x2 + it->w);
+					x2 += it->w;
+
+					// When the segment is entirely covered by the new line we can remove it
+					if (diff >= 0) {
+						auto cur = it; it++;
+						upper_edge.erase(cur);
+						if (diff == 0) break; // If the difference is 0 we don't have to split next time
+					} else {
+						// Otherwise we have to split the segment
+						*it = Scanline { it->y, -diff };
+						break;
 					}
 				}
 			}
 
-			// Now we have to update the segments ahead
-			int x2 = x;
-			while (it != upper_edge.end()) {
-				int diff = (x + line.w) - (x2 + it->w);
-				x2 += it->w;
-
-				// When the segment is entirely covered by the new line we can remove it
-				if (diff >= 0) {
-					auto cur = it; it++;
-					upper_edge.erase(cur);
-					if (diff == 0) break; // If the difference is 0 we don't have to split next time
-				} else {
-					// Otherwise we have to split the segment
-					*it = Scanline { it->y, -diff };
-					break;
-				}
-			}
-
-			entry++;
+			stitched_textures.push_back(sprite_entry);
+			sprites.erase(entry++); // Remove from the queue
 
 			/*cout << "Scanline size: " << upper_edge.size() << endl;
 			for (Scanline& sl : upper_edge) {
@@ -129,8 +135,6 @@ namespace render {
 			}
 			cout << endl;*/
 		}
-
-	generate_texture:
 
 #if FORCE_POT
 		height = next_power_of_two(height);
@@ -154,9 +158,7 @@ namespace render {
 		gluOrtho2D(0, width, height, 0);
 		glMatrixMode(GL_MODELVIEW);
 
-		end = entry;
-		entry = begin;
-		while (entry != end) {
+		for(auto entry : stitched_textures) {
 			int w, h;
 			GLuint texture = create_texture(entry->path, (Uint*)&w, (Uint*)&h);
 			draw_gl_texture(texture, entry->x, entry->y + h, w, -h);
@@ -181,7 +183,6 @@ namespace render {
 
 			glDeleteTextures(1, &texture);
 		}
-		begin = end; // Update pointer for next bucket
 
 		gl_textures.push_back(gl_texture);
 
@@ -218,11 +219,11 @@ namespace render {
 			return a.sprite.w * a.sprite.h > b.sprite.w * b.sprite.h;
 		});
 
-		// Place the iterator at the start of the input list
-		// and keep creating buckets until all sprites are finished
-		auto iter = sprites.begin();
-		while (iter != sprites.end()) {
-			create_bucket(iter, sprites.end());
+		std::list<SpriteEntry*> sprite_queue;
+		for (auto& entry : sprites) sprite_queue.push_back(&entry);
+		
+		while (!sprite_queue.empty()) {
+			create_bucket(sprite_queue);
 		}
 	}
 

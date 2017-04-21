@@ -2,28 +2,35 @@
 #include "TextureAtlas.h"
 
 // Force power of two textures
-#define FORCE_POT 1
+#define FORCE_POT true
 
 namespace render {
 
 	Sprite& TextureAtlas::add_sprite(string sprite) {
 		Uint32 w, h;
 		read_img_dim_png(&w, &h, sprite);
-		sprites.push_back(SpriteEntry { Sprite(w, h), sprite, 0, 0 });
-		return sprites.back().sprite;
+		return sprites.insert(SpriteEntry { Sprite(w, h), sprite, 0, 0 }).first->sprite;
 	}
 
 	struct Scanline {
 		int y, w;
 	};
 
+	bool TextureAtlas::SpriteEntry::operator==(const SpriteEntry& e) const {
+		return path == e.path;
+	}
+
+	size_t TextureAtlas::SpriteEntry::hash::operator()(const SpriteEntry& e) const {
+		return std::hash<string>()(e.path);
+	}
+
 	// TODO Clean this up a bit (Especially the goto)
-	void TextureAtlas::create_bucket(std::list<SpriteEntry*>& sprites) {
+	void TextureAtlas::create_bucket(list<const SpriteEntry*>& sprites) {
 
 		int size_estimate = 0; // The area all sprites would fit into, assuming best fit
 		int max_size = glvars.max_tex_size * glvars.max_tex_size;
 
-		vector<SpriteEntry*> stitched_textures; // A list of the textures stitched successfully
+		vector<const SpriteEntry*> stitched_textures; // A list of the textures stitched successfully
 
 		for (auto entry : sprites) {
 			size_estimate += entry->sprite.w * entry->sprite.h;
@@ -215,12 +222,14 @@ namespace render {
 
 		// We have to rebuild the cache
 		// First we have to sort the sprites by their surface area
-		sprites.sort([](SpriteEntry& a, SpriteEntry& b) {
-			return a.sprite.w * a.sprite.h > b.sprite.w * b.sprite.h;
-		});
 
-		std::list<SpriteEntry*> sprite_queue;
+		list<const SpriteEntry*> sprite_queue;
 		for (auto& entry : sprites) sprite_queue.push_back(&entry);
+			
+
+		sprite_queue.sort([](const SpriteEntry* a, const SpriteEntry* b) {
+			return a->sprite.w * a->sprite.h > b->sprite.w * b->sprite.h;
+		});
 		
 		while (!sprite_queue.empty()) {
 			create_bucket(sprite_queue);

@@ -1,5 +1,6 @@
 #pragma once
 #include <stdafx.h>
+#include <unordered_set>
 
 #include "render.h"
 
@@ -26,16 +27,20 @@ namespace render {
 
 	private:
 		struct SpriteEntry {
-			Sprite sprite;
+			mutable Sprite sprite;
 			string path;
-			int x, y;
+			mutable int x, y;
+
+			bool operator==(const SpriteEntry& e) const;
+			static struct hash { size_t operator()(const SpriteEntry& e) const; };
 		};
 
-		void create_bucket(std::list<SpriteEntry*>& sprites);
+		void create_bucket(std::list<const SpriteEntry*>& sprites);
 
 		bool refresh_cache = false; // Flag to rewrite the cache, set when destroy is called
 		vector<GLuint> gl_textures;
 		const string cache_file;
-		std::list<SpriteEntry> sprites;
+
+		std::unordered_set<SpriteEntry, SpriteEntry::hash> sprites;
 	};
 }

@@ -16,6 +16,7 @@
 // stdlib
 #include <iostream>
 #include <map>
+#include <set>
 #include <chrono>
 
 // Libraries
@@ -38,6 +39,7 @@ using std::vector;
 using std::list;
 using std::function;
 using std::map;
+using std::set;
 
 using std::exception;
 

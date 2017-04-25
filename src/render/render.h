@@ -65,6 +65,12 @@ namespace render {
 		glDisable(GL_TEXTURE_2D);
 	}
 
+	inline void try_throw_gl_error(const string& error_string) {
+		if (GLenum error = glGetError()) {
+			throw RUNTIME_ERROR(error_string + ": "s + string(reinterpret_cast<const char*>(gluErrorString(error))) + " ("s + std::to_string(error) + ")");
+		}
+	}
+
 	GLuint allocate_texture(Uint w, Uint h, const void* pBuffer = nullptr);
 	
 	GLuint create_framebuffer(GLuint texture_attachment);

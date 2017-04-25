@@ -175,6 +175,8 @@
     <None Include=".gitignore" />
     <None Include="README.md" />
     <None Include="Resources\fonts\Montserrat.dat" />
+    <None Include="Resources\shaders\core.frag" />
+    <None Include="Resources\shaders\core.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\fonts\Montserrat.png" />
@@ -200,6 +202,7 @@
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mgc.cpp" />
+    <ClCompile Include="src\render\shader.cpp" />
     <ClCompile Include="src\stddef\stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -225,6 +228,7 @@
     <ClInclude Include="src\Locale.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\mgc.h" />
+    <ClInclude Include="src\render\shader.h" />
     <ClInclude Include="src\stddef\stdafx.h" />
     <ClInclude Include="src\render\Texture.h" />
     <ClInclude Include="src\render\TextureAtlas.h" />

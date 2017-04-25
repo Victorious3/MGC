@@ -3,6 +3,9 @@
 
 // Force power of two textures
 #define FORCE_POT true
+// Toggle writing of the atlas to a temporary directory
+#define WRITE_ATLAS_TO_FILE false
+#define WRITE_ATLAS_OUTPUT_FILE "Resources/atlas/"
 
 namespace render {
 
@@ -193,8 +196,8 @@ namespace render {
 
 		gl_textures.push_back(gl_texture);
 
-		// This is mostly used for debugging purposes, staged for removal
-		if (!cache_file.empty()) {
+#if WRITE_ATLAS_TO_FILE
+		{
 			// Write to output
 			Uint8* pixel_buffer = new Uint8[width * height * 4];
 
@@ -204,11 +207,13 @@ namespace render {
 			glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixel_buffer);
 
 			SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(pixel_buffer, width, height, 8, width * 4, SDL_PIXELFORMAT_RGBA32);
-			SDL_SaveBMP(surface, (cache_file + std::to_string(gl_textures.size() - 1) + ".bmp").c_str());
+			string tmpfile = std::tmpnam(nullptr);
+			SDL_SaveBMP(surface, (WRITE_ATLAS_OUTPUT_FILE + tmpfile + ".bmp").c_str());
 
 			SDL_FreeSurface(surface);
 			delete[] pixel_buffer;
 		}
+#endif
 
 		bind_framebuffer(curr_fbo);
 		glDeleteFramebuffers(1, &fbo); // Throw away framebuffer
@@ -226,7 +231,6 @@ namespace render {
 		list<const SpriteEntry*> sprite_queue;
 		for (auto& entry : sprites) sprite_queue.push_back(&entry);
 			
-
 		sprite_queue.sort([](const SpriteEntry* a, const SpriteEntry* b) {
 			return a->sprite.w * a->sprite.h > b->sprite.w * b->sprite.h;
 		});
@@ -236,8 +240,7 @@ namespace render {
 		}
 	}
 
-	void TextureAtlas::destroy() {
+	void TextureAtlas::destroy() {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 		glDeleteTextures(gl_textures.size(), gl_textures.data());
-		refresh_cache = true;
 	}
 }

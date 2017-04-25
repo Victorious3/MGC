@@ -8,7 +8,6 @@ namespace render {
 
 	class TextureAtlas final {
 	public:
-		TextureAtlas(string cache_file = "") : cache_file(cache_file) {}
 		~TextureAtlas() { destroy(); }
 
 		// The sprite returned is only usable after load() is called
@@ -36,11 +35,7 @@ namespace render {
 		};
 
 		void create_bucket(std::list<const SpriteEntry*>& sprites);
-
-		bool refresh_cache = false; // Flag to rewrite the cache, set when destroy is called
 		vector<GLuint> gl_textures;
-		const string cache_file;
-
 		std::unordered_set<SpriteEntry, SpriteEntry::hash> sprites;
 	};
 }

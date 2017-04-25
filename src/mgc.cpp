@@ -7,6 +7,7 @@
 
 #include "ini/ini.h"
 #include "render/font.h"
+#include "render/shader.h"
 
 #include "ui/UI.h"
 #include "ui/Image.h"
@@ -24,7 +25,10 @@ namespace mgc {
 
 	bool running = true;
 
-	static const Keyboard::InputAction& key_fullscreen = keyboard.get_action("toggle_fullscreen", SDL_SCANCODE_F11);
+	static const Keyboard::InputAction& key_fullscreen      = keyboard.get_action("toggle_fullscreen", SDL_SCANCODE_F11);
+	static const Keyboard::InputAction& key_reload_textures = keyboard.get_action("reload_textures", SDL_SCANCODE_F1);
+	static const Keyboard::InputAction& key_reload_shaders  = keyboard.get_action("reload_shaders", SDL_SCANCODE_F2);
+
 
 	static void sdl_event() {
 		SDL_Event event;
@@ -85,6 +89,16 @@ namespace mgc {
 		if (key_fullscreen.fired) {
 			toggle_fullscreen();
 		}
+
+#ifndef NDEBUG
+		// Debug keys
+		if (key_reload_textures.fired) {
+			render::texture_manager.reload();
+		}
+		if (key_reload_shaders.fired) {
+			
+		}
+#endif
 
 		//if (key.typed)
 		//	cout << "Keystroke: " << key.cur << ", " << key.text << endl;
@@ -198,16 +212,16 @@ namespace mgc {
 			glVertex2i(-1, -1);
 			glVertex2i(-1, 1);
 			glVertex2i(-4, 1);
-
-			glVertex2i(-1, 1);
-			glVertex2i(-1, 4);
-			glVertex2i(1, 4);
+			
 			glVertex2i(1, 1);
+			glVertex2i(1, 4);
+			glVertex2i(-1, 4);
+			glVertex2i(-1, 1);
 
-			glVertex2i(-1, -4);
-			glVertex2i(-1, -1);
-			glVertex2i(1, -1);
 			glVertex2i(1, -4);
+			glVertex2i(1, -1);
+			glVertex2i(-1, -1);
+			glVertex2i(-1, -4);
 		}
 		glEnd();
 		glTranslatef((GLfloat)-mouse.x, (GLfloat)-mouse.y, 0);
@@ -240,8 +254,8 @@ namespace mgc {
 
 		SDL_GL_SwapWindow(window.sdl_window);
 
-		if (int i = glGetError()) {
-			cout << "GL ERROR " << i << ": " << glewGetErrorString(i) << endl;
+		if (GLenum err = glGetError()) {
+			log::error << "GL ERROR " << err << ": " << gluErrorString(err) << endl;
 		}
 
 		/*if (SDL_GetTicks() - startTime < graphics.frame_delay_ms) {
@@ -265,7 +279,9 @@ namespace mgc {
 
 	static void init_gl() {
 		// Initializing glew
-		glewInit();
+		if (GLenum error = glewInit()) {
+			throw RUNTIME_ERROR("Error while setting up GLEW: "s + reinterpret_cast<const char*>(glewGetErrorString(error)));
+		}
 
 		render::init_glvars();
 
@@ -273,21 +289,20 @@ namespace mgc {
 		window.screen_texture = render::allocate_texture(constants::SCR_WIDTH, constants::SCR_HEIGHT);
 		window.screen_fbo = render::create_framebuffer(window.screen_texture);
 
-		glShadeModel(GL_FLAT);
 		glClearColor(0, 0, 0, 0);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
-		gluOrtho2D(0, constants::SCR_WIDTH, constants::SCR_HEIGHT, 0);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+		//gluOrtho2D(0, constants::SCR_WIDTH, constants::SCR_HEIGHT, 0);
+		//TODO Projection
 
-		glDisable(GL_CULL_FACE);
+		render::try_throw_gl_error("viewport");
 
-		GLenum error = glGetError();
-		if (error) {
-			log::error << "GL error when setting up projection: " << glewGetErrorString(error);
-		}
+		glFrontFace(GL_CW); // Clockwise sounds natural
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+
+		render::try_throw_gl_error("GL error when setting up projection");
+
+		render::load_shaders();
 	}
 
 	static void init_image() {
@@ -370,13 +385,9 @@ namespace mgc {
 			throw RUNTIME_ERROR("SDL_CreateWindow Error: "s + SDL_GetError());
 		}
 
-		window.sdl_context = SDL_GL_CreateContext(window.sdl_window);
-		if (!window.sdl_context) {
-			throw RUNTIME_ERROR("SDL_GL_CreateContext Error: "s + SDL_GetError());
-		}
-
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
 		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
@@ -385,6 +396,11 @@ namespace mgc {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 		SDL_GL_SetSwapInterval(1);
+
+		window.sdl_context = SDL_GL_CreateContext(window.sdl_window);
+		if (!window.sdl_context) {
+			throw RUNTIME_ERROR("SDL_GL_CreateContext Error: "s + SDL_GetError());
+		}
 
 		SDL_ShowCursor(false);
 
@@ -403,6 +419,7 @@ namespace mgc {
 
 	static void destroy_graphics() {
 		render::texture_manager.destroy_all();
+		render::destroy_shaders();
 
 		IMG_Quit();
 	}

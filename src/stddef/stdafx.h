@@ -27,6 +27,7 @@ extern "C" {
 #include <GL/glew.h>
 }
 
+#include <glm/glm.hpp>
 #include <lua.hpp>
 #include <sol.hpp>
 
@@ -70,6 +71,11 @@ namespace constants {
 
 	const Uint FRAMERATE = 60;
 	const Uint TICKRATE = 30;
+}
+
+static inline bool string_ends_with(const std::string& str, const std::string& suffix) {
+	return str.size() >= suffix.size() &&
+		str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
 static inline string string_trim(const string& input) {

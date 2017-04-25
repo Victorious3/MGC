@@ -26,7 +26,6 @@ namespace mgc {
 		void process_sdl_event(SDL_Event& key_event);
 
 		const InputAction& get_action(const string& name, SDL_Scancode default);
-
 	private:
 		map<const string, InputAction> actionmap;
 	};

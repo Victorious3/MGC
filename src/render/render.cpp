@@ -29,7 +29,7 @@ namespace render {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture_attachment, 0);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			mgc::log::error << "Framebuffer creation failed" << endl;
+			mgc::log::error("Framebuffer creation failed");
 		glBindFramebuffer(GL_FRAMEBUFFER, current_fbo);
 		return fbo;
 	}

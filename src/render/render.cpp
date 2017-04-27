@@ -58,7 +58,7 @@ namespace render {
 	void draw_gl_texture(GLuint texture, int x, int y, int w, int h, float umin, float vmin, float umax, float vmax, Color color) {
 		enable_gl_texture();
 		glBindTexture(GL_TEXTURE_2D, texture);
-		glColor4ub(color.r, color.g, color.b, color.a);
+		glColor4bv(color);
 
 		glBegin(GL_QUADS);
 		{

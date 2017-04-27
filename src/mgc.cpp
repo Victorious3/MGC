@@ -282,7 +282,6 @@ namespace mgc {
 		if (GLenum error = glewInit()) {
 			throw RUNTIME_ERROR("Error while setting up GLEW: "s + reinterpret_cast<const char*>(glewGetErrorString(error)));
 		}
-
 		render::init_glvars();
 
 		// Setup framebuffer for scaling
@@ -293,8 +292,6 @@ namespace mgc {
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 		//gluOrtho2D(0, constants::SCR_WIDTH, constants::SCR_HEIGHT, 0);
 		//TODO Projection
-
-		render::try_throw_gl_error("viewport");
 
 		glFrontFace(GL_CW); // Clockwise sounds natural
 		glEnable(GL_CULL_FACE);

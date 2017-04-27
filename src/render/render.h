@@ -4,6 +4,7 @@
 
 #include "Texture.h"
 
+/*
 constexpr Uint64 operator ""_sec(Uint64 val) {
 	return val * 1000;
 }
@@ -11,27 +12,40 @@ constexpr Uint64 operator ""_sec(Uint64 val) {
 constexpr Uint64 operator ""_min(Uint64 val) {
 	return val * 1000 * 60;
 }
+*/
 
 namespace render {
 
-	typedef SDL_Color Color;
+	struct Color {
+		union {
+			struct {
+				GLbyte r;
+				GLbyte b;
+				GLbyte g;
+				GLbyte a;
+			};
+			GLbyte components[4];
+		};
+		operator GLbyte*() { return components; }
+	};
+
 	typedef SDL_Rect  Rectangle;
 	typedef SDL_Point Point;
 
-	constexpr Color color(Uint8 r, Uint8 g, Uint8 b) {
-		return Color { r, g, b, 255 };
+	constexpr Color color(GLbyte r, GLbyte g, GLbyte b) {
+		return Color { r, g, b, (GLbyte)255};
 	}
 
-	constexpr Color color(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	constexpr Color color(GLbyte r, GLbyte g, GLbyte b, GLbyte a) {
 		return Color { r, g, b, a };
 	}
 
 	constexpr Color color(Uint32 rbg) {
-		return Color { (Uint8)(rbg >> 16), (Uint8)(rbg >> 8), (Uint8)rbg, 255 };
+		return Color { (GLbyte)(rbg >> 16), (GLbyte)(rbg >> 8), (GLbyte)rbg, (GLbyte)255 };
 	}
 
 	constexpr Color color_a(Uint32 rbga) {
-		return Color { (Uint8)(rbga >> 24), (Uint8)(rbga >> 16), (Uint8)(rbga >> 8) };
+		return Color { (GLbyte)(rbga >> 24), (GLbyte)(rbga >> 16), (GLbyte)(rbga >> 8) };
 	}
 
 	constexpr Rectangle rectangle(int w, int h, int x = 0, int y = 0) {

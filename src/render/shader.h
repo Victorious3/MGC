@@ -13,25 +13,22 @@ namespace render {
 
 		const GLenum type;
 		GLuint gl_shader;
+	
 		const string file_name;
 	};
 
 	class ShaderProgram {
 	public:
-		ShaderProgram() {};
-		ShaderProgram(std::initializer_list<Shader> shaders);
-	
-		void compile();
+		void compile(std::initializer_list<Shader> shaders);
 
 		operator GLuint() {
-			return gl_program;extern ShaderProgram core_shader;
+			return gl_program;
 		}
 
 		void operator()() {
 			glUseProgram(gl_program);
 		}
 
-		vector<Shader> shaders;
 		GLuint gl_program;
 	};
 

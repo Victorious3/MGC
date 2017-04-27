@@ -210,6 +210,7 @@
     <ClCompile Include="src\render\TextureAtlas.cpp" />
     <ClCompile Include="src\ui\Image.cpp" />
     <ClCompile Include="src\ui\UI.cpp" />
+    <ClCompile Include="src\render\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\Entity.h" />
@@ -235,6 +236,7 @@
     <ClInclude Include="src\ui\Image.h" />
     <ClInclude Include="src\ui\UI.h" />
     <ClInclude Include="src\ui\UIElement.h" />
+    <ClInclude Include="src\render\VertexBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

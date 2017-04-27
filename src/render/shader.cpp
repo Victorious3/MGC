@@ -9,7 +9,7 @@ namespace render {
 	ShaderProgram core_shader;
 
 	void load_shaders() {
-		core_shader = ShaderProgram { Shader("Resources/shaders/core.frag"), Shader("Resources/shaders/core.vert") };
+		core_shader.compile({ Shader("Resources/shaders/core.frag"), Shader("Resources/shaders/core.vert") });
 	}
 
 	void destroy_shaders() {
@@ -64,11 +64,7 @@ namespace render {
 		}
 	}
 
-	ShaderProgram::ShaderProgram(std::initializer_list<Shader> shaders) : shaders(shaders) {
-		compile();
-	};
-
-	void ShaderProgram::compile() {
+	void ShaderProgram::compile(std::initializer_list<Shader> shaders) {
 		if (gl_program) glDeleteProgram(gl_program);
 		gl_program = glCreateProgram();
 

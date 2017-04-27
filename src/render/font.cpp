@@ -66,7 +66,7 @@ namespace mgc {
 		texture.load();
 		render::enable_gl_texture();
 		glBindTexture(GL_TEXTURE_2D, texture.gl_texture);
-		glColor4ub(color.r, color.g, color.b, color.a);
+		glColor4bv(color);
 		glBegin(GL_QUADS);
 
 		int line = 0;

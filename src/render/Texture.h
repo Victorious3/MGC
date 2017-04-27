@@ -41,6 +41,8 @@ namespace render {
 		float umin, vmin, umax, vmax;
 		
 		GLuint gl_texture = 0;
+
+		operator GLuint() { return gl_texture; }
 	};
 
 	inline Texture& add_texture(string path, TextureManager& mgr = texture_manager) {

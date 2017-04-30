@@ -45,7 +45,7 @@ namespace render {
 	}
 
 	constexpr Color color_a(Uint32 rbga) {
-		return Color { (GLbyte)(rbga >> 24), (GLbyte)(rbga >> 16), (GLbyte)(rbga >> 8) };
+		return Color { (GLbyte)(rbga >> 24), (GLbyte)(rbga >> 16), (GLbyte)(rbga >> 8), (GLbyte)rbga };
 	}
 
 	constexpr Rectangle rectangle(int w, int h, int x = 0, int y = 0) {
@@ -53,6 +53,7 @@ namespace render {
 	}
 
 	namespace colors {
+		constexpr Color TRANSPARENT = color_a(0);
 		constexpr Color BLACK = color(0x000000);
 		constexpr Color WHITE = color(0xFFFFFF);
 		constexpr Color RED = color(0xFF0000);

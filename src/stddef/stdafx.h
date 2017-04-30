@@ -7,6 +7,7 @@
 #ifndef WIN32
 #define WIN32
 #endif
+#define NOGDI
 #include <windows.h>
 #endif
 
@@ -28,6 +29,7 @@ extern "C" {
 }
 
 #include <glm/glm.hpp>
+
 #include <lua.hpp>
 #include <sol.hpp>
 

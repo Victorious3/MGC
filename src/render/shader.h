@@ -4,6 +4,12 @@
 
 namespace render {
 
+	enum Attrib : GLuint {
+		VERTEX = 0,
+		TEXTURE = 1,
+		COLOR = 2
+	};
+
 	class Shader {
 	public:
 		Shader(const string file_name);
@@ -19,7 +25,8 @@ namespace render {
 
 	class ShaderProgram {
 	public:
-		void compile(std::initializer_list<Shader> shaders);
+		void bind(std::initializer_list<Shader> shaders);
+		void link();
 
 		operator GLuint() {
 			return gl_program;
@@ -32,7 +39,15 @@ namespace render {
 		GLuint gl_program;
 	};
 
-	extern ShaderProgram core_shader;
+	class CoreShader : public ShaderProgram {
+	public:
+		GLuint projection;
+		const GLuint vertex = VERTEX;
+		const GLuint texture = TEXTURE;
+		const GLuint color = COLOR;
+	};
+
+	extern CoreShader core_shader;
 
 	void load_shaders();
 	void destroy_shaders();

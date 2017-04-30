@@ -6,10 +6,15 @@
 
 namespace render {
 
-	ShaderProgram core_shader;
+	CoreShader core_shader;
 
 	void load_shaders() {
-		core_shader.compile({ Shader("Resources/shaders/core.frag"), Shader("Resources/shaders/core.vert") });
+		core_shader.bind({ Shader("Resources/shaders/core.frag"), Shader("Resources/shaders/core.vert") });
+		glBindAttribLocation(core_shader, VERTEX, "vertex");
+		glBindAttribLocation(core_shader, TEXTURE, "texture");
+		glBindAttribLocation(core_shader, COLOR, "color");
+		core_shader.link();
+		core_shader.projection = glGetUniformLocation(core_shader, "projection");
 	}
 
 	void destroy_shaders() {
@@ -60,17 +65,20 @@ namespace render {
 			delete[] shader_log;
 		}
 		if (!compile_status) {
-			throw new RUNTIME_ERROR("Shader compilation failed for shader \"" + file_name + "\", see program log");
+			throw RUNTIME_ERROR("Shader compilation failed for shader \"" + file_name + "\", see program log");
 		}
 	}
 
-	void ShaderProgram::compile(std::initializer_list<Shader> shaders) {
+	void ShaderProgram::bind(std::initializer_list<Shader> shaders) {
 		if (gl_program) glDeleteProgram(gl_program);
 		gl_program = glCreateProgram();
 
 		for (auto& shader : shaders) {
 			glAttachShader(gl_program, shader.gl_shader);
 		}
+	}
+
+	void ShaderProgram::link() {
 		glLinkProgram(gl_program);
 
 		GLint link_status = false;
@@ -87,7 +95,7 @@ namespace render {
 			delete[] program_log;
 		}
 		if (!link_status) {
-			throw new RUNTIME_ERROR("Program linking failed");
+			throw RUNTIME_ERROR("Program linking failed");
 		}
 	}
 }

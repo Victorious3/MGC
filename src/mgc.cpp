@@ -8,9 +8,14 @@
 #include "ini/ini.h"
 #include "render/font.h"
 #include "render/shader.h"
+#include "render/VertexBuffer.h"
 
 #include "ui/UI.h"
 #include "ui/Image.h"
+
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 namespace mgc {
 
@@ -149,6 +154,11 @@ namespace mgc {
 	}
 
 	void render() {
+		glm::mat4 projection = glm::ortho(0.0F, (float) constants::SCR_WIDTH, (float) constants::SCR_HEIGHT, 0.0F);
+		render::core_shader();
+		glUniformMatrix4fv(render::core_shader.projection, 1, false, glm::value_ptr(projection));
+		glUniformMatrix4fv(render::core_shader.projection, 1, false, glm::value_ptr(projection));
+
 		graphics.render_delta_ms += timing.time_delta;
 		Uint64 time_now = time_millis();
 
@@ -173,12 +183,15 @@ namespace mgc {
 		Uint32 startTime = SDL_GetTicks();
 
 		// Bind framebuffer for rendering
+		glClearColor(0, 0, 0, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, window.screen_fbo);
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		/*
 		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
 
 		static Font montserrat("Resources/fonts/Montserrat");
@@ -196,35 +209,17 @@ namespace mgc {
 		montserrat.draw_string(locale.get_string("test_string"), 0, 30);
 
 		UI::render();
+		*/
 
 		// "Mouse cursor"
 
-		glColor3ub(255, 255, 255);
-		glTranslatef((GLfloat)mouse.x, (GLfloat)mouse.y, 0);
-		glBegin(GL_QUADS);
-		{
-			glVertex2i(1, -1);
-			glVertex2i(4, -1);
-			glVertex2i(4, 1);
-			glVertex2i(1, 1);
+		render::VertexBuffer vb;
 
-			glVertex2i(-4, -1);
-			glVertex2i(-1, -1);
-			glVertex2i(-1, 1);
-			glVertex2i(-4, 1);
-			
-			glVertex2i(1, 1);
-			glVertex2i(1, 4);
-			glVertex2i(-1, 4);
-			glVertex2i(-1, 1);
-
-			glVertex2i(1, -4);
-			glVertex2i(1, -1);
-			glVertex2i(-1, -1);
-			glVertex2i(-1, -4);
-		}
-		glEnd();
-		glTranslatef((GLfloat)-mouse.x, (GLfloat)-mouse.y, 0);
+		/*vb.quad(mouse.x - 5, mouse.y - 1, 4, 3);
+		vb.quad(mouse.x + 1, mouse.y - 1, 4, 3);
+		vb.quad(mouse.x - 1, mouse.y - 5, 3, 4);
+		vb.quad(mouse.x - 1, mouse.y + 1, 3, 4);
+		vb.draw_imm();*/
 
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -233,24 +228,20 @@ namespace mgc {
 		SDL_GetWindowSize(window.sdl_window, &w, &h);
 		glViewport(0, 0, w, h);
 
-		glColor4ub(255, 255, 255, 255);
-		glEnable(GL_TEXTURE_2D);
-		
-		glBindTexture(GL_TEXTURE_2D, window.screen_texture);
-		glBegin(GL_QUADS);
-		{
-			glTexCoord2f(0, 1);
-			glVertex2i(0, 0);
-			glTexCoord2f(1, 1);
-			glVertex2i(constants::SCR_WIDTH, 0);
-			glTexCoord2f(1, 0);
-			glVertex2i(constants::SCR_WIDTH, constants::SCR_HEIGHT);
-			glTexCoord2f(0, 0);
-			glVertex2i(0, constants::SCR_HEIGHT);
-		}
-		glEnd();
+		vb.set_texture(window.screen_texture);
+		//vb.sprite(0, 0, render::Sprite { constants::SCR_WIDTH, constants::SCR_HEIGHT });
+		//vb.quad(0, 0, 20, 40);
+		glm::vec4 v1 = glm::vec4 { glm::ivec2 { 0, constants::SCR_HEIGHT }, 0, 1 };
+		glm::vec4 v2 = glm::vec4 { glm::ivec2 { 0, 0 }, 0, 1 };
+		glm::vec4 v3 = glm::vec4 { glm::ivec2 { constants::SCR_WIDTH / 2, constants::SCR_HEIGHT / 2 }, 0, 1 };
 
-		glDisable(GL_TEXTURE_2D);
+		vb.vertex(v1.x, v1.y);
+		vb.vertex(v2.x, v2.y);
+		vb.vertex(v3.x, v3.y);
+		vb.draw_imm();
+
+		cout << glm::to_string(projection) << endl;
+		//cout << glm::to_string(projection * glm::vec4(constants::SCR_WIDTH / 2, constants::SCR_HEIGHT / 2, 0, 1)) << endl;
 
 		SDL_GL_SwapWindow(window.sdl_window);
 
@@ -290,12 +281,11 @@ namespace mgc {
 
 		glClearColor(0, 0, 0, 0);
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
-		//gluOrtho2D(0, constants::SCR_WIDTH, constants::SCR_HEIGHT, 0);
-		//TODO Projection
 
-		glFrontFace(GL_CW); // Clockwise sounds natural
+		glDisable(GL_CULL_FACE);
+		/*glFrontFace(GL_CW); // Clockwise sounds natural
 		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		glCullFace(GL_BACK);*/
 
 		render::try_throw_gl_error("GL error when setting up projection");
 

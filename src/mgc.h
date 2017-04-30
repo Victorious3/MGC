@@ -75,9 +75,5 @@ namespace mgc {
 	void toggle_fullscreen();
 	void run();
 
-	void update();
-	void tick();
-	void render();
-
 	void destroy();
 }

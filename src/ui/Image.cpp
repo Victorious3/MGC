@@ -15,6 +15,7 @@ namespace UI {
 	}
 
 	void Image::render() {
-		draw_texture(texture, x, y, colors::WHITE);
+		// TODO deprecated
+		//draw_texture(texture, x, y, colors::WHITE);
 	}
 }

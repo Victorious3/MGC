@@ -68,18 +68,6 @@ namespace render {
 	
 	void init_glvars();
 
-	// TODO These might want to be somewhere else
-	inline void enable_gl_texture() {
-		glEnable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-
-	inline void disable_gl_texture() {
-		glDisable(GL_BLEND);
-		glDisable(GL_TEXTURE_2D);
-	}
-
 	inline void try_throw_gl_error(const string& error_string) {
 		if (GLenum error = glGetError()) {
 			throw RUNTIME_ERROR(error_string + ": "s + string(reinterpret_cast<const char*>(gluErrorString(error))) + " ("s + std::to_string(error) + ")");
@@ -87,15 +75,11 @@ namespace render {
 	}
 
 	GLuint allocate_texture(Uint w, Uint h, const void* pBuffer = nullptr);
+
+	void gl_object_label(const string& str, GLenum identifier, GLuint name);
 	
 	GLuint create_framebuffer(GLuint texture_attachment);
 
 	// Returns the current fbo
 	GLuint bind_framebuffer(GLuint fbo);
-
-	void draw_sprite(const Sprite& sprite, int x, int y, Color color = colors::WHITE);
-	void draw_texture(Texture& sprite, int x, int y, Color color = colors::WHITE);
-
-	void draw_gl_texture(GLuint texture, int x, int y, int w, int h, Color color = colors::WHITE);
-	void draw_gl_texture(GLuint texture, int x, int y, int w, int h, float umin, float vmin, float umax, float vmax, Color color = colors::WHITE);
 };

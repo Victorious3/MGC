@@ -35,35 +35,29 @@ namespace render {
 		return VertexPtr(current_data->vertex.size() - 1, *this);
 	}
 
-	void VertexBuffer::sprite(int x, int y, const Sprite& sprite) {
-		VertexBuffer::sprite(x, y, sprite.w, sprite.h, sprite);
+	void VertexBuffer::sprite(int x, int y, const Sprite& sprite, Color color) {
+		VertexBuffer::sprite(x, y, sprite.w, sprite.h, sprite, color);
 	}
 
-	void VertexBuffer::sprite(int x, int y, int w, int h, const Sprite& sprite) {
+	void VertexBuffer::sprite(int x, int y, int w, int h, const Sprite& sprite, Color color) {
 		// Two triangles, quads are dead, long live quads!
-		vertex(x, y)
-			.uv(sprite.umin, sprite.vmin);
-		vertex(x, y + h)
-			.uv(sprite.umin, sprite.vmax);
-		vertex(x + w, y)
-			.uv(sprite.umax, sprite.vmin);
+		vertex(x    , y    ).uv(sprite.umin, sprite.vmin).color(color);
+		vertex(x + w, y + h).uv(sprite.umax, sprite.vmax).color(color);
+		vertex(x    , y + h).uv(sprite.umin, sprite.vmax).color(color);
 
-		vertex(x + w, y)
-			.uv(sprite.umax, sprite.vmin);
-		vertex(x, y + h)
-			.uv(sprite.umin, sprite.vmax);
-		vertex(x + w, y + h)
-			.uv(sprite.umax, sprite.vmax);
+		vertex(x + w, y    ).uv(sprite.umax, sprite.vmin).color(color);
+		vertex(x + w, y + h).uv(sprite.umax, sprite.vmax).color(color);
+		vertex(x    , y    ).uv(sprite.umin, sprite.vmin).color(color);
 	}
 
-	void VertexBuffer::quad(int x, int y, int w, int h) {
+	void VertexBuffer::rect(int x, int y, int w, int h) {
 		vertex(x, y);
+		vertex(x + w, y + h);
 		vertex(x, y + h);
-		vertex(x + w, y);
 
 		vertex(x + w, y);
-		vertex(x, y + h);
 		vertex(x + w, y + h);
+		vertex(x, y);
 	}
 
 	void VertexBuffer::compile() {
@@ -130,7 +124,7 @@ namespace render {
 			glBindTexture(GL_TEXTURE_2D, vbo.gl_texture);
 
 			glBindBuffer(GL_ARRAY_BUFFER, vbo.vertex);
-			glVertexAttribPointer(Attrib::VERTEX, 2, GL_INT, false, sizeof(glm::ivec2), 0);
+			glVertexAttribIPointer(Attrib::VERTEX, 2, GL_INT, sizeof(glm::ivec2), 0);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo.texture);
 			glVertexAttribPointer(Attrib::TEXTURE, 2, GL_FLOAT, false, sizeof(glm::vec2), 0);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo.color);

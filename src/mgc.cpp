@@ -130,35 +130,11 @@ namespace mgc {
 		}
 	}
 
-	void update() {
-		timing.ticks_delta_ms += timing.time_delta;
-	
-		{ // Update stuff with delta time
-			keyboard.update(timing.time_delta);
-			sdl_event();
-			UI::update(timing.time_delta);
-		}
-
-		{ // Update tick intervals
-			while (timing.ticks_delta_ms >= timing.tick_delay_ms) {
-				timing.ticks++;
-				timing.ticks_delta_ms -= timing.tick_delay_ms;
-
-				tick();
-			}
-		}
-	}
-
-	void tick() {
+	static void tick() {
 
 	}
 
-	void render() {
-		glm::mat4 projection = glm::ortho(0.0F, (float) constants::SCR_WIDTH, (float) constants::SCR_HEIGHT, 0.0F);
-		render::core_shader();
-		glUniformMatrix4fv(render::core_shader.projection, 1, false, glm::value_ptr(projection));
-		glUniformMatrix4fv(render::core_shader.projection, 1, false, glm::value_ptr(projection));
-
+	static void render() {
 		graphics.render_delta_ms += timing.time_delta;
 		Uint64 time_now = time_millis();
 
@@ -182,21 +158,24 @@ namespace mgc {
 		
 		Uint32 startTime = SDL_GetTicks();
 
-		// Bind framebuffer for rendering
-		glClearColor(0, 0, 0, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glm::mat4 projection = glm::ortho(0.0F, (float)constants::SCR_WIDTH, (float)constants::SCR_HEIGHT, 0.0F);
+		render::core_shader();
+		glUniformMatrix4fv(render::core_shader.projection, 1, false, glm::value_ptr(projection));
 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// Bind framebuffer for rendering
 		glBindFramebuffer(GL_FRAMEBUFFER, window.screen_fbo);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		render::VertexBuffer vb;
+
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		/*
 		string fps_string = "FPS: "s + std::to_string(graphics.framerate_actual);
 
 		static Font montserrat("Resources/fonts/Montserrat");
-		montserrat.draw_string(fps_string, 0, 0);
-		montserrat.draw_string( 
+		montserrat.add_string(vb, fps_string, 0, 0);
+		montserrat.add_string(vb, 
 			"I'm just your average school slut, don't mind me.\n" 
 			"Just pretend I had some special narration and\n"
 			"dialog for you.\n\n"
@@ -206,20 +185,22 @@ namespace mgc {
 			"Can all go to hell if it was after me. Skanks.\n"
 			"(Don't let Vic write a dialog)", 10, 50);
 
-		montserrat.draw_string(locale.get_string("test_string"), 0, 30);
+		montserrat.add_string(vb, locale.get_string("test_string"), 0, 30);
+		vb.draw_imm();
 
 		UI::render();
-		*/
 
 		// "Mouse cursor"
 
-		render::VertexBuffer vb;
-
-		/*vb.quad(mouse.x - 5, mouse.y - 1, 4, 3);
-		vb.quad(mouse.x + 1, mouse.y - 1, 4, 3);
-		vb.quad(mouse.x - 1, mouse.y - 5, 3, 4);
-		vb.quad(mouse.x - 1, mouse.y + 1, 3, 4);
-		vb.draw_imm();*/
+		// Turn off texture
+		glUniform1ui(render::core_shader.use_texture, false);
+		vb.rect(mouse.x - 5, mouse.y - 1, 4, 3);
+		vb.rect(mouse.x + 2, mouse.y - 1, 4, 3);
+		vb.rect(mouse.x - 1, mouse.y - 5, 3, 4);
+		vb.rect(mouse.x - 1, mouse.y + 2, 3, 4);
+		vb.draw_imm();
+		// Turn on texture
+		glUniform1ui(render::core_shader.use_texture, true);
 
 		// Draw to screen
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -229,19 +210,8 @@ namespace mgc {
 		glViewport(0, 0, w, h);
 
 		vb.set_texture(window.screen_texture);
-		//vb.sprite(0, 0, render::Sprite { constants::SCR_WIDTH, constants::SCR_HEIGHT });
-		//vb.quad(0, 0, 20, 40);
-		glm::vec4 v1 = glm::vec4 { glm::ivec2 { 0, constants::SCR_HEIGHT }, 0, 1 };
-		glm::vec4 v2 = glm::vec4 { glm::ivec2 { 0, 0 }, 0, 1 };
-		glm::vec4 v3 = glm::vec4 { glm::ivec2 { constants::SCR_WIDTH / 2, constants::SCR_HEIGHT / 2 }, 0, 1 };
-
-		vb.vertex(v1.x, v1.y);
-		vb.vertex(v2.x, v2.y);
-		vb.vertex(v3.x, v3.y);
+		vb.sprite(0, 0, render::Sprite { constants::SCR_WIDTH, constants::SCR_HEIGHT, 0, 1, 1, 0});
 		vb.draw_imm();
-
-		cout << glm::to_string(projection) << endl;
-		//cout << glm::to_string(projection * glm::vec4(constants::SCR_WIDTH / 2, constants::SCR_HEIGHT / 2, 0, 1)) << endl;
 
 		SDL_GL_SwapWindow(window.sdl_window);
 
@@ -259,7 +229,23 @@ namespace mgc {
 			Uint64 time_now = time_millis();
 			timing.time_delta = time_now - timing.time_last;
 
-			update();
+			timing.ticks_delta_ms += timing.time_delta;
+
+			{ // Update stuff with delta time
+				keyboard.update(timing.time_delta);
+				sdl_event();
+				UI::update(timing.time_delta);
+			}
+
+			{ // Update tick intervals
+				while (timing.ticks_delta_ms >= timing.tick_delay_ms) {
+					timing.ticks++;
+					timing.ticks_delta_ms -= timing.tick_delay_ms;
+
+					tick();
+				}
+			}
+
 			render();
 
 			timing.time_last = time_now;
@@ -273,19 +259,31 @@ namespace mgc {
 		if (GLenum error = glewInit()) {
 			throw RUNTIME_ERROR("Error while setting up GLEW: "s + reinterpret_cast<const char*>(glewGetErrorString(error)));
 		}
+
+#ifndef NDEBUG
+		// Debug output callback
+		if (GLEW_KHR_debug) {
+			glDebugMessageCallback([](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+				log::info("GL") << string(message, length) << endl;
+			}, nullptr);
+			//glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, nullptr, false);
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, false);
+		}
+#endif
+
 		render::init_glvars();
 
 		// Setup framebuffer for scaling
 		window.screen_texture = render::allocate_texture(constants::SCR_WIDTH, constants::SCR_HEIGHT);
 		window.screen_fbo = render::create_framebuffer(window.screen_texture);
 
-		glClearColor(0, 0, 0, 0);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glViewport(0, 0, constants::SCR_WIDTH, constants::SCR_HEIGHT);
 
-		glDisable(GL_CULL_FACE);
-		/*glFrontFace(GL_CW); // Clockwise sounds natural
 		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);*/
+		glFrontFace(GL_CW); // Clockwise sounds natural
+		glCullFace(GL_BACK);
 
 		render::try_throw_gl_error("GL error when setting up projection");
 
@@ -375,6 +373,10 @@ namespace mgc {
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+#ifndef NDEBUG
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+#endif
 
 		SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
 		SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);

@@ -26,7 +26,7 @@ namespace render {
 	class ShaderProgram {
 	public:
 		void bind(std::initializer_list<Shader> shaders);
-		void link();
+		void link(const string & name);
 
 		operator GLuint() {
 			return gl_program;
@@ -42,6 +42,8 @@ namespace render {
 	class CoreShader : public ShaderProgram {
 	public:
 		GLuint projection;
+		GLboolean use_texture;
+
 		const GLuint vertex = VERTEX;
 		const GLuint texture = TEXTURE;
 		const GLuint color = COLOR;

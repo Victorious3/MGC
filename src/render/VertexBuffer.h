@@ -36,10 +36,10 @@ namespace render {
 			return vertex(v.x, v.y);
 		}
 
-		void sprite(int x, int y, const Sprite& sprite);
-		void sprite(int x, int y, int w, int h, const Sprite& sprite);
+		void sprite(int x, int y, const Sprite& sprite, Color color = colors::WHITE);
+		void sprite(int x, int y, int w, int h, const Sprite& sprite, Color color = colors::WHITE);
 
-		void quad(int x, int y, int w, int h);
+		void rect(int x, int y, int w, int h);
 
 		// Compiles the buffers
 		void compile();

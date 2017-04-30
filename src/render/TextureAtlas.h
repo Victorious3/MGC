@@ -16,9 +16,12 @@ namespace render {
 		// TextureManager doesn't do this, it fails later
 		Sprite& add_sprite(string sprite);
 
+		// If you load a texture atlas the viewport and projection matrices
+		// will become undefined, so make sure to reset those yourself
 		void load();
 		void destroy();
 
+		// Invalidates the viewport & projection
 		inline void reload() {
 			destroy();
 			load();

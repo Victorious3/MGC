@@ -1,6 +1,7 @@
 #include <stdafx.h>
 
 #include "shader.h"
+#include "render.h"
 #include "../filesystem.h"
 #include "../log.h"
 
@@ -13,8 +14,9 @@ namespace render {
 		glBindAttribLocation(core_shader, VERTEX, "vertex");
 		glBindAttribLocation(core_shader, TEXTURE, "texture");
 		glBindAttribLocation(core_shader, COLOR, "color");
-		core_shader.link();
+		core_shader.link("core_shader");
 		core_shader.projection = glGetUniformLocation(core_shader, "projection");
+		core_shader.use_texture = glGetUniformLocation(core_shader, "use_texture");
 	}
 
 	void destroy_shaders() {
@@ -53,6 +55,7 @@ namespace render {
 		gl_shader = glCreateShader(type);
 		glShaderSource(gl_shader, 1, &source, nullptr);
 		glCompileShader(gl_shader);
+		gl_object_label(file_name, GL_SHADER, gl_shader);
 
 		glGetShaderiv(gl_shader, GL_COMPILE_STATUS, &compile_status);
 		glGetShaderiv(gl_shader, GL_INFO_LOG_LENGTH, &log_length);
@@ -78,8 +81,9 @@ namespace render {
 		}
 	}
 
-	void ShaderProgram::link() {
+	void ShaderProgram::link(const string& name) {
 		glLinkProgram(gl_program);
+		gl_object_label(name, GL_PROGRAM, gl_program);
 
 		GLint link_status = false;
 		int log_length = 0;

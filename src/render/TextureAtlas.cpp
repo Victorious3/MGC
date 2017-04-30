@@ -1,6 +1,12 @@
 #include <stdafx.h>
 #include "TextureAtlas.h"
 
+#include "VertexBuffer.h"
+#include "shader.h"
+
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 // Force power of two textures
 #define FORCE_POT true
 // Toggle writing of the atlas to a temporary directory
@@ -161,17 +167,19 @@ namespace render {
 		GLuint fbo = create_framebuffer(gl_texture);
 		GLuint curr_fbo = bind_framebuffer(fbo);
 
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
 		glViewport(0, 0, width, height);
-		gluOrtho2D(0, width, height, 0);
-		glMatrixMode(GL_MODELVIEW);
+		
+		glm::mat4 projection = glm::ortho(0, width, height, 0);
+		glUniformMatrix4fv(core_shader.projection, 1, false, glm::value_ptr(projection));
 
+		VertexBuffer vb;
 		for(auto entry : stitched_textures) {
-			int w, h;
-			GLuint texture = create_texture(entry->path, (Uint*)&w, (Uint*)&h);
-			draw_gl_texture(texture, entry->x, entry->y + h, w, -h);
+			Uint w, h;
+			GLuint texture = create_texture(entry->path, &w, &h);
+			vb.set_texture(texture);
+			vb.sprite(entry->x, entry->y + h, Sprite { w, h });
+			vb.draw_imm();
+
 			Sprite& sprite = entry->sprite;
 
 			// Calculate UVs
@@ -217,10 +225,6 @@ namespace render {
 
 		bind_framebuffer(curr_fbo);
 		glDeleteFramebuffers(1, &fbo); // Throw away framebuffer
-
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
 	}
 
 	void TextureAtlas::load() {

@@ -52,6 +52,7 @@ namespace render {
 				*w = surface->w;
 				*h = surface->h;
 				texture = allocate_texture(surface->w, surface->h, surface->pixels);
+				gl_object_label(path, GL_TEXTURE, texture);
 
 				SDL_FreeSurface(surface);
 			} else throw RUNTIME_ERROR("Couldn't convert image " + path + " to internal gl representation");
